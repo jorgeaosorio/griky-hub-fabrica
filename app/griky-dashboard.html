@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#22304C; --navy2:#1a2539; --navy3:#131d2e;
+  --red:#FF2D55; --red2:#e01f45;
+  --green:#2BC168; --yellow:#F5A623; --gray:#667078;
+  --light:#F6F7FB; --mid:#E2E8F0; --white:#ffffff;
+  --ra:rgba(255,45,85,.10); --rb:rgba(255,45,85,.20);
+  --ga:rgba(43,193,104,.10); --ya:rgba(245,166,35,.10);
+  --na:rgba(34,48,76,.06);
+  --r:12px; --sh:0 2px 14px rgba(34,48,76,.09);
+  --sh2:0 8px 28px rgba(34,48,76,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;background:var(--light);color:var(--navy);min-height:100vh;display:flex;flex-direction:column;}
+h1,h2,h3{font-family:'Roboto',sans-serif;}
+
+/* TOPBAR */
+.topbar{background:var(--navy3);position:relative;overflow:hidden;flex-shrink:0;}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red) 0%,#ff6b8a 60%,transparent 100%);}
+.topbar-inner{position:relative;z-index:1;display:flex;align-items:center;padding:0 28px;height:56px;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-weight:800;font-size:14px;color:var(--white);}
+.logo-name{font-family:'Roboto',sans-serif;font-weight:700;font-size:16px;color:var(--white);}
+.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.15);margin:0 4px;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-sm{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-family:'Roboto',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-sm:hover{background:rgba(255,255,255,.08);color:var(--white);}
+
+/* CONTROL BAR */
+.ctrlbar{background:var(--navy2);padding:12px 28px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;flex-wrap:wrap;}
+.ctrl-field{display:flex;flex-direction:column;gap:3px;}
+.ctrl-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.ctrl-select{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;font-family:'Roboto',sans-serif;font-size:12px;color:var(--white);outline:none;appearance:none;cursor:pointer;min-width:160px;}
+.ctrl-select option{background:var(--navy);}
+.ctrl-sep{width:1px;height:32px;background:rgba(255,255,255,.08);}
+
+/* VISTA TABS */
+.view-tabs{display:flex;gap:4px;margin-left:auto;}
+.view-tab{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s;border:1px solid transparent;}
+.view-tab:hover{color:rgba(255,255,255,.8);}
+.view-tab.active{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.15);color:var(--white);}
+
+/* FECHA */
+.fecha-badge{font-size:11px;color:rgba(255,255,255,.35);font-weight:400;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:24px 28px;}
+.main::-webkit-scrollbar{width:4px;}
+.main::-webkit-scrollbar-thumb{background:var(--mid);border-radius:2px;}
+
+/* ── GLOBAL STATS ── */
+.global-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px;}
+.gstat{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:16px 14px;box-shadow:var(--sh);text-align:center;position:relative;overflow:hidden;}
+.gstat::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.gstat.total::before{background:var(--navy);}
+.gstat.verde::before{background:var(--green);}
+.gstat.amarillo::before{background:var(--yellow);}
+.gstat.rojo::before{background:var(--red);}
+.gstat.sprint::before{background:#7EC8E3;}
+.gstat.ritmo::before{background:#B19CD9;}
+.gstat-val{font-family:'Roboto',sans-serif;font-size:28px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:4px;}
+.gstat-val.green{color:var(--green);}
+.gstat-val.yellow{color:var(--yellow);}
+.gstat-val.red{color:var(--red);}
+.gstat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);}
+.gstat-sub{font-size:10px;color:var(--gray);margin-top:3px;font-weight:300;}
+
+/* ── ED SECTION ── */
+.ed-section{margin-bottom:28px;}
+.ed-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.ed-title{font-family:'Roboto',sans-serif;font-size:16px;font-weight:800;color:var(--navy);}
+.ed-pm{font-size:12px;color:var(--gray);font-weight:400;}
+.ed-line{flex:1;height:1px;background:var(--mid);}
+.ed-total{font-size:11px;color:var(--gray);}
+
+/* ── PROYECTO CARD ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+
+.pcard{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;transition:all .2s;cursor:default;}
+.pcard:hover{box-shadow:var(--sh2);transform:translateY(-2px);}
+.pcard-stripe{height:4px;}
+.pcard-stripe.verde{background:var(--green);}
+.pcard-stripe.amarillo{background:var(--yellow);}
+.pcard-stripe.rojo{background:linear-gradient(90deg,var(--red) 0%,#ff6b8a 100%);}
+
+.pcard-head{padding:16px 18px 12px;}
+.pcard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.pcard-name{font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;color:var(--navy);line-height:1.3;}
+.pcard-client{font-size:11px;color:var(--gray);margin-top:2px;}
+.sem-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;}
+.sem-badge.verde{background:var(--ga);color:#1e9a56;}
+.sem-badge.amarillo{background:var(--ya);color:#c47d00;}
+.sem-badge.rojo{background:var(--ra);color:var(--red);}
+
+/* PROGRESS */
+.pcard-progress{margin-bottom:12px;}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.prog-label{font-size:11px;color:var(--gray);font-weight:500;}
+.prog-pct{font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;color:var(--navy);}
+.prog-bar{height:6px;background:var(--light);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+.prog-fill.verde{background:var(--green);}
+.prog-fill.amarillo{background:var(--yellow);}
+.prog-fill.rojo{background:var(--red);}
+
+/* METRICS ROW */
+.pcard-metrics{display:flex;gap:0;border-top:1px solid var(--mid);}
+.metric{flex:1;padding:10px 12px;text-align:center;border-right:1px solid var(--mid);}
+.metric:last-child{border-right:none;}
+.metric-val{font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;color:var(--navy);}
+.metric-val.ok{color:var(--green);}
+.metric-val.warn{color:var(--yellow);}
+.metric-val.bad{color:var(--red);}
+.metric-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-top:2px;}
+
+/* ALERT BANNER */
+.alert-banner{background:var(--ra);border:1px solid var(--rb);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);display:flex;align-items:center;gap:8px;margin:0 18px 14px;}
+.alert-banner.warn{background:var(--ya);border-color:rgba(245,166,35,.3);color:#c47d00;}
+
+/* ── TABLA DETALLE ── */
+.detail-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.detail-table th{text-align:left;padding:9px 12px;color:var(--gray);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;border-bottom:2px solid var(--mid);white-space:nowrap;}
+.detail-table td{padding:11px 12px;border-bottom:1px solid rgba(226,232,240,.5);vertical-align:middle;}
+.detail-table tr:hover td{background:rgba(246,247,251,.8);}
+.detail-table tr:last-child td{border-bottom:none;}
+
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0;}
+.dot.verde{background:var(--green);}
+.dot.amarillo{background:var(--yellow);}
+.dot.rojo{background:var(--red);}
+
+.pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;}
+.pill.ok{background:var(--ga);color:#1e9a56;}
+.pill.warn{background:var(--ya);color:#c47d00;}
+.pill.bad{background:var(--ra);color:var(--red);}
+.pill.neutral{background:var(--na);color:var(--navy);}
+
+/* ── EMPTY ── */
+.empty-view{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;gap:12px;opacity:.4;}
+.empty-icon{font-size:48px;}
+.empty-title{font-family:'Roboto',sans-serif;font-size:18px;font-weight:700;}
+.empty-sub{font-size:13px;color:var(--gray);text-align:center;line-height:1.6;max-width:320px;}
+
+/* MINI PROG */
+.mini-prog{display:flex;align-items:center;gap:8px;}
+.mini-bar{flex:1;height:5px;background:var(--mid);border-radius:3px;overflow:hidden;min-width:60px;}
+.mini-fill{height:100%;border-radius:3px;}
+.mini-fill.verde{background:var(--green);}
+.mini-fill.amarillo{background:var(--yellow);}
+.mini-fill.rojo{background:var(--red);}
+.mini-pct{font-family:'Roboto',sans-serif;font-size:12px;font-weight:700;color:var(--navy);width:32px;text-align:right;}
+
+/* RITMO ICON */
+.ritmo-icon{font-size:13px;}
+
+/* SPRINT RING */
+.ring-wrap{position:relative;width:44px;height:44px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-size:10px;font-weight:800;color:var(--navy);}
+
+/* SECTION TOGGLE */
+.sec-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.sec-toggle-chevron{font-size:12px;color:var(--gray);transition:transform .2s;}
+.sec-toggle.open .sec-toggle-chevron{transform:rotate(90deg);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="logo" aria-label="Griky Dashboard Fábrica">
+      <div class="logo-mark" aria-hidden="true">G</div>
+      <span class="logo-name">Griky</span>
+      <div class="logo-sep" aria-hidden="true"></div>
+      <span class="logo-sub">Dashboard · Fábrica</span>
+    </div>
+    <div class="topbar-right">
+      <span class="fecha-badge" id="fechaBadge" aria-label="Fecha actual">—</span>
+      <button class="btn-sm" onclick="window.location.href='griky-fabrica-hub.html'" aria-label="Volver al Hub">← Hub</button>
+    </div>
+  </div>
+</header>
+
+<!-- CONTROL BAR -->
+<div class="ctrlbar" role="toolbar" aria-label="Filtros del dashboard">
+  <div class="ctrl-field">
+    <label class="ctrl-label" for="selPerfil">Perfil</label>
+    <select class="ctrl-select" id="selPerfil" onchange="onPerfilChange()">
+      <option value="director">Director de Fábrica</option>
+      <option value="pm">Project Manager</option>
+    </select>
+  </div>
+
+  <div class="ctrl-sep" id="pmSep"></div>
+  <div class="ctrl-field" id="pmField">
+    <label class="ctrl-label" for="selED">Equipo Dedicado</label>
+    <select class="ctrl-select" id="selED" onchange="render()">
+      <option value="all">Todos los EDs</option>
+      <option value="Sophia Pacheco">ED Sophia Pacheco</option>
+      <option value="Andrés Briceño">ED Andrés Briceño</option>
+      <option value="Margarita Rosales">ED Margarita Rosales</option>
+      <option value="Vilma Perilla">ED Vilma Perilla</option>
+    </select>
+  </div>
+
+  <div class="ctrl-sep"></div>
+  <div class="ctrl-field">
+    <label class="ctrl-label" for="selSem">Semáforo</label>
+    <select class="ctrl-select" id="selSem" onchange="render()">
+      <option value="all">Todos</option>
+      <option value="verde">🟢 Verde</option>
+      <option value="amarillo">🟡 Amarillo</option>
+      <option value="rojo">🔴 Rojo</option>
+    </select>
+  </div>
+
+  <div class="view-tabs">
+    <div class="view-tab active" id="vt-cards" onclick="setVista('cards')">⊞ Tarjetas</div>
+    <div class="view-tab" id="vt-tabla" onclick="setVista('tabla')">☰ Tabla</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainContent">
+  <div class="empty-view">
+    <div class="empty-icon">📊</div>
+    <div class="empty-title">Cargando dashboard…</div>
+  </div>
+</div>
+
+<script>
+// ── DATOS ─────────────────────────────────────────────────────────────────────
+// Los PMs llenarán: sem, avance, sprint, ritmoAct, recHechos, alert
+const DATA = {
+  'Sophia Pacheco': [
+    { id:'s1', nombre:'América',      cliente:'U. América',  sem:'verde', avance:0, cursos:10, upLabel:'Módulo', totalRec:360, recHechos:0, sprint:0, ritmoReq:12, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s2', nombre:'Ibero México', cliente:'U. Ibero MX', sem:'verde', avance:0, cursos:3,  upLabel:'Unidad', totalRec:90,  recHechos:0, sprint:0, ritmoReq:5,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s3', nombre:'UDLA',         cliente:'UDLA',        sem:'verde', avance:0, cursos:5,  upLabel:'Módulo', totalRec:150, recHechos:0, sprint:0, ritmoReq:9,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s4', nombre:'UMB',          cliente:'UMB',         sem:'verde', avance:0, cursos:4,  upLabel:'Módulo', totalRec:120, recHechos:0, sprint:0, ritmoReq:7,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s5', nombre:'USS',          cliente:'USS',         sem:'verde', avance:0, cursos:8,  upLabel:'Semana', totalRec:480, recHechos:0, sprint:0, ritmoReq:15, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s6', nombre:'UPEU',         cliente:'UPEU',        sem:'verde', avance:0, cursos:6,  upLabel:'Módulo', totalRec:180, recHechos:0, sprint:0, ritmoReq:8,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s7', nombre:'ESAM',         cliente:'ESAM',        sem:'verde', avance:0, cursos:6,  upLabel:'Semana', totalRec:180, recHechos:0, sprint:0, ritmoReq:8,  ritmoAct:0, fechaCierre:'', alert:null },
+  ],
+  'Andrés Briceño': [
+    { id:'a1', nombre:'Argos',         cliente:'Argos',         sem:'verde', avance:0, cursos:4, upLabel:'Módulo', totalRec:120, recHechos:0, sprint:0, ritmoReq:6, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'a2', nombre:'Banco Popular', cliente:'Banco Popular', sem:'verde', avance:0, cursos:4, upLabel:'Módulo', totalRec:96,  recHechos:0, sprint:0, ritmoReq:6, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'a3', nombre:'F. Orenda',     cliente:'F. Orenda',     sem:'verde', avance:0, cursos:2, upLabel:'Sesión', totalRec:60,  recHechos:0, sprint:0, ritmoReq:4, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'a4', nombre:'Vigo & Coruña', cliente:'Vigo & Coruña', sem:'verde', avance:0, cursos:3, upLabel:'Módulo', totalRec:90,  recHechos:0, sprint:0, ritmoReq:7, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'a5', nombre:'Griky Talent',  cliente:'Griky',         sem:'verde', avance:0, cursos:2, upLabel:'Módulo', totalRec:48,  recHechos:0, sprint:0, ritmoReq:4, ritmoAct:0, fechaCierre:'', alert:null },
+  ],
+  'Margarita Rosales': [
+    { id:'m1', nombre:'APUS',           cliente:'APUS',        sem:'verde', avance:0, cursos:5, upLabel:'Módulo', totalRec:150, recHechos:0, sprint:0, ritmoReq:8, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'m2', nombre:'Ibero Colombia', cliente:'U. Ibero CO', sem:'verde', avance:0, cursos:4, upLabel:'Módulo', totalRec:120, recHechos:0, sprint:0, ritmoReq:9, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'m3', nombre:'UDDI',           cliente:'UDDI',        sem:'verde', avance:0, cursos:3, upLabel:'Unidad', totalRec:90,  recHechos:0, sprint:0, ritmoReq:5, ritmoAct:0, fechaCierre:'', alert:null },
+  ],
+  'Vilma Perilla': [
+    { id:'v1', nombre:'CESUN',                    cliente:'CESUN',      sem:'verde', avance:0, cursos:4, upLabel:'Módulo', totalRec:120, recHechos:0, sprint:0, ritmoReq:7,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v2', nombre:'EIA - Líderes',            cliente:'EIA',        sem:'verde', avance:0, cursos:3, upLabel:'Módulo', totalRec:90,  recHechos:0, sprint:0, ritmoReq:5,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v3', nombre:'ESIC - Pregrado Marketing',cliente:'ESIC',       sem:'verde', avance:0, cursos:5, upLabel:'Módulo', totalRec:150, recHechos:0, sprint:0, ritmoReq:10, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v4', nombre:'Indoamérica',              cliente:'Indoamérica',sem:'verde', avance:0, cursos:3, upLabel:'Unidad', totalRec:90,  recHechos:0, sprint:0, ritmoReq:6,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v5', nombre:'Politécnica',              cliente:'Politécnica',sem:'verde', avance:0, cursos:4, upLabel:'Módulo', totalRec:120, recHechos:0, sprint:0, ritmoReq:8,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v6', nombre:'USAP',                     cliente:'USAP',       sem:'verde', avance:0, cursos:3, upLabel:'Módulo', totalRec:90,  recHechos:0, sprint:0, ritmoReq:5,  ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v7', nombre:'Vértice - Especialidades', cliente:'Vértice',    sem:'verde', avance:0, cursos:6, upLabel:'Módulo', totalRec:180, recHechos:0, sprint:0, ritmoReq:12, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v8', nombre:'Vértice - Italiano',       cliente:'Vértice',    sem:'verde', avance:0, cursos:2, upLabel:'Módulo', totalRec:60,  recHechos:0, sprint:0, ritmoReq:4,  ritmoAct:0, fechaCierre:'', alert:null },
+  ],
+};
+
+let vista = 'cards';
+
+// ── LOCALSTORAGE BRIDGE — Importar fichas de proyecto ────────────────────────
+(function cargarFichas(){
+  let fichas=[];
+  try { fichas=JSON.parse(localStorage.getItem('griky_fichas'))||[]; } catch(e){}
+  fichas.forEach(f=>{
+    if(!f.pm || !f.proyecto) return;
+    // Buscar si ya existe en DATA para ese PM
+    if(!DATA[f.pm]) DATA[f.pm]=[];
+    const existing = DATA[f.pm].find(p=>p.nombre.toLowerCase()===f.proyecto.toLowerCase());
+    if(existing){
+      // Actualizar datos estructurales desde Ficha
+      existing.cliente = f.cliente||existing.cliente;
+      existing.cursos = f.nCursos||existing.cursos;
+      existing.upLabel = f.tipoUP||existing.upLabel;
+      existing.totalRec = f.totalRec||existing.totalRec;
+      existing.ritmoReq = Math.round(f.ritmoRec)||existing.ritmoReq;
+      if(f.cierre) existing.fechaCierre = f.cierre;
+    } else {
+      // Agregar como nuevo proyecto
+      DATA[f.pm].push({
+        id: f.id,
+        nombre: f.proyecto,
+        cliente: f.cliente||'—',
+        sem: f.sem||'verde',
+        avance: f.avance||0,
+        cursos: f.nCursos||1,
+        upLabel: f.tipoUP||'Módulo',
+        totalRec: f.totalRec||0,
+        recHechos: f.recHechos||0,
+        sprint: f.sprint||0,
+        ritmoReq: Math.round(f.ritmoRec)||0,
+        ritmoAct: f.ritmoAct||0,
+        fechaCierre: f.cierre||'',
+        alert: null,
+        desdeFicha: true
+      });
+    }
+  });
+})();
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(function(){
+  const today = new Date();
+  document.getElementById('fechaBadge').textContent =
+    today.toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Pre-cargar perfil desde hub
+  const savedPM = localStorage.getItem('hub_nombre');
+  const savedRol = localStorage.getItem('hub_rol');
+  if(savedRol === 'pm' && savedPM){
+    document.getElementById('selPerfil').value = 'pm';
+    const edSel = document.getElementById('selED');
+    for(let i=0;i<edSel.options.length;i++){
+      if(edSel.options[i].value === savedPM){ edSel.value = savedPM; break; }
+    }
+  }
+  onPerfilChange();
+})();
+
+// ── PERFIL ────────────────────────────────────────────────────────────────────
+function onPerfilChange(){
+  const perfil = document.getElementById('selPerfil').value;
+  const pmField = document.getElementById('pmField');
+  const pmSep = document.getElementById('pmSep');
+  const edSel = document.getElementById('selED');
+
+  if(perfil === 'pm'){
+    // PM ve solo su ED — ocultar "Todos"
+    edSel.querySelector('option[value="all"]').disabled = true;
+    if(edSel.value === 'all') edSel.value = 'Sophia Pacheco';
+  } else {
+    edSel.querySelector('option[value="all"]').disabled = false;
+    edSel.value = 'all';
+  }
+  render();
+}
+
+// ── VISTA ─────────────────────────────────────────────────────────────────────
+function setVista(v){
+  vista = v;
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('vt-'+v).classList.add('active');
+  render();
+}
+
+// ── DATOS FILTRADOS ───────────────────────────────────────────────────────────
+function getFiltered(){
+  const ed = document.getElementById('selED').value;
+  const sem = document.getElementById('selSem').value;
+
+  let result = {};
+  Object.entries(DATA).forEach(([pm, proyectos]) => {
+    if(ed !== 'all' && pm !== ed) return;
+    const filtered = proyectos.filter(p => sem === 'all' || p.sem === sem);
+    if(filtered.length > 0) result[pm] = filtered;
+  });
+  return result;
+}
+
+function getAllProyectos(filtered){
+  return Object.values(filtered).flat();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  const filtered = getFiltered();
+  const all = getAllProyectos(filtered);
+  const main = document.getElementById('mainContent');
+
+  if(all.length === 0){
+    main.innerHTML = `<div class="empty-view"><div class="empty-icon">🔍</div><div class="empty-title">Sin proyectos</div><div class="empty-sub">No hay proyectos que coincidan con los filtros seleccionados.</div></div>`;
+    return;
+  }
+
+  // Stats globales
+  const nTotal = all.length;
+  const nVerde = all.filter(p=>p.sem==='verde').length;
+  const nAmarillo = all.filter(p=>p.sem==='amarillo').length;
+  const nRojo = all.filter(p=>p.sem==='rojo').length;
+  const avgSprint = Math.round(all.reduce((a,p)=>a+p.sprint,0)/nTotal);
+  const enRitmo = all.filter(p=>p.ritmoAct>=p.ritmoReq).length;
+
+  let html = `
+  <div class="global-stats">
+    <div class="gstat total">
+      <div class="gstat-val">${nTotal}</div>
+      <div class="gstat-label">Proyectos activos</div>
+      <div class="gstat-sub">${Object.keys(filtered).length} equipo${Object.keys(filtered).length!==1?'s':''}</div>
+    </div>
+    <div class="gstat verde">
+      <div class="gstat-val green">${nVerde}</div>
+      <div class="gstat-label">🟢 Verde</div>
+      <div class="gstat-sub">${Math.round(nVerde/nTotal*100)}% del portafolio</div>
+    </div>
+    <div class="gstat amarillo">
+      <div class="gstat-val yellow">${nAmarillo}</div>
+      <div class="gstat-label">🟡 Amarillo</div>
+      <div class="gstat-sub">Requieren seguimiento</div>
+    </div>
+    <div class="gstat rojo">
+      <div class="gstat-val red">${nRojo}</div>
+      <div class="gstat-label">🔴 Rojo</div>
+      <div class="gstat-sub">Atención inmediata</div>
+    </div>
+    <div class="gstat sprint">
+      <div class="gstat-val">${avgSprint}%</div>
+      <div class="gstat-label">Sprint promedio</div>
+      <div class="gstat-sub">Cumplimiento semanal</div>
+    </div>
+    <div class="gstat ritmo">
+      <div class="gstat-val ${enRitmo===nTotal?'green':enRitmo>nTotal/2?'yellow':'red'}">${enRitmo}/${nTotal}</div>
+      <div class="gstat-label">En ritmo</div>
+      <div class="gstat-sub">Proyectos a tiempo</div>
+    </div>
+  </div>`;
+
+  if(vista === 'cards'){
+    html += renderCards(filtered);
+  } else {
+    html += renderTabla(filtered);
+  }
+
+  main.innerHTML = html;
+}
+
+// ── VISTA CARDS ───────────────────────────────────────────────────────────────
+function renderCards(filtered){
+  let html = '';
+
+  // Rojo primero, luego amarillo, luego verde
+  const semOrder = {rojo:0,amarillo:1,verde:2};
+
+  Object.entries(filtered).forEach(([pm, proyectos]) => {
+    const sorted = [...proyectos].sort((a,b)=>semOrder[a.sem]-semOrder[b.sem]);
+    html += `
+    <div class="ed-section">
+      <div class="ed-header">
+        <div>
+          <div class="ed-title">ED ${pm}</div>
+          <div class="ed-pm">${sorted.length} proyecto${sorted.length!==1?'s':''} activos</div>
+        </div>
+        <div class="ed-line"></div>
+        <div class="ed-total">${sorted.filter(p=>p.sem==='verde').length}🟢 ${sorted.filter(p=>p.sem==='amarillo').length}🟡 ${sorted.filter(p=>p.sem==='rojo').length}🔴</div>
+      </div>
+      <div class="proj-grid">`;
+
+    sorted.forEach(p => {
+      const ritmoOk = p.ritmoAct >= p.ritmoReq;
+      const ritmoClass = ritmoOk ? 'ok' : p.ritmoAct >= p.ritmoReq*0.7 ? 'warn' : 'bad';
+      const sprintClass = p.sprint>=90?'ok':p.sprint>=60?'warn':'bad';
+      const diasCierre = p.fechaCierre ? Math.round((new Date(p.fechaCierre)-new Date())/(1000*3600*24)) : null;
+      const diasClass = diasCierre===null?'neutral':diasCierre>30?'ok':diasCierre>14?'warn':'bad';
+
+      html += `
+        <div class="pcard">
+          <div class="pcard-stripe ${p.sem}"></div>
+          <div class="pcard-head">
+            <div class="pcard-top">
+              <div>
+                <div class="pcard-name">${p.nombre}</div>
+                <div class="pcard-client">${p.cliente} · ${p.cursos} cursos · ${p.upLabel}s</div>
+              </div>
+              <div class="sem-badge ${p.sem}">${p.sem==='verde'?'🟢 Verde':p.sem==='amarillo'?'🟡 Amarillo':'🔴 Rojo'}</div>
+            </div>
+
+            <div class="pcard-progress">
+              <div class="prog-row">
+                <span class="prog-label">Avance del proyecto</span>
+                <span class="prog-pct">${p.avance}%</span>
+              </div>
+              <div class="prog-bar">
+                <div class="prog-fill ${p.sem}" style="width:${p.avance}%"></div>
+              </div>
+            </div>
+
+            ${p.alert?`<div class="alert-banner ${p.sem==='amarillo'?'warn':''}">⚠️ ${p.alert}</div>`:''}
+          </div>
+
+          <div class="pcard-metrics">
+            <div class="metric">
+              <div class="metric-val ${sprintClass}">${p.sprint}%</div>
+              <div class="metric-label">Sprint</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val ${ritmoClass}">${p.ritmoAct}<span style="font-size:10px;font-weight:400;color:var(--gray);">/${p.ritmoReq}</span></div>
+              <div class="metric-label">Ritmo rec/sem</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val ${diasClass}">${diasCierre!==null?diasCierre+'d':'—'}</div>
+              <div class="metric-label">Para cierre</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">${p.recHechos}<span style="font-size:10px;font-weight:400;color:var(--gray);">/${p.totalRec}</span></div>
+              <div class="metric-label">Recursos</div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  return html;
+}
+
+// ── VISTA TABLA ───────────────────────────────────────────────────────────────
+function renderTabla(filtered){
+  let html = `
+  <div style="background:var(--white);border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;">
+    <table class="detail-table">
+      <thead>
+        <tr>
+          <th>Proyecto</th>
+          <th>ED / PM</th>
+          <th>Semáforo</th>
+          <th style="min-width:140px;">Avance</th>
+          <th>Sprint</th>
+          <th>Ritmo</th>
+          <th>Recursos</th>
+          <th>Cierre</th>
+          <th>Alerta</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  const semOrder = {rojo:0,amarillo:1,verde:2};
+  const allProy = Object.entries(filtered)
+    .flatMap(([pm,proyectos])=>proyectos.map(p=>({...p,pm})))
+    .sort((a,b)=>semOrder[a.sem]-semOrder[b.sem]);
+
+  allProy.forEach(p => {
+    const ritmoOk = p.ritmoAct >= p.ritmoReq;
+    const ritmoClass = ritmoOk?'ok':p.ritmoAct>=p.ritmoReq*0.7?'warn':'bad';
+    const sprintClass = p.sprint>=90?'ok':p.sprint>=60?'warn':'bad';
+    const diasCierre = p.fechaCierre ? Math.round((new Date(p.fechaCierre)-new Date())/(1000*3600*24)) : null;
+    const diasClass = diasCierre===null?'neutral':diasCierre>30?'ok':diasCierre>14?'warn':'bad';
+    const fechaFmt = p.fechaCierre ? new Date(p.fechaCierre+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short'}) : '—';
+
+    html += `
+      <tr>
+        <td>
+          <div style="font-weight:600;color:var(--navy);font-size:13px;">${p.nombre}</div>
+          <div style="font-size:11px;color:var(--gray);">${p.cliente}</div>
+        </td>
+        <td style="font-size:12px;color:var(--gray);">${p.pm}</td>
+        <td>
+          <span class="sem-badge ${p.sem}" style="font-size:10px;">
+            ${p.sem==='verde'?'🟢 Verde':p.sem==='amarillo'?'🟡 Amarillo':'🔴 Rojo'}
+          </span>
+        </td>
+        <td>
+          <div class="mini-prog">
+            <div class="mini-bar"><div class="mini-fill ${p.sem}" style="width:${p.avance}%"></div></div>
+            <div class="mini-pct">${p.avance}%</div>
+          </div>
+        </td>
+        <td><span class="pill ${sprintClass}">${p.sprint}%</span></td>
+        <td>
+          <span class="pill ${ritmoClass}">${p.ritmoAct}/${p.ritmoReq} r/s</span>
+        </td>
+        <td style="font-size:12px;">${p.recHechos}/${p.totalRec}</td>
+        <td>
+          <div style="font-size:12px;font-weight:600;" class="${diasClass==='ok'?'':''}">
+            ${fechaFmt}
+          </div>
+          <div class="pill ${diasClass}" style="margin-top:3px;">${diasCierre!==null?diasCierre+'d':'—'}</div>
+        </td>
+        <td style="font-size:11px;color:${p.alert?'var(--red)':'var(--gray)'};">
+          ${p.alert?'⚠️ '+p.alert.substring(0,40)+'…':'—'}
+        </td>
+      </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  return html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Proyecto · Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#22304C; --navy2:#1a2539; --navy3:#131d2e;
+  --red:#FF2D55; --red2:#e01f45;
+  --green:#2BC168; --yellow:#F5A623; --gray:#667078;
+  --light:#F6F7FB; --mid:#E2E8F0; --white:#ffffff;
+  --ra:rgba(255,45,85,.10); --rb:rgba(255,45,85,.22);
+  --na:rgba(34,48,76,.06); --r:12px;
+  --sh:0 2px 16px rgba(34,48,76,.09);
+  --sh2:0 8px 32px rgba(34,48,76,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;background:var(--light);color:var(--navy);min-height:100vh;}
+h1,h2,h3,h4{font-family:'Roboto',sans-serif;}
+
+/* TOPBAR */
+.topbar{background:var(--navy3);position:relative;overflow:hidden;}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red) 30%,transparent 100%);}
+.topbar-inner{position:relative;z-index:1;display:flex;align-items:center;padding:0 32px;height:56px;gap:20px;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-weight:800;font-size:14px;color:var(--white);}
+.logo-name{font-family:'Roboto',sans-serif;font-weight:700;font-size:16px;color:var(--white);}
+.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.15);margin:0 4px;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-back{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-family:'Roboto',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-back:hover{background:rgba(255,255,255,.08);color:var(--white);}
+
+/* PROGRESS */
+.progress-top{height:3px;background:var(--mid);}
+.progress-top-fill{height:100%;background:var(--red);transition:width .5s ease;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 59px);}
+
+/* SIDEBAR */
+.steps-panel{width:230px;background:var(--white);border-right:1px solid var(--mid);padding:24px 14px;flex-shrink:0;position:sticky;top:0;height:calc(100vh - 59px);overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.steps-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);padding:0 10px;margin-bottom:10px;}
+.step-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .2s;}
+.step-item:hover{background:var(--light);}
+.step-item.active{background:var(--ra);}
+.step-dot{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gray);flex-shrink:0;transition:all .3s;}
+.step-item.active .step-dot{border-color:var(--red);color:var(--red);background:var(--ra);}
+.step-item.done .step-dot{border-color:var(--green);background:var(--green);color:var(--white);font-size:12px;}
+.step-name{font-size:12px;font-weight:500;color:var(--gray);line-height:1.3;}
+.step-item.active .step-name{color:var(--navy);font-weight:600;}
+.step-item.done .step-name{color:var(--green);}
+.step-sub{font-size:10px;color:var(--mid);margin-top:1px;}
+.step-item.active .step-sub,.step-item.done .step-sub{color:var(--gray);}
+.steps-panel-footer{margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--mid);}
+.ritmo-mini{background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:7px;}
+.ritmo-mini-title{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);}
+.ritmo-mini-row{display:flex;justify-content:space-between;align-items:center;}
+.ritmo-mini-key{font-size:11px;color:var(--gray);}
+.ritmo-mini-val{font-family:'Roboto',sans-serif;font-size:12px;font-weight:700;color:var(--navy);}
+.ritmo-mini-val.ok{color:var(--green);}
+.ritmo-mini-val.warn{color:var(--yellow);}
+.ritmo-mini-val.alert{color:var(--red);}
+
+/* MAIN */
+.main{flex:1;padding:32px;overflow-y:auto;max-width:900px;}
+.main::-webkit-scrollbar{width:4px;}
+.main::-webkit-scrollbar-thumb{background:var(--mid);border-radius:2px;}
+
+/* SECTIONS */
+.section{display:none;animation:fadeUp .3s ease;}
+.section.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.sec-header{margin-bottom:24px;}
+.sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.sec-title{font-family:'Roboto',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.sec-desc{font-size:13px;color:var(--gray);line-height:1.6;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:24px;box-shadow:var(--sh);margin-bottom:16px;}
+.card-title{font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px;}
+
+/* FORM */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.field-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.field-grid.col1{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field.span2{grid-column:span 2;}
+.label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);}
+.label .req{color:var(--red);}
+.input,.select,.textarea{background:var(--light);border:1.5px solid var(--mid);border-radius:8px;padding:10px 14px;font-family:'Roboto',sans-serif;font-size:13.5px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--ra);}
+.input::placeholder,.textarea::placeholder{color:var(--gray);font-weight:300;}
+.select{appearance:none;cursor:pointer;}
+.textarea{resize:vertical;min-height:72px;line-height:1.6;}
+.input-prefix{display:flex;}
+.prefix-label{background:var(--mid);border:1.5px solid var(--mid);border-right:none;border-radius:8px 0 0 8px;padding:10px 12px;font-size:12px;font-weight:700;color:var(--gray);white-space:nowrap;display:flex;align-items:center;}
+.input-prefix .input{border-radius:0 8px 8px 0;}
+.hint{font-size:11px;color:var(--gray);font-style:italic;margin-top:2px;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.tbl th{text-align:left;padding:8px 10px;color:var(--gray);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid var(--mid);white-space:nowrap;}
+.tbl td{padding:5px 5px;border-bottom:1px solid rgba(226,232,240,.6);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.td-input{background:var(--light);border:1.5px solid transparent;border-radius:6px;padding:7px 10px;font-family:'Roboto',sans-serif;font-size:12.5px;color:var(--navy);outline:none;width:100%;transition:border-color .2s;}
+.td-input:focus{border-color:var(--red);background:var(--white);}
+.td-select{background:var(--light);border:1.5px solid transparent;border-radius:6px;padding:7px 8px;font-family:'Roboto',sans-serif;font-size:12px;color:var(--navy);outline:none;width:100%;cursor:pointer;appearance:none;}
+.td-select:focus{border-color:var(--red);}
+.td-num{width:70px;}
+.td-total{font-family:'Roboto',sans-serif;font-weight:700;color:var(--navy);font-size:13px;text-align:center;}
+.td-grand{font-family:'Roboto',sans-serif;font-weight:800;color:var(--red);font-size:14px;text-align:center;}
+
+.btn-add-row{display:flex;align-items:center;gap:6px;padding:8px 14px;background:transparent;border:1.5px dashed var(--mid);border-radius:8px;color:var(--gray);font-family:'Roboto',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:10px;}
+.btn-add-row:hover{border-color:var(--red);color:var(--red);background:var(--ra);}
+
+/* TOTALS BAR */
+.totals-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px 16px;background:var(--navy);border-radius:10px;}
+.total-chip{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:80px;}
+.total-chip-val{font-family:'Roboto',sans-serif;font-size:18px;font-weight:800;color:var(--white);}
+.total-chip-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.4);text-align:center;line-height:1.3;}
+.total-chip-val.video{color:#FF6B8A;}
+.total-chip-val.grafico{color:#FFB347;}
+.total-chip-val.multimedia{color:#7EC8E3;}
+.total-chip-val.impl{color:var(--green);}
+.total-chip-val.di{color:rgba(255,255,255,.7);}
+.total-sep{width:1px;background:rgba(255,255,255,.1);margin:0 4px;}
+
+/* CURSO ACCORDION */
+.curso-block{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh);}
+.curso-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .2s;user-select:none;}
+.curso-header:hover{background:var(--light);}
+.curso-num{width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-size:12px;font-weight:700;color:var(--white);flex-shrink:0;}
+.curso-title-block{flex:1;}
+.curso-name-display{font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;color:var(--navy);}
+.curso-meta-display{font-size:11px;color:var(--gray);margin-top:2px;}
+.curso-chevron{font-size:16px;color:var(--gray);transition:transform .2s;}
+.curso-block.open .curso-chevron{transform:rotate(90deg);}
+.curso-total-pill{background:var(--na);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;color:var(--navy);}
+
+.curso-body{display:none;border-top:1px solid var(--mid);}
+.curso-block.open .curso-body{display:block;}
+.curso-body-inner{padding:20px;}
+
+/* AREA HEADERS */
+.area-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;margin-top:14px;}
+.area-header:first-child{margin-top:0;}
+.area-tag{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:4px;}
+.area-tag.di{background:var(--na);color:var(--navy);}
+.area-tag.video{background:rgba(255,107,138,.12);color:#c41e3a;}
+.area-tag.grafico{background:rgba(255,179,71,.12);color:#b37400;}
+.area-tag.multimedia{background:rgba(126,200,227,.15);color:#1a7a9a;}
+.area-tag.impl{background:rgba(43,193,104,.1);color:#1e9a56;}
+.area-line{flex:1;height:1px;background:var(--mid);}
+
+/* RITMO CARD */
+.ritmo-card{background:linear-gradient(135deg,var(--navy2) 0%,var(--navy) 100%);border-radius:var(--r);padding:24px;color:var(--white);margin-bottom:16px;position:relative;overflow:hidden;}
+.ritmo-card::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,45,85,.12);}
+.ritmo-card-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:16px;}
+.ritmo-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;position:relative;z-index:1;}
+.rm{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;}
+.rm-val{font-family:'Roboto',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;}
+.rm-val.ok{color:var(--green);}
+.rm-val.warn{color:var(--yellow);}
+.rm-val.alert{color:var(--red);}
+.rm-label{font-size:10px;color:rgba(255,255,255,.45);font-weight:500;text-transform:uppercase;letter-spacing:.5px;line-height:1.4;}
+.ritmo-alert{margin-top:14px;background:rgba(255,45,85,.15);border:1px solid rgba(255,45,85,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:rgba(255,180,180,1);display:none;}
+.ritmo-alert.show{display:block;}
+
+/* CHECKS */
+.check-list{display:flex;flex-direction:column;gap:10px;}
+.check-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--light);border:1.5px solid var(--mid);border-radius:10px;cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:var(--navy);}
+.check-item.checked{background:rgba(43,193,104,.07);border-color:var(--green);}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--mid);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:13px;}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);color:var(--white);}
+.check-text{flex:1;}
+.check-title{font-size:13px;font-weight:500;color:var(--navy);}
+.check-item.checked .check-title{color:var(--green);}
+.check-sub{font-size:11px;color:var(--gray);margin-top:2px;}
+.check-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--na);color:var(--navy);letter-spacing:.3px;}
+.check-item.checked .check-badge{background:rgba(43,193,104,.15);color:#1e9a56;}
+
+/* RESUMEN */
+.resumen-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.res-card{background:var(--white);border:1px solid var(--mid);border-radius:10px;padding:16px 18px;box-shadow:var(--sh);}
+.res-card-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--light);font-size:12px;}
+.res-row:last-child{border-bottom:none;}
+.res-key{color:var(--gray);}
+.res-val{font-weight:600;color:var(--navy);text-align:right;}
+
+/* NAV */
+.nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--mid);}
+.btn-prev{padding:11px 20px;border-radius:8px;border:1.5px solid var(--mid);background:transparent;color:var(--navy);font-family:'Roboto',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-prev:hover{border-color:var(--navy);}
+.btn-next{padding:11px 24px;border-radius:8px;border:none;background:var(--red);color:var(--white);font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(255,45,85,.28);}
+.btn-next:hover{background:var(--red2);transform:translateY(-1px);}
+.btn-save{padding:11px 24px;border-radius:8px;border:none;background:var(--green);color:var(--white);font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(43,193,104,.28);}
+.btn-save:hover{background:#22a356;transform:translateY(-1px);}
+.btn-apply{padding:8px 16px;border-radius:8px;border:none;background:var(--navy);color:var(--white);font-family:'Roboto',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-apply:hover{background:var(--navy2);}
+
+/* TAG */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;}
+.tag-navy{background:var(--na);color:var(--navy);}
+.tag-red{background:var(--ra);color:var(--red);}
+.tag-green{background:rgba(43,193,104,.1);color:#1e9a56;}
+</style>
+</head>
+<body>
+
+<div class="progress-top"><div class="progress-top-fill" id="progressTop" style="width:0%"></div></div>
+
+<header class="topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="logo" aria-label="Griky Ficha de Proyecto">
+      <div class="logo-mark" aria-hidden="true">G</div>
+      <span class="logo-name">Griky</span>
+      <div class="logo-sep" aria-hidden="true"></div>
+      <span class="logo-sub">Ficha de Proyecto</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-back" onclick="window.location.href='griky-fabrica-hub.html'" aria-label="Volver al Hub">← Volver al Hub</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="steps-panel">
+    <div class="steps-label">Secciones</div>
+    <div class="step-item active" id="si0" onclick="goTo(0)">
+      <div class="step-dot" id="sd0">1</div>
+      <div class="step-info"><div class="step-name">Datos del contrato</div><div class="step-sub">Cliente, fechas, valor</div></div>
+    </div>
+    <div class="step-item" id="si1" onclick="goTo(1)">
+      <div class="step-dot" id="sd1">2</div>
+      <div class="step-info"><div class="step-name">Estructura pedagógica</div><div class="step-sub">Cursos y unidades</div></div>
+    </div>
+    <div class="step-item" id="si2" onclick="goTo(2)">
+      <div class="step-dot" id="sd2">3</div>
+      <div class="step-info"><div class="step-name">Recursos por curso</div><div class="step-sub">Taxonomía Griky</div></div>
+    </div>
+    <div class="step-item" id="si3" onclick="goTo(3)">
+      <div class="step-dot" id="sd3">4</div>
+      <div class="step-info"><div class="step-name">Equipo Dedicado</div><div class="step-sub">Roles y personas</div></div>
+    </div>
+    <div class="step-item" id="si4" onclick="goTo(4)">
+      <div class="step-dot" id="sd4">5</div>
+      <div class="step-info"><div class="step-name">Ritmo calculado</div><div class="step-sub">UP/sem · Rec/sem</div></div>
+    </div>
+    <div class="step-item" id="si5" onclick="goTo(5)">
+      <div class="step-dot" id="sd5">6</div>
+      <div class="step-info"><div class="step-name">Alistamiento</div><div class="step-sub">Checklist de arranque</div></div>
+    </div>
+    <div class="step-item" id="si6" onclick="goTo(6)">
+      <div class="step-dot" id="sd6">7</div>
+      <div class="step-info"><div class="step-name">Resumen y guardar</div><div class="step-sub">Confirmar ficha</div></div>
+    </div>
+
+    <div class="steps-panel-footer">
+      <div class="ritmo-mini">
+        <div class="ritmo-mini-title">Ritmo calculado</div>
+        <div class="ritmo-mini-row"><span class="ritmo-mini-key">Semanas</span><span class="ritmo-mini-val" id="rm_s">—</span></div>
+        <div class="ritmo-mini-row"><span class="ritmo-mini-key">UP / sem</span><span class="ritmo-mini-val" id="rm_u">—</span></div>
+        <div class="ritmo-mini-row"><span class="ritmo-mini-key">Rec / sem</span><span class="ritmo-mini-val" id="rm_r">—</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ── SEC 0: CONTRATO ── -->
+    <div class="section active" id="sec0">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 1 de 7</div>
+        <h2 class="sec-title">Datos del contrato</h2>
+        <p class="sec-desc">Información base que identifica el proyecto en todo el sistema y en Monday.com.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏢 Identificación</div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="label">Cliente <span class="req">*</span></label>
+            <input class="input" id="f_cliente" placeholder="Ej: Universidad América"/>
+          </div>
+          <div class="field">
+            <label class="label">Nombre del proyecto <span class="req">*</span></label>
+            <input class="input" id="f_proyecto" placeholder="Ej: Rediseño curricular 2025"/>
+          </div>
+          <div class="field">
+            <label class="label">PM responsable <span class="req">*</span></label>
+            <select class="select" id="f_pm">
+              <option value="">Seleccionar PM</option>
+              <option>Sophia Pacheco</option>
+              <option>Andrés Briceño</option>
+              <option>Jorge Osorio</option>
+              <option>Margarita Rosales</option>
+              <option>Vilma Perilla</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Equipo Dedicado</label>
+            <input class="input" id="f_ed" placeholder="Ej: ED Sophia"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📅 Fechas del contrato</div>
+        <div class="field-grid cols3">
+          <div class="field">
+            <label class="label">Fecha de inicio <span class="req">*</span></label>
+            <input class="input" type="date" id="f_inicio" oninput="calcSemanas()"/>
+          </div>
+          <div class="field">
+            <label class="label">Fecha de cierre pactada <span class="req">*</span></label>
+            <input class="input" type="date" id="f_cierre" oninput="calcSemanas()"/>
+          </div>
+          <div class="field">
+            <label class="label">Semanas disponibles</label>
+            <input class="input" id="f_semanas" readonly style="background:var(--mid);cursor:not-allowed;" placeholder="Auto"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💰 Contrato</div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="label">Valor total <span class="req">*</span></label>
+            <div class="input-prefix">
+              <span class="prefix-label">$</span>
+              <input class="input" type="number" id="f_valor" placeholder="0" oninput="calcRitmo()"/>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Moneda</label>
+            <select class="select" id="f_moneda"><option>USD</option><option>COP</option><option>MXN</option><option>EUR</option></select>
+          </div>
+          <div class="field span2">
+            <label class="label">Observaciones</label>
+            <textarea class="textarea" id="f_obsContrato" placeholder="Condiciones especiales, hitos de pago, etc."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-btns"><div></div><button class="btn-next" onclick="nextStep()">Estructura pedagógica →</button></div>
+    </div>
+
+    <!-- ── SEC 1: ESTRUCTURA PEDAGÓGICA ── -->
+    <div class="section" id="sec1">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 2 de 7</div>
+        <h2 class="sec-title">Estructura pedagógica</h2>
+        <p class="sec-desc">Define los cursos del proyecto y cuántas unidades pedagógicas tiene cada uno.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚙️ Configuración</div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="label">Tipo de unidad pedagógica <span class="req">*</span></label>
+            <select class="select" id="f_tipoUP" onchange="updateUPLabel()">
+              <option value="Módulo">Módulo</option>
+              <option value="Semana">Semana</option>
+              <option value="Unidad">Unidad</option>
+              <option value="Lección">Lección</option>
+              <option value="Sesión">Sesión</option>
+              <option value="Otro">Personalizado…</option>
+            </select>
+          </div>
+          <div class="field" id="upCustomWrap" style="display:none;">
+            <label class="label">Nombre personalizado</label>
+            <input class="input" id="f_upCustom" placeholder="Ej: Bloque, Capítulo…" oninput="updateUPLabel()"/>
+          </div>
+          <div class="field">
+            <label class="label">Número de cursos <span class="req">*</span></label>
+            <input class="input" type="number" id="f_nCursos" min="1" max="50" placeholder="Ej: 10" oninput="buildCursos()"/>
+          </div>
+        </div>
+      </div>
+
+      <div id="cursosWrap" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:12px;color:var(--gray);">Define el nombre y la cantidad de <strong id="upLabelPlural">Módulos</strong> de cada curso.</div>
+          <button class="btn-apply" onclick="applyAll()">↕ Aplicar curso 1 a todos</button>
+        </div>
+        <div id="cursosAccordion"></div>
+
+        <div class="totals-bar" id="totalBar" style="margin-top:14px;">
+          <div class="total-chip"><div class="total-chip-val" id="tot_cursos">0</div><div class="total-chip-label">Cursos</div></div>
+          <div class="total-sep"></div>
+          <div class="total-chip"><div class="total-chip-val" id="tot_up">0</div><div class="total-chip-label">Total<br><span id="tot_up_label">Módulos</span></div></div>
+        </div>
+      </div>
+
+      <div class="nav-btns"><button class="btn-prev" onclick="prevStep()">← Atrás</button><button class="btn-next" onclick="nextStep()">Recursos por curso →</button></div>
+    </div>
+
+    <!-- ── SEC 2: RECURSOS POR CURSO ── -->
+    <div class="section" id="sec2">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 3 de 7</div>
+        <h2 class="sec-title">Recursos por curso</h2>
+        <p class="sec-desc">Para cada curso define cuántos recursos de cada tipo se producirán <strong>por unidad pedagógica</strong>. El sistema calcula los totales automáticamente.</p>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="hint">Si todos los cursos tienen los mismos recursos, llena el curso 1 y usa "Aplicar a todos".</div>
+        <button class="btn-apply" onclick="applyAllRecursos()">↕ Aplicar curso 1 a todos</button>
+      </div>
+
+      <div id="recursosAccordion"></div>
+
+      <!-- TOTALES GLOBALES -->
+      <div class="card" style="margin-top:20px;">
+        <div class="card-title">📊 Totales del proyecto</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Área</th><th>Tipo de recurso</th>
+                <th style="text-align:center;">Total por UP</th>
+                <th style="text-align:center;">Total UPs</th>
+                <th style="text-align:center;">Total proyecto</th>
+              </tr>
+            </thead>
+            <tbody id="totalBody"></tbody>
+            <tfoot>
+              <tr style="background:var(--light);">
+                <td colspan="2" style="font-weight:700;padding:10px;font-size:13px;">TOTAL RECURSOS DIGITALES</td>
+                <td></td><td></td>
+                <td class="td-grand" id="grandTotal">—</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div class="nav-btns"><button class="btn-prev" onclick="prevStep()">← Atrás</button><button class="btn-next" onclick="nextStep()">Equipo Dedicado →</button></div>
+    </div>
+
+    <!-- ── SEC 3: EQUIPO ── -->
+    <div class="section" id="sec3">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 4 de 7</div>
+        <h2 class="sec-title">Equipo Dedicado</h2>
+        <p class="sec-desc">Registra el equipo fijo asignado. Un ED trabaja exclusivamente en los proyectos de este PM.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">👥 Integrantes</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Nombre</th><th>Rol</th><th>Dedicación</th><th></th></tr></thead>
+            <tbody id="equipoBody"></tbody>
+          </table>
+        </div>
+        <button class="btn-add-row" onclick="addEquipo()">+ Agregar integrante</button>
+      </div>
+
+      <div class="nav-btns"><button class="btn-prev" onclick="prevStep()">← Atrás</button><button class="btn-next" onclick="nextStep()">Ver ritmo →</button></div>
+    </div>
+
+    <!-- ── SEC 4: RITMO ── -->
+    <div class="section" id="sec4">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 5 de 7</div>
+        <h2 class="sec-title">Ritmo de trabajo</h2>
+        <p class="sec-desc">Calculado automáticamente. Es la velocidad mínima para cumplir la fecha de cierre pactada.</p>
+      </div>
+
+      <div class="ritmo-card">
+        <div class="ritmo-card-title">Métricas calculadas</div>
+        <div class="ritmo-metrics">
+          <div class="rm"><div class="rm-val ok" id="rmd_sem">—</div><div class="rm-label">Semanas disponibles hasta cierre</div></div>
+          <div class="rm"><div class="rm-val" id="rmd_up">—</div><div class="rm-label"><span id="rmd_up_label">Módulos</span> por semana necesarios</div></div>
+          <div class="rm"><div class="rm-val" id="rmd_rec">—</div><div class="rm-label">Recursos digitales por semana</div></div>
+        </div>
+        <div class="ritmo-alert" id="ritmoAlerta">⚠️ <strong>Alerta:</strong> El ritmo requerido es exigente dado el tiempo disponible. Considera revisar el alcance o las fechas.</div>
+      </div>
+
+      <!-- H/H CARD -->
+      <div class="ritmo-card" style="background:linear-gradient(135deg,#1a3a2e 0%,#22304C 100%);">
+        <div class="ritmo-card-title">Horas / Hombre del proyecto</div>
+        <div class="ritmo-metrics" style="grid-template-columns:repeat(4,1fr);">
+          <div class="rm"><div class="rm-val" id="hh_total" style="color:var(--yellow);">—</div><div class="rm-label">Total h/h del proyecto</div></div>
+          <div class="rm"><div class="rm-val" id="hh_semana" style="color:var(--yellow);">—</div><div class="rm-label">h/h necesarias por semana</div></div>
+          <div class="rm"><div class="rm-val ok" id="hh_personas">—</div><div class="rm-label">Personas requeridas (mín.)</div></div>
+          <div class="rm"><div class="rm-val" id="hh_cap" style="color:rgba(255,255,255,.5);">—</div><div class="rm-label">Capacidad 34.5 h/sem × persona</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Desglose por tipo de recurso / semana</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Área</th><th>Tipo</th><th style="text-align:center;">Total proyecto</th><th style="text-align:center;">Por semana</th><th style="text-align:center;">h/h unitaria</th><th style="text-align:center;">h/h total</th><th style="text-align:center;">h/h por semana</th></tr></thead>
+            <tbody id="ritmoDesglose"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PERSONAS POR ÁREA -->
+      <div class="card">
+        <div class="card-title">👥 Personas necesarias por área</div>
+        <div class="hint" style="margin-bottom:14px;">Calculado: h/h del área por semana ÷ 34.5 h productivas/persona. Eficiencia al 75% (46h contratadas).</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Área</th><th style="text-align:center;">h/h total</th><th style="text-align:center;">h/h por semana</th><th style="text-align:center;">Personas (mín.)</th><th>Roles sugeridos</th></tr></thead>
+            <tbody id="hhPorArea"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚀 Cronograma de lanzamiento (hitos)</div>
+        <div class="hint" style="margin-bottom:14px;">Principales momentos de entrega. Serán los hitos de seguimiento en el Dashboard.</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Hito</th><th>Fecha estimada</th><th>Descripción</th><th></th></tr></thead>
+            <tbody id="hitosBody"></tbody>
+          </table>
+        </div>
+        <button class="btn-add-row" onclick="addHito()">+ Agregar hito</button>
+      </div>
+
+      <div class="nav-btns"><button class="btn-prev" onclick="prevStep()">← Atrás</button><button class="btn-next" onclick="nextStep()">Alistamiento →</button></div>
+    </div>
+
+    <!-- ── SEC 5: ALISTAMIENTO ── -->
+    <div class="section" id="sec5">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 6 de 7</div>
+        <h2 class="sec-title">Alistamiento</h2>
+        <p class="sec-desc">Confirma que estos elementos estén listos antes de entrar a producción.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚦 Checklist de arranque</div>
+        <div class="check-list" id="checkList"></div>
+      </div>
+
+      <div class="nav-btns"><button class="btn-prev" onclick="prevStep()">← Atrás</button><button class="btn-next" onclick="nextStep()">Revisar y guardar →</button></div>
+    </div>
+
+    <!-- ── SEC 6: RESUMEN ── -->
+    <div class="section" id="sec6">
+      <div class="sec-header">
+        <div class="sec-eyebrow">Ficha de Proyecto · Paso 7 de 7</div>
+        <h2 class="sec-title">Resumen de la ficha</h2>
+        <p class="sec-desc">Revisa antes de guardar. Puedes volver a cualquier sección desde el panel izquierdo.</p>
+      </div>
+
+      <div class="resumen-grid" id="resumenGrid"></div>
+
+      <div class="card">
+        <div class="card-title">💾 Guardar</div>
+        <p style="font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:16px;">Se generará <code style="background:var(--light);padding:2px 6px;border-radius:4px;font-size:11px;">ficha-[cliente]-[proyecto].md</code> para depositar en Cowork, y JSON para integración futura con Monday.com.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-save" onclick="guardar()">💾 Descargar ficha (.md)</button>
+          <button class="btn-prev" onclick="copiarJSON()" style="border-color:var(--navy);color:var(--navy);">{ } Copiar JSON</button>
+        </div>
+      </div>
+
+      <div class="nav-btns"><button class="btn-prev" onclick="prevStep()">← Atrás</button><div></div></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── ESTADO GLOBAL ─────────────────────────────────────────────────────────────
+let currentStep = 0;
+const TOTAL_STEPS = 7;
+let upLabel = 'Módulo';
+let nCursos = 0;
+let checks = [false,false,false,false,false,false];
+
+const RECURSOS = [
+  // ── Video ──
+  { area:'Video',       tag:'video',      nombre:'Video webinar',              id:'vid_web', medida:60, unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Video estándar',             id:'vid_std', medida:3,  unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Video avatar',               id:'vid_ava', medida:3,  unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Podcast',                    id:'vid_pod', medida:2,  unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Audiolibro',                 id:'vid_aud', medida:40, unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Video pixar',                id:'vid_pix', medida:3,  unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Video básico',               id:'vid_bas', medida:3,  unidad:'Minutos'        },
+  { area:'Video',       tag:'video',      nombre:'Video interactivo',          id:'vid_int', medida:3,  unidad:'Preguntas'      },
+  // ── Multimedia ──
+  { area:'Multimedia',  tag:'multimedia', nombre:'Storyline',                  id:'mul_sto', medida:10, unidad:'Interacciones'  },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Rise',                       id:'mul_ris', medida:15, unidad:'Páginas'        },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Presentación interactiva',   id:'mul_pre', medida:10, unidad:'Diapositivas'   },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Infografía interactiva',     id:'mul_inf', medida:1,  unidad:'Páginas'        },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Actividad interactiva',      id:'mul_act', medida:1,  unidad:'Actividad'      },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Video storyline',            id:'mul_vst', medida:10, unidad:'Diapositivas'   },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Video genially',             id:'mul_gen', medida:10, unidad:'Diapositivas'   },
+  { area:'Multimedia',  tag:'multimedia', nombre:'Diseño en plataforma',       id:'mul_dis', medida:8,  unidad:'Páginas'        },
+  // ── Gráfico ──
+  { area:'Gráfico',     tag:'grafico',    nombre:'Infografía estándar',        id:'gra_inf', medida:2,  unidad:'Páginas'        },
+  { area:'Gráfico',     tag:'grafico',    nombre:'PDF',                        id:'gra_pdf', medida:30, unidad:'Páginas'        },
+  { area:'Gráfico',     tag:'grafico',    nombre:'Ebook',                      id:'gra_ebo', medida:30, unidad:'Páginas'        },
+  { area:'Gráfico',     tag:'grafico',    nombre:'Banner',                     id:'gra_ban', medida:10, unidad:'Diapositivas'   },
+  { area:'Gráfico',     tag:'grafico',    nombre:'Presentación estándar',      id:'gra_pre', medida:20, unidad:'Diapositivas'   },
+];
+
+// ── HORAS / HOMBRE ────────────────────────────────────────────────────────────
+const HH = {
+  // Video
+  vid_web:2.5, vid_std:1.5, vid_ava:1.5, vid_pod:0.5,
+  vid_aud:2.5, vid_pix:8,   vid_bas:0.83, vid_int:2.5,
+  // Multimedia
+  mul_sto:2.5, mul_ris:2.5, mul_pre:1.5, mul_inf:1.5,
+  mul_act:0.5, mul_vst:2.5, mul_gen:1.5, mul_dis:1.5,
+  // Gráfico
+  gra_inf:0.83, gra_pdf:0.83, gra_ebo:1.5, gra_ban:0.5, gra_pre:0.83
+};
+const HORAS_SEMANA = 34.5; // 46h * 75% eficiencia
+const AREA_ROLES = {
+  video:['Diseñador de Video'],
+  multimedia:['Diseñador Multimedia'],
+  grafico:['Diseñador Gráfico']
+};
+
+const CHECKS_ITEMS = [
+  { title:'Carpeta del proyecto creada en Teams', sub:'Estructura de carpetas lista para producción' },
+  { title:'Proyecto creado en Claude', sub:'Project de Claude configurado con contexto del cliente' },
+  { title:'Proyecto creado en Monday.com', sub:'Tableros y estructura configurados para trazabilidad' },
+  { title:'Diseño Instruccional completado — Curso 1', sub:'Contenidos teóricos y guías del primer curso aprobados' },
+  { title:'Insumos del cliente recibidos', sub:'Materiales base, guías de estilo y accesos necesarios' },
+  { title:'Reunión de kickoff realizada', sub:'Equipo alineado con objetivos, alcance y cronograma' },
+];
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function goTo(step) {
+  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', i===step));
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const si=document.getElementById('si'+i), sd=document.getElementById('sd'+i);
+    if(!si) continue;
+    si.className='step-item';
+    if(i<step){ si.classList.add('done'); sd.textContent='✓'; }
+    else if(i===step){ si.classList.add('active'); sd.textContent=i+1; }
+    else { sd.textContent=i+1; }
+  }
+  currentStep=step;
+  document.getElementById('progressTop').style.width=Math.round((step/(TOTAL_STEPS-1))*100)+'%';
+  if(step===2) buildRecursosAccordion();
+  if(step===4) buildRitmoDetalle();
+  if(step===6) buildResumen();
+  window.scrollTo(0,0);
+}
+function nextStep(){ if(currentStep<TOTAL_STEPS-1) goTo(currentStep+1); }
+function prevStep(){ if(currentStep>0) goTo(currentStep-1); }
+
+// ── UP LABEL ──────────────────────────────────────────────────────────────────
+function updateUPLabel(){
+  const v=document.getElementById('f_tipoUP').value;
+  const cw=document.getElementById('upCustomWrap');
+  if(v==='Otro'){ cw.style.display='flex'; upLabel=document.getElementById('f_upCustom').value||'Unidad'; }
+  else { cw.style.display='none'; upLabel=v; }
+  document.getElementById('upLabelPlural').textContent=upLabel+'s';
+  document.getElementById('tot_up_label').textContent=upLabel+'s';
+  const h=document.getElementById('rmd_up_label'); if(h) h.textContent=upLabel+'s';
+  buildCursos();
+}
+
+// ── CURSOS (SEC 1) ────────────────────────────────────────────────────────────
+function buildCursos(){
+  nCursos=parseInt(document.getElementById('f_nCursos').value)||0;
+  const wrap=document.getElementById('cursosWrap');
+  const acc=document.getElementById('cursosAccordion');
+  if(nCursos<1){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+
+  // Conservar valores existentes
+  const prevVals={};
+  document.querySelectorAll('[data-curso-nombre]').forEach(el=>{ prevVals['n_'+el.dataset.cursoCurso]=el.value; });
+  document.querySelectorAll('[data-curso-up]').forEach(el=>{ prevVals['u_'+el.dataset.cursoCurso]=el.value; });
+
+  acc.innerHTML='';
+  for(let i=1;i<=nCursos;i++){
+    const nombre=prevVals['n_'+i]||'';
+    const up=prevVals['u_'+i]||'1';
+    const div=document.createElement('div');
+    div.className='curso-block open';
+    div.id='cb_'+i;
+    div.innerHTML=`
+      <div class="curso-header" onclick="toggleCurso(${i})">
+        <div class="curso-num">${i}</div>
+        <div class="curso-title-block">
+          <div class="curso-name-display" id="cdn_${i}">${nombre||'Curso '+i}</div>
+          <div class="curso-meta-display" id="cdm_${i}">— ${upLabel}s</div>
+        </div>
+        <span class="curso-chevron">›</span>
+      </div>
+      <div class="curso-body">
+        <div class="curso-body-inner">
+          <div class="field-grid">
+            <div class="field">
+              <label class="label">Nombre del curso</label>
+              <input class="input" placeholder="Ej: Gestión del tiempo" value="${nombre}"
+                data-curso-curso="${i}" data-curso-nombre="1"
+                oninput="document.getElementById('cdn_${i}').textContent=this.value||'Curso ${i}'"/>
+            </div>
+            <div class="field">
+              <label class="label">Cantidad de ${upLabel}s <span class="req">*</span></label>
+              <input class="input td-input" type="number" min="1" value="${up}"
+                data-curso-curso="${i}" data-curso-up="1"
+                oninput="onUPChange(${i},this.value)"/>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    acc.appendChild(div);
+    // Trigger meta update
+    setTimeout(()=>onUPChange(i,up),10);
+  }
+  calcTotalUP();
+}
+
+function toggleCurso(i){
+  document.getElementById('cb_'+i).classList.toggle('open');
+}
+
+function onUPChange(i,val){
+  const meta=document.getElementById('cdm_'+i);
+  if(meta) meta.textContent=`${val||0} ${upLabel}s`;
+  calcTotalUP();
+  buildRecursosAccordion();
+}
+
+function applyAll(){
+  const first=document.querySelector('[data-curso-up]');
+  const firstVal=first?first.value:'1';
+  document.querySelectorAll('[data-curso-up]').forEach(el=>{ el.value=firstVal; onUPChange(parseInt(el.dataset.cursoCurso),firstVal); });
+  calcTotalUP();
+}
+
+function calcTotalUP(){
+  let total=0;
+  document.querySelectorAll('[data-curso-up]').forEach(el=>{ total+=parseInt(el.value)||0; });
+  document.getElementById('tot_cursos').textContent=nCursos;
+  document.getElementById('tot_up').textContent=total;
+  calcRitmo();
+  return total;
+}
+
+function getTotalUP(){ return parseInt(document.getElementById('tot_up')?.textContent)||0; }
+
+// ── RECURSOS POR CURSO (SEC 2) ────────────────────────────────────────────────
+function buildRecursosAccordion(){
+  if(nCursos<1) return;
+  const acc=document.getElementById('recursosAccordion');
+  if(!acc) return;
+
+  // Guardar valores previos
+  const prev={};
+  document.querySelectorAll('[data-rec-id]').forEach(el=>{
+    prev[el.dataset.recCurso+'_'+el.dataset.recId]=el.value;
+  });
+
+  acc.innerHTML='';
+  let lastArea='';
+
+  for(let c=1;c<=nCursos;c++){
+    const nombreEl=document.querySelector(`[data-curso-curso="${c}"][data-curso-nombre]`);
+    const upEl=document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`);
+    const nombre=nombreEl?.value||'Curso '+c;
+    const ups=parseInt(upEl?.value)||0;
+
+    const block=document.createElement('div');
+    block.className='curso-block open';
+    block.id='rblock_'+c;
+
+    let resourcesHTML='';
+    lastArea='';
+    RECURSOS.forEach(r=>{
+      if(r.area!==lastArea){
+        resourcesHTML+=`<div class="area-header"><span class="area-tag ${r.tag}">${r.area}</span><div class="area-line"></div></div>`;
+        lastArea=r.area;
+      }
+      const prevVal=prev[c+'_'+r.id]||'0';
+      resourcesHTML+=`
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--light);">
+          <div style="flex:1;font-size:13px;color:var(--navy);">${r.nombre}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:var(--gray);">por ${upLabel}:</span>
+            <input class="td-input td-num" type="number" min="0" value="${prevVal}"
+              data-rec-curso="${c}" data-rec-id="${r.id}"
+              oninput="calcTotalesRecursos()" style="width:64px;text-align:center;"/>
+            <span style="font-size:11px;color:var(--gray);width:80px;">× ${ups} = <strong id="sub_${c}_${r.id}">—</strong></span>
+          </div>
+        </div>`;
+    });
+
+    block.innerHTML=`
+      <div class="curso-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="curso-num">${c}</div>
+        <div class="curso-title-block">
+          <div class="curso-name-display">${nombre}</div>
+          <div class="curso-meta-display">${ups} ${upLabel}s</div>
+        </div>
+        <span class="curso-chevron">›</span>
+      </div>
+      <div class="curso-body">
+        <div class="curso-body-inner">${resourcesHTML}</div>
+      </div>`;
+    acc.appendChild(block);
+  }
+  calcTotalesRecursos();
+}
+
+function applyAllRecursos(){
+  // Copiar valores del curso 1 a todos los demás
+  const vals={};
+  document.querySelectorAll('[data-rec-curso="1"][data-rec-id]').forEach(el=>{ vals[el.dataset.recId]=el.value; });
+  for(let c=2;c<=nCursos;c++){
+    document.querySelectorAll(`[data-rec-curso="${c}"][data-rec-id]`).forEach(el=>{
+      el.value=vals[el.dataset.recId]||'0';
+    });
+  }
+  calcTotalesRecursos();
+}
+
+function calcTotalesRecursos(){
+  const grandTotals={};
+  RECURSOS.forEach(r=>{ grandTotals[r.id]=0; });
+
+  for(let c=1;c<=nCursos;c++){
+    const upEl=document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`);
+    const ups=parseInt(upEl?.value)||0;
+    RECURSOS.forEach(r=>{
+      const inp=document.querySelector(`[data-rec-curso="${c}"][data-rec-id="${r.id}"]`);
+      const qty=parseInt(inp?.value)||0;
+      const sub=qty*ups;
+      grandTotals[r.id]+=sub;
+      const subEl=document.getElementById(`sub_${c}_${r.id}`);
+      if(subEl) subEl.textContent=sub;
+    });
+  }
+
+  // Tabla de totales
+  const body=document.getElementById('totalBody');
+  const totalUP=getTotalUP();
+  if(!body) return;
+  body.innerHTML='';
+  let grand=0;
+  let lastArea='';
+
+  RECURSOS.forEach(r=>{
+    const tot=grandTotals[r.id];
+    grand+=tot;
+    const perUP=totalUP>0?(tot/totalUP).toFixed(1):'0';
+    body.innerHTML+=`<tr>
+      <td>${r.area!==lastArea?`<span class="area-tag ${r.tag}">${r.area}</span>`:''}</td>
+      <td style="font-size:13px;">${r.nombre}</td>
+      <td class="td-total">${perUP}</td>
+      <td class="td-total">${totalUP}</td>
+      <td class="td-total">${tot}</td>
+    </tr>`;
+    lastArea=r.area;
+  });
+
+  const grandEl=document.getElementById('grandTotal');
+  if(grandEl) grandEl.textContent=grand;
+  calcRitmo();
+}
+
+function getGrandTotal(){ return parseInt(document.getElementById('grandTotal')?.textContent)||0; }
+
+// ── RITMO ─────────────────────────────────────────────────────────────────────
+function getSemanas(){
+  // Calcula semanas sin efectos secundarios — función pura
+  const ini=document.getElementById('f_inicio')?.value;
+  const cie=document.getElementById('f_cierre')?.value;
+  if(!ini||!cie) return 0;
+  const ms=new Date(cie)-new Date(ini);
+  return Math.max(1,Math.floor(ms/(7*24*3600*1000)));
+}
+
+function calcSemanas(){
+  // Actualiza el campo visual y luego recalcula el ritmo
+  const sem=getSemanas();
+  const el=document.getElementById('f_semanas');
+  if(el) el.value=sem>0?sem+' semanas':'—';
+  updateRitmoSidebar();
+  return sem;
+}
+
+function updateRitmoSidebar(){
+  const sem=getSemanas()||1;
+  const totalUP=getTotalUP();
+  const totalRec=getGrandTotal();
+  const upSem=totalUP>0?(totalUP/sem).toFixed(1):'—';
+  const recSem=totalRec>0?(totalRec/sem).toFixed(1):'—';
+  const rs=document.getElementById('rm_s');
+  const ru=document.getElementById('rm_u');
+  const rr=document.getElementById('rm_r');
+  if(rs) rs.textContent=sem>0?sem:'—';
+  if(ru) ru.textContent=upSem!=='—'?upSem+' UP/s':'—';
+  if(rr) rr.textContent=recSem!=='—'?recSem+' r/s':'—';
+}
+
+function calcRitmo(){
+  // Alias seguro que no llama a calcSemanas — solo actualiza sidebar
+  updateRitmoSidebar();
+}
+
+function buildRitmoDetalle(){
+  const sem=getSemanas()||1;
+  const totalUP=getTotalUP();
+  const totalRec=getGrandTotal();
+
+  document.getElementById('rmd_sem').textContent=sem;
+  document.getElementById('rmd_sem').className='rm-val '+(sem>=8?'ok':sem>=4?'warn':'alert');
+  document.getElementById('rmd_up').textContent=totalUP>0?(totalUP/sem).toFixed(1)+' / sem':'—';
+  document.getElementById('rmd_rec').textContent=totalRec>0?(totalRec/sem).toFixed(1)+' / sem':'—';
+  document.getElementById('ritmoAlerta').classList.toggle('show', sem<6&&totalRec>0);
+
+  // Desglose con h/h
+  const body=document.getElementById('ritmoDesglose');
+  body.innerHTML='';
+  let lastA='';
+  let hhTotal=0;
+  const hhPorAreaData={};
+
+  RECURSOS.forEach(r=>{
+    let tot=0;
+    for(let c=1;c<=nCursos;c++){
+      const upEl=document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`);
+      const ups=parseInt(upEl?.value)||0;
+      const inp=document.querySelector(`[data-rec-curso="${c}"][data-rec-id="${r.id}"]`);
+      tot+=(parseInt(inp?.value)||0)*ups;
+    }
+    if(tot===0) return;
+    const hhUnit=HH[r.id]||0;
+    const hhTot=tot*hhUnit;
+    const hhSem=hhTot/sem;
+    hhTotal+=hhTot;
+
+    // Acumular por área
+    if(!hhPorAreaData[r.tag]) hhPorAreaData[r.tag]={area:r.area, tag:r.tag, hh:0};
+    hhPorAreaData[r.tag].hh+=hhTot;
+
+    body.innerHTML+=`<tr>
+      <td>${r.area!==lastA?`<span class="area-tag ${r.tag}">${r.area}</span>`:''}</td>
+      <td style="font-size:13px;">${r.nombre}</td>
+      <td style="text-align:center;font-weight:700;">${tot}</td>
+      <td style="text-align:center;font-weight:700;color:var(--red);">${(tot/sem).toFixed(1)}</td>
+      <td style="text-align:center;color:var(--gray);">${hhUnit}h</td>
+      <td style="text-align:center;font-weight:700;">${hhTot}h</td>
+      <td style="text-align:center;font-weight:700;color:var(--red);">${hhSem.toFixed(1)}h</td>
+    </tr>`;
+    lastA=r.area;
+  });
+
+  // H/H summary card
+  const hhSemana=hhTotal/sem;
+  const personasMin=Math.ceil(hhSemana/HORAS_SEMANA);
+  document.getElementById('hh_total').textContent=hhTotal+'h';
+  document.getElementById('hh_semana').textContent=hhSemana.toFixed(1)+'h';
+  document.getElementById('hh_personas').textContent=personasMin;
+  document.getElementById('hh_personas').className='rm-val '+(personasMin<=3?'ok':personasMin<=6?'warn':'alert');
+  document.getElementById('hh_cap').textContent=HORAS_SEMANA+'h/sem';
+
+  // Tabla personas por área
+  const areaBody=document.getElementById('hhPorArea');
+  areaBody.innerHTML='';
+  Object.values(hhPorAreaData).forEach(a=>{
+    const hhSemArea=a.hh/sem;
+    const personas=Math.ceil(hhSemArea/HORAS_SEMANA);
+    const minP=Math.max(1,personas);
+    const roles=(AREA_ROLES[a.tag]||[]).join(', ');
+    areaBody.innerHTML+=`<tr>
+      <td><span class="area-tag ${a.tag}">${a.area}</span></td>
+      <td style="text-align:center;font-weight:700;">${a.hh}h</td>
+      <td style="text-align:center;font-weight:700;color:var(--red);">${hhSemArea.toFixed(1)}h</td>
+      <td style="text-align:center;font-weight:700;font-size:16px;">${minP}</td>
+      <td style="font-size:12px;color:var(--gray);">${roles}</td>
+    </tr>`;
+  });
+}
+
+// ── EQUIPO ────────────────────────────────────────────────────────────────────
+function addEquipo(){
+  const body=document.getElementById('equipoBody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><input class="td-input" placeholder="Nombre completo"/></td>
+    <td><select class="td-select">
+      <option>DI Senior</option><option>DI</option><option>DI Junior</option>
+      <option>Diseñador de Video</option><option>Diseñador Multimedia</option>
+      <option>Diseñador Gráfico</option><option>Técnico de Implementación</option>
+      <option>Creativo QA</option>
+    </select></td>
+    <td><select class="td-select">
+      <option>Tiempo completo</option><option>Medio tiempo</option><option>Por proyecto</option>
+    </select></td>
+    <td><button onclick="this.closest('tr').remove()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;line-height:1;">×</button></td>`;
+  body.appendChild(tr);
+}
+
+// ── HITOS ─────────────────────────────────────────────────────────────────────
+function addHito(){
+  const body=document.getElementById('hitosBody');
+  const n=body.children.length+1;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td style="font-weight:700;color:var(--gray);font-size:11px;">${n}</td>
+    <td><input class="td-input" placeholder="Ej: Entrega Lote 1"/></td>
+    <td><input class="td-input" type="date"/></td>
+    <td><input class="td-input" placeholder="Descripción breve"/></td>
+    <td><button onclick="this.closest('tr').remove()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;">×</button></td>`;
+  body.appendChild(tr);
+}
+
+// ── CHECKS ────────────────────────────────────────────────────────────────────
+function buildChecks(){
+  const list=document.getElementById('checkList');
+  list.innerHTML='';
+  CHECKS_ITEMS.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='check-item'+(checks[i]?' checked':'');
+    div.id='chk'+i;
+    div.innerHTML=`
+      <div class="check-box" id="cb${i}">${checks[i]?'✓':''}</div>
+      <div class="check-text">
+        <div class="check-title">${item.title}</div>
+        <div class="check-sub">${item.sub}</div>
+      </div>
+      <span class="check-badge" id="cbadge${i}">${checks[i]?'Listo':'Pendiente'}</span>`;
+    div.onclick=()=>toggleCheck(i);
+    list.appendChild(div);
+  });
+}
+
+function toggleCheck(i){
+  checks[i]=!checks[i];
+  const item=document.getElementById('chk'+i);
+  item.classList.toggle('checked',checks[i]);
+  document.getElementById('cb'+i).textContent=checks[i]?'✓':'';
+  document.getElementById('cbadge'+i).textContent=checks[i]?'Listo':'Pendiente';
+}
+
+// ── RESUMEN ───────────────────────────────────────────────────────────────────
+function buildResumen(){
+  const cliente=document.getElementById('f_cliente')?.value||'—';
+  const proyecto=document.getElementById('f_proyecto')?.value||'—';
+  const pm=document.getElementById('f_pm')?.value||'—';
+  const ed=document.getElementById('f_ed')?.value||'—';
+  const inicio=document.getElementById('f_inicio')?.value||'—';
+  const cierre=document.getElementById('f_cierre')?.value||'—';
+  const semanas=document.getElementById('f_semanas')?.value||'—';
+  const valor=document.getElementById('f_valor')?.value||'0';
+  const moneda=document.getElementById('f_moneda')?.value||'COP';
+  const totalUP=getTotalUP();
+  const totalRec=getGrandTotal();
+  const sem=parseInt(semanas)||1;
+  const checksDone=checks.filter(Boolean).length;
+
+  document.getElementById('resumenGrid').innerHTML=`
+    <div class="res-card">
+      <div class="res-card-title">📋 Identificación</div>
+      <div class="res-row"><span class="res-key">Cliente</span><span class="res-val">${cliente}</span></div>
+      <div class="res-row"><span class="res-key">Proyecto</span><span class="res-val">${proyecto}</span></div>
+      <div class="res-row"><span class="res-key">PM</span><span class="res-val">${pm}</span></div>
+      <div class="res-row"><span class="res-key">Equipo Dedicado</span><span class="res-val">${ed}</span></div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-title">📅 Contrato</div>
+      <div class="res-row"><span class="res-key">Inicio</span><span class="res-val">${inicio}</span></div>
+      <div class="res-row"><span class="res-key">Cierre pactado</span><span class="res-val">${cierre}</span></div>
+      <div class="res-row"><span class="res-key">Semanas</span><span class="res-val">${semanas}</span></div>
+      <div class="res-row"><span class="res-key">Valor</span><span class="res-val">${moneda} $${parseInt(valor||0).toLocaleString()}</span></div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-title">🎓 Pedagogía</div>
+      <div class="res-row"><span class="res-key">Cursos</span><span class="res-val">${nCursos}</span></div>
+      <div class="res-row"><span class="res-key">Total ${upLabel}s</span><span class="res-val">${totalUP}</span></div>
+      <div class="res-row"><span class="res-key">Total recursos digitales</span><span class="res-val">${totalRec}</span></div>
+      <div class="res-row"><span class="res-key">Ritmo requerido</span><span class="res-val">${(totalRec/sem).toFixed(1)} rec/sem</span></div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-title">🚦 Alistamiento</div>
+      <div class="res-row"><span class="res-key">Completados</span><span class="res-val" style="color:${checksDone===6?'var(--green)':'var(--yellow)'};">${checksDone} / 6</span></div>
+      <div class="res-row"><span class="res-key">Estado</span><span class="res-val">${checksDone===6?'✅ Listo para producción':'⚠️ Pendiente'}</span></div>
+      <div class="res-row"><span class="res-key">${upLabel}s / semana</span><span class="res-val">${(totalUP/sem).toFixed(1)}</span></div>
+      <div class="res-row"><span class="res-key">Recursos / semana</span><span class="res-val">${(totalRec/sem).toFixed(1)}</span></div>
+    </div>`;
+}
+
+// ── GUARDAR ───────────────────────────────────────────────────────────────────
+function guardar(){
+  const cliente=document.getElementById('f_cliente')?.value||'cliente';
+  const proyecto=document.getElementById('f_proyecto')?.value||'proyecto';
+  const pm=document.getElementById('f_pm')?.value||'—';
+  const ed=document.getElementById('f_ed')?.value||'—';
+  const inicio=document.getElementById('f_inicio')?.value||'—';
+  const cierre=document.getElementById('f_cierre')?.value||'—';
+  const semanas=document.getElementById('f_semanas')?.value||'—';
+  const valor=document.getElementById('f_valor')?.value||'0';
+  const moneda=document.getElementById('f_moneda')?.value||'COP';
+  const sem=parseInt(semanas)||1;
+  const totalUP=getTotalUP();
+  const totalRec=getGrandTotal();
+  const fecha=new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const fn=`ficha-${cliente.toLowerCase().replace(/\s+/g,'-')}-${proyecto.toLowerCase().replace(/\s+/g,'-')}.md`;
+
+  // Cursos
+  let cursosMD='| # | Curso | '+upLabel+'s |\n|---|---|---|\n';
+  for(let c=1;c<=nCursos;c++){
+    const nom=document.querySelector(`[data-curso-curso="${c}"][data-curso-nombre]`)?.value||'Curso '+c;
+    const ups=document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`)?.value||'0';
+    cursosMD+=`| ${c} | ${nom} | ${ups} |\n`;
+  }
+
+  // Recursos
+  let recMD='| Área | Tipo | Por UP | Total UPs | Total |\n|---|---|---|---|---|\n';
+  RECURSOS.forEach(r=>{
+    let tot=0;
+    for(let c=1;c<=nCursos;c++){
+      const ups=parseInt(document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`)?.value)||0;
+      const qty=parseInt(document.querySelector(`[data-rec-curso="${c}"][data-rec-id="${r.id}"]`)?.value)||0;
+      tot+=qty*ups;
+    }
+    if(tot>0) recMD+=`| ${r.area} | ${r.nombre} | ${totalUP>0?(tot/totalUP).toFixed(1):'—'} | ${totalUP} | ${tot} |\n`;
+  });
+
+  // Equipo
+  let equipoMD='| Nombre | Rol | Dedicación |\n|---|---|---|\n';
+  document.querySelectorAll('#equipoBody tr').forEach(tr=>{
+    const c=tr.querySelectorAll('input,select');
+    if(c.length>=3) equipoMD+=`| ${c[0].value||'—'} | ${c[1].value||'—'} | ${c[2].value||'—'} |\n`;
+  });
+
+  // Hitos
+  let hitosMD='| # | Hito | Fecha | Descripción |\n|---|---|---|---|\n';
+  document.querySelectorAll('#hitosBody tr').forEach((tr,i)=>{
+    const c=tr.querySelectorAll('input');
+    if(c.length>=3) hitosMD+=`| ${i+1} | ${c[0].value||'—'} | ${c[1].value||'—'} | ${c[2].value||'—'} |\n`;
+  });
+
+  const md=`# Ficha de Proyecto — Griky Fábrica
+**Estado:** ${checks.filter(Boolean).length===6?'✅ Lista para producción':'⚠️ Alistamiento pendiente'}
+**Generada:** ${fecha}
+
+---
+
+## 1 · Identificación
+
+| Campo | Valor |
+|---|---|
+| **Cliente** | ${cliente} |
+| **Proyecto** | ${proyecto} |
+| **PM** | ${pm} |
+| **Equipo Dedicado** | ${ed} |
+
+---
+
+## 2 · Contrato
+
+| Campo | Valor |
+|---|---|
+| **Inicio** | ${inicio} |
+| **Cierre pactado** | ${cierre} |
+| **Semanas disponibles** | ${semanas} |
+| **Valor total** | ${moneda} $${parseInt(valor).toLocaleString()} |
+
+---
+
+## 3 · Estructura Pedagógica
+
+**Tipo de unidad:** ${upLabel}
+
+${cursosMD}
+**Total ${upLabel}s:** ${totalUP}
+
+---
+
+## 4 · Recursos Digitales por Tipo
+
+${recMD}
+**Total recursos digitales del proyecto:** ${totalRec}
+
+---
+
+## 5 · Ritmo de Trabajo Calculado
+
+| Métrica | Valor |
+|---|---|
+| **${upLabel}s por semana** | ${(totalUP/sem).toFixed(1)} |
+| **Recursos por semana** | ${(totalRec/sem).toFixed(1)} |
+| **Semanas disponibles** | ${semanas} |
+
+---
+
+## 6 · Equipo Dedicado
+
+${equipoMD}
+
+---
+
+## 7 · Cronograma de Lanzamiento
+
+${hitosMD}
+
+---
+
+## 8 · Alistamiento
+
+| Ítem | Estado |
+|---|---|
+${CHECKS_ITEMS.map((item,i)=>`| ${item.title} | ${checks[i]?'✅ Listo':'❌ Pendiente'} |`).join('\n')}
+
+---
+_Ficha generada · Griky Fábrica · ${fecha}_
+`;
+
+  // ── GUARDAR EN LOCALSTORAGE (puente a Dashboard + Planeación) ──
+  guardarEnLocalStorage();
+
+  const blob=new Blob([md],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fn;a.click();
+  URL.revokeObjectURL(url);
+}
+
+function guardarEnLocalStorage(){
+  const pm=document.getElementById('f_pm')?.value||'';
+  const cliente=document.getElementById('f_cliente')?.value||'';
+  const proyecto=document.getElementById('f_proyecto')?.value||'';
+  const cierre=document.getElementById('f_cierre')?.value||'';
+  const inicio=document.getElementById('f_inicio')?.value||'';
+  const sem=parseInt(document.getElementById('f_semanas')?.value)||1;
+  const totalUP=getTotalUP();
+  const totalRec=getGrandTotal();
+  const ritmoRec=Math.round((totalRec/sem)*10)/10;
+  const ritmoUP=Math.round((totalUP/sem)*10)/10;
+
+  // Recopilar recursos por tipo (totales del proyecto)
+  const recursosPorTipo={};
+  RECURSOS.forEach(r=>{
+    let tot=0;
+    for(let c=1;c<=nCursos;c++){
+      const ups=parseInt(document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`)?.value)||0;
+      const qty=parseInt(document.querySelector(`[data-rec-curso="${c}"][data-rec-id="${r.id}"]`)?.value)||0;
+      tot+=qty*ups;
+    }
+    if(tot>0) recursosPorTipo[r.id]=tot;
+  });
+
+  // Ritmo por tipo de recurso (por semana)
+  const ritmoPorTipo={};
+  Object.entries(recursosPorTipo).forEach(([id,tot])=>{
+    ritmoPorTipo[id]=Math.round((tot/sem)*10)/10;
+  });
+
+  // Recopilar cursos con sus unidades
+  const cursos=[];
+  for(let c=1;c<=nCursos;c++){
+    const nom=document.querySelector(`[data-curso-curso="${c}"][data-curso-nombre]`)?.value||'Curso '+c;
+    const ups=parseInt(document.querySelector(`[data-curso-curso="${c}"][data-curso-up]`)?.value)||0;
+    cursos.push({nombre:nom, unidades:ups});
+  }
+
+  const fichaId='f_'+Date.now();
+  // Calcular h/h totales y por área
+  let hhTotal=0;
+  const hhPorTipo={};
+  const hhPorArea={};
+  Object.entries(recursosPorTipo).forEach(([id,cant])=>{
+    const hh=cant*(HH[id]||0);
+    hhPorTipo[id]=hh;
+    hhTotal+=hh;
+    const tag=RECURSOS.find(r=>r.id===id)?.tag||'';
+    if(tag){ if(!hhPorArea[tag]) hhPorArea[tag]=0; hhPorArea[tag]+=hh; }
+  });
+  const hhSemana=sem>0?Math.round((hhTotal/sem)*10)/10:0;
+  const personasMin=Math.ceil(hhSemana/HORAS_SEMANA);
+
+  const fichaData={
+    id: fichaId,
+    pm, cliente, proyecto,
+    inicio, cierre, semanas:sem,
+    tipoUP:upLabel, nCursos, cursos,
+    totalUP, totalRec, ritmoRec, ritmoUP,
+    recursosPorTipo, ritmoPorTipo,
+    hhTotal, hhSemana, hhPorTipo, hhPorArea, personasMin,
+    sem:'verde', avance:0, recHechos:0, sprint:0, ritmoAct:0,
+    generado:new Date().toISOString()
+  };
+
+  // Leer fichas existentes, reemplazar si mismo proyecto+pm, o agregar
+  let fichas=[];
+  try { fichas=JSON.parse(localStorage.getItem('griky_fichas'))||[]; } catch(e){}
+  const existIdx=fichas.findIndex(f=>f.pm===pm && f.proyecto===proyecto && f.cliente===cliente);
+  if(existIdx>=0){ fichaData.id=fichas[existIdx].id; fichas[existIdx]=fichaData; }
+  else { fichas.push(fichaData); }
+  localStorage.setItem('griky_fichas',JSON.stringify(fichas));
+}
+
+function copiarJSON(){
+  const data={
+    cliente:document.getElementById('f_cliente')?.value,
+    proyecto:document.getElementById('f_proyecto')?.value,
+    pm:document.getElementById('f_pm')?.value,
+    ed:document.getElementById('f_ed')?.value,
+    inicio:document.getElementById('f_inicio')?.value,
+    cierre:document.getElementById('f_cierre')?.value,
+    valor:document.getElementById('f_valor')?.value,
+    moneda:document.getElementById('f_moneda')?.value,
+    tipoUP:upLabel, nCursos, totalUP:getTotalUP(), totalRecursos:getGrandTotal(),
+    alistamiento:checks, generado:new Date().toISOString()
+  };
+
+  // También guardar en localStorage
+  guardarEnLocalStorage();
+
+  navigator.clipboard.writeText(JSON.stringify(data,null,2))
+    .then(()=>alert('JSON copiado ✓ y proyecto guardado en el sistema.\nDisponible en Planeación y Dashboard.'));
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+addEquipo();
+addHito();
+buildChecks();
+</script>
+</body>
+</html>

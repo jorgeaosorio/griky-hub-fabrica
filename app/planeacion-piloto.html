@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planeación Semanal — Griky Fábrica (Piloto)</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#22304C;--coral:#FF2D55;--green:#2BC168;--yellow:#F5A623;--light:#F5F6FA;--mid:#E0E3EA;--gray:#8A93A6;--white:#FFF;--font:'Roboto',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--light);color:var(--navy);min-height:100vh;}
+
+/* HEADER */
+.header{background:var(--navy);color:var(--white);padding:18px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.header h1{font-size:18px;font-weight:700;}
+.header .badge{background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;font-size:12px;}
+
+/* SETUP PANEL */
+.setup{max-width:600px;margin:32px auto;background:var(--white);border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.setup h2{font-size:16px;margin-bottom:16px;color:var(--navy);}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--gray);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.field select,.field input{width:100%;padding:10px 14px;border:1.5px solid var(--mid);border-radius:10px;font-size:14px;font-family:var(--font);background:var(--white);color:var(--navy);}
+.field select:focus,.field input:focus{outline:none;border-color:var(--coral);}
+.btn{padding:10px 22px;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-primary{background:var(--coral);color:var(--white);}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1.5px solid var(--navy);color:var(--navy);}
+.btn-outline:hover{background:var(--navy);color:var(--white);}
+.btn-green{background:var(--green);color:var(--white);}
+.btn-green:hover{opacity:.9;}
+.btn-sm{padding:6px 14px;font-size:12px;}
+
+/* PROYECTO INFO */
+.info-bar{max-width:900px;margin:16px auto;display:flex;gap:12px;flex-wrap:wrap;}
+.chip{background:var(--white);border-radius:10px;padding:8px 16px;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.06);display:flex;align-items:center;gap:6px;}
+.chip .val{font-weight:700;color:var(--coral);}
+
+/* BLOQUES */
+.workspace{max-width:900px;margin:0 auto 100px;padding:0 12px;}
+.bloques-header{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;}
+.bloques-header h2{font-size:16px;}
+
+.bloque{background:var(--white);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);border-left:4px solid var(--navy);}
+.bloque-head{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-bottom:14px;}
+.bloque-head .field{margin-bottom:0;flex:1;min-width:140px;}
+.bloque-head select,.bloque-head input{padding:8px 10px;font-size:13px;}
+.bloque-remove{align-self:center;background:none;border:none;color:var(--gray);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+.bloque-remove:hover{background:#fee;color:var(--coral);}
+
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.rec-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:var(--light);font-size:13px;}
+.rec-item.has-value{background:#FFF5E5;border:1px solid var(--yellow);}
+.rec-item .rec-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rec-item .area-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.rec-item .area-dot.video{background:#7EC8E3;}
+.rec-item .area-dot.multimedia{background:var(--coral);}
+.rec-item .area-dot.grafico{background:var(--yellow);}
+.rec-item input{width:50px;padding:4px 6px;border:1.5px solid var(--mid);border-radius:6px;text-align:center;font-size:13px;font-family:var(--font);}
+.rec-item input:focus{outline:none;border-color:var(--coral);}
+
+.area-title{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 4px;grid-column:1/-1;}
+
+/* RESUMEN FLOTANTE */
+.resumen-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);color:var(--white);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.15);}
+.resumen-bar .stats{display:flex;gap:20px;font-size:13px;}
+.resumen-bar .stats .s-val{font-weight:700;color:var(--coral);margin-left:4px;}
+.resumen-bar .actions{display:flex;gap:8px;}
+
+/* HIDDEN */
+.hidden{display:none !important;}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .rec-grid{grid-template-columns:1fr;}
+  .bloque-head{flex-direction:column;}
+  .resumen-bar{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Planeación Semanal</h1>
+  <span class="badge">Piloto Colectivo</span>
+  <span class="badge" id="hdrSemana"></span>
+</div>
+
+<!-- SETUP -->
+<div class="setup" id="panelSetup">
+  <h2>Selecciona tu perfil</h2>
+  <div class="field">
+    <label>PM</label>
+    <select id="selPM" onchange="onPMChange()">
+      <option value="">— Selecciona tu nombre —</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Semana del</label>
+    <input type="date" id="selFecha" onchange="onFechaChange()">
+  </div>
+  <div id="proyInfo" class="hidden" style="margin-top:16px;padding:14px;background:var(--light);border-radius:10px;">
+    <p style="font-size:13px;color:var(--gray);">Proyecto:</p>
+    <p style="font-size:15px;font-weight:700;" id="proyNombre"></p>
+    <p style="font-size:12px;color:var(--gray);margin-top:4px;" id="proyMeta"></p>
+  </div>
+  <div style="margin-top:20px;text-align:right;">
+    <button class="btn btn-primary" id="btnStart" disabled onclick="startPlaneacion()">Comenzar planeación</button>
+  </div>
+</div>
+
+<!-- WORKSPACE (hidden until start) -->
+<div class="hidden" id="panelWork">
+  <div class="info-bar" id="chipBar"></div>
+
+  <div class="workspace">
+    <div class="bloques-header">
+      <h2>Bloques de trabajo</h2>
+      <button class="btn btn-outline btn-sm" onclick="addBloque()">+ Agregar bloque</button>
+    </div>
+    <div id="bloquesList"></div>
+  </div>
+</div>
+
+<!-- RESUMEN BAR -->
+<div class="resumen-bar hidden" id="resumenBar">
+  <div class="stats">
+    <span>Bloques: <span class="s-val" id="statBloques">0</span></span>
+    <span>Recursos: <span class="s-val" id="statRec">0</span></span>
+    <span>h/h: <span class="s-val" id="statHH">0</span></span>
+    <span>vs ritmo: <span class="s-val" id="statRitmo">—</span></span>
+  </div>
+  <div class="actions">
+    <button class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;" onclick="exportMD()">Exportar .md</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// DATOS DE FICHAS (piloto)
+// ══════════════════════════════════════════════════════════════════════════════
+const FICHAS = {
+  'Andrés Briceño': {
+    proyecto: 'Diplomados pruebas',
+    cliente: 'Universidad prueba',
+    inicio: '2026-04-07',
+    cierre: '2026-05-05',
+    semanas: 4,
+    tipoUP: 'Módulo',
+    cursos: [
+      { nombre:'C1', ups:4 },
+      { nombre:'C2', ups:4 },
+      { nombre:'C3', ups:4 }
+    ],
+    totalUPs: 12,
+    totalRec: 600,
+    ritmoRec: 150,
+    recursos: {
+      vid_web:24, vid_std:12, vid_ava:36, vid_pod:24, vid_aud:36, vid_pix:48, vid_bas:24, vid_int:24,
+      mul_sto:24, mul_ris:12, mul_pre:24, mul_inf:48, mul_act:48, mul_vst:12, mul_gen:24, mul_dis:12,
+      gra_inf:120, gra_pdf:12, gra_ebo:12, gra_ban:12, gra_pre:12
+    }
+  },
+  'Margarita Rosales': {
+    proyecto: 'Cursos intro',
+    cliente: 'Universidad XYZ',
+    inicio: '2026-04-13',
+    cierre: '2026-06-25',
+    semanas: 10,
+    tipoUP: 'Semana',
+    cursos: [
+      { nombre:'AAAAAA', ups:1 },
+      { nombre:'BBBBB', ups:2 },
+      { nombre:'CCCCC', ups:2 }
+    ],
+    totalUPs: 5,
+    totalRec: 27,
+    ritmoRec: 2.7,
+    recursos: {
+      vid_std:5, vid_ava:5, vid_pod:5,
+      mul_dis:5,
+      gra_pdf:7
+    }
+  },
+  'Vilma Perilla': {
+    proyecto: 'ITALIANO',
+    cliente: 'VERTICE',
+    inicio: '2026-03-26',
+    cierre: '2026-05-29',
+    semanas: 9,
+    tipoUP: 'Unidad',
+    cursos: [
+      { nombre:'Bienestar', ups:14 },
+      { nombre:'Psicología', ups:14 },
+      { nombre:'Mindfulness', ups:14 }
+    ],
+    totalUPs: 42,
+    totalRec: 294,
+    ritmoRec: 32.7,
+    recursos: {
+      vid_std:28, vid_pod:28, vid_pix:56,
+      mul_ris:28, mul_pre:28, mul_act:28, mul_dis:28,
+      gra_pdf:42, gra_ban:28
+    }
+  }
+};
+
+const REC_LABEL = {
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',
+  vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
+  mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',
+  mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
+  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar'
+};
+const REC_AREA = {
+  vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',
+  mul_sto:'multimedia',mul_ris:'multimedia',mul_pre:'multimedia',mul_inf:'multimedia',mul_act:'multimedia',mul_vst:'multimedia',mul_gen:'multimedia',mul_dis:'multimedia',
+  gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico'
+};
+const HH = {
+  vid_web:2.5,vid_std:1.5,vid_ava:1.5,vid_pod:0.5,vid_aud:2.5,vid_pix:8,vid_bas:0.83,vid_int:2.5,
+  mul_sto:2.5,mul_ris:2.5,mul_pre:1.5,mul_inf:1.5,mul_act:0.5,mul_vst:2.5,mul_gen:1.5,mul_dis:1.5,
+  gra_inf:0.83,gra_pdf:0.83,gra_ebo:1.5,gra_ban:0.5,gra_pre:0.83
+};
+const AREA_ORDER = ['video','multimedia','grafico'];
+const AREA_NAME = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico'};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════════════════════════════
+let pm = '';
+let ficha = null;
+let semanaStr = '';
+let bloqueCount = 0;
+let recIds = []; // resource IDs for the selected PM
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════════
+(function init(){
+  const sel = document.getElementById('selPM');
+  Object.keys(FICHAS).forEach(name => {
+    const o = document.createElement('option');
+    o.value = name; o.textContent = name;
+    sel.appendChild(o);
+  });
+  // Default to this Monday
+  const today = new Date();
+  const diff = today.getDay()===0 ? -6 : 1 - today.getDay();
+  const lunes = new Date(today); lunes.setDate(today.getDate()+diff);
+  document.getElementById('selFecha').value = lunes.toISOString().split('T')[0];
+  onFechaChange();
+})();
+
+function onPMChange(){
+  pm = document.getElementById('selPM').value;
+  ficha = FICHAS[pm] || null;
+  const info = document.getElementById('proyInfo');
+  const btn = document.getElementById('btnStart');
+  if(ficha){
+    info.classList.remove('hidden');
+    document.getElementById('proyNombre').textContent = ficha.proyecto + ' — ' + ficha.cliente;
+    document.getElementById('proyMeta').textContent =
+      ficha.totalRec + ' recursos · ' + ficha.cursos.length + ' cursos · ' +
+      ficha.totalUPs + ' ' + ficha.tipoUP.toLowerCase() + 's · Ritmo: ' +
+      ficha.ritmoRec + ' rec/sem';
+    btn.disabled = false;
+    // Build recIds from ficha recursos
+    recIds = Object.keys(ficha.recursos).filter(id => ficha.recursos[id] > 0);
+  } else {
+    info.classList.add('hidden');
+    btn.disabled = true;
+  }
+}
+
+function onFechaChange(){
+  const d = new Date(document.getElementById('selFecha').value + 'T12:00:00');
+  if(isNaN(d)) return;
+  const fin = new Date(d); fin.setDate(d.getDate()+4);
+  const fmt = dt => dt.toLocaleDateString('es-CO',{day:'numeric',month:'short'});
+  semanaStr = fmt(d) + ' – ' + fmt(fin) + ' ' + d.getFullYear();
+  document.getElementById('hdrSemana').textContent = semanaStr;
+}
+
+function startPlaneacion(){
+  document.getElementById('panelSetup').classList.add('hidden');
+  document.getElementById('panelWork').classList.remove('hidden');
+  document.getElementById('resumenBar').classList.remove('hidden');
+  // Chips
+  const bar = document.getElementById('chipBar');
+  bar.innerHTML = '';
+  const chips = [
+    ['PM', pm],
+    ['Proyecto', ficha.proyecto],
+    ['Cliente', ficha.cliente],
+    ['Ritmo', ficha.ritmoRec + ' rec/sem'],
+    ['Cierre', ficha.cierre]
+  ];
+  chips.forEach(([l,v]) => {
+    const d = document.createElement('div');
+    d.className = 'chip';
+    d.innerHTML = l + ': <span class="val">' + v + '</span>';
+    bar.appendChild(d);
+  });
+  addBloque();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BLOQUES
+// ══════════════════════════════════════════════════════════════════════════════
+function addBloque(){
+  bloqueCount++;
+  const id = 'blq_' + bloqueCount;
+  const div = document.createElement('div');
+  div.className = 'bloque';
+  div.id = id;
+
+  // Course options
+  const cursoOpts = ficha.cursos.map(c => '<option value="'+c.nombre+'">'+c.nombre+'</option>').join('');
+
+  // UP options (will be populated on curso change)
+  let html = '<div class="bloque-head">';
+  html += '<div class="field"><label>Curso</label><select onchange="onCursoChange(this,\''+id+'\')">';
+  html += '<option value="">— Selecciona —</option>' + cursoOpts;
+  html += '</select></div>';
+  html += '<div class="field"><label>'+ficha.tipoUP+'</label><input type="text" placeholder="Ej: '+ficha.tipoUP+' 1" data-role="up"></div>';
+  html += '<div class="field"><label>Nota</label><input type="text" placeholder="Opcional" data-role="nota"></div>';
+  html += '<button class="bloque-remove" onclick="removeBloque(\''+id+'\')" title="Eliminar bloque">&times;</button>';
+  html += '</div>';
+
+  // Resources grouped by area
+  html += '<div class="rec-grid">';
+  AREA_ORDER.forEach(area => {
+    const areaRecs = recIds.filter(rid => REC_AREA[rid] === area);
+    if(areaRecs.length === 0) return;
+    html += '<div class="area-title">' + AREA_NAME[area] + '</div>';
+    areaRecs.forEach(rid => {
+      html += '<div class="rec-item" id="'+id+'_'+rid+'">';
+      html += '<span class="area-dot '+area+'"></span>';
+      html += '<span class="rec-label" title="'+REC_LABEL[rid]+'">'+REC_LABEL[rid]+'</span>';
+      html += '<input type="number" min="0" value="" placeholder="0" data-rec="'+rid+'" oninput="onRecInput(this,\''+id+'\')">';
+      html += '</div>';
+    });
+  });
+  html += '</div>';
+
+  div.innerHTML = html;
+  document.getElementById('bloquesList').appendChild(div);
+  updateStats();
+}
+
+function removeBloque(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+  updateStats();
+}
+
+function onCursoChange(sel, bloqueId){
+  // Auto-suggest UP count
+  const curso = ficha.cursos.find(c => c.nombre === sel.value);
+  if(curso){
+    const upInput = document.querySelector('#'+bloqueId+' input[data-role="up"]');
+    if(upInput && !upInput.value) upInput.placeholder = ficha.tipoUP + ' 1 de ' + curso.ups;
+  }
+}
+
+function onRecInput(inp, bloqueId){
+  const item = inp.closest('.rec-item');
+  const v = parseInt(inp.value) || 0;
+  item.classList.toggle('has-value', v > 0);
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════════════════════════════════════
+function updateStats(){
+  const bloques = document.querySelectorAll('.bloque');
+  let totalRec = 0, totalHH = 0;
+  bloques.forEach(b => {
+    b.querySelectorAll('input[data-rec]').forEach(inp => {
+      const v = parseInt(inp.value) || 0;
+      if(v > 0){
+        totalRec += v;
+        totalHH += v * (HH[inp.dataset.rec] || 0);
+      }
+    });
+  });
+  document.getElementById('statBloques').textContent = bloques.length;
+  document.getElementById('statRec').textContent = totalRec;
+  document.getElementById('statHH').textContent = totalHH.toFixed(1) + 'h';
+  // vs ritmo
+  if(ficha){
+    const pct = ficha.ritmoRec > 0 ? Math.round((totalRec / ficha.ritmoRec) * 100) : 0;
+    const el = document.getElementById('statRitmo');
+    el.textContent = pct + '% del ritmo';
+    el.style.color = pct >= 90 ? '#2BC168' : pct >= 60 ? '#F5A623' : '#FF2D55';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// EXPORT MD
+// ══════════════════════════════════════════════════════════════════════════════
+function exportMD(){
+  let md = '# Planeación Semanal — Griky Fábrica\n\n';
+  md += '| Campo | Valor |\n|---|---|\n';
+  md += '| **PM** | ' + pm + ' |\n';
+  md += '| **Semana** | ' + semanaStr + ' |\n';
+  md += '| **Proyecto** | ' + ficha.proyecto + ' |\n';
+  md += '| **Cliente** | ' + ficha.cliente + ' |\n\n---\n\n';
+
+  const bloques = document.querySelectorAll('.bloque');
+  let bloqueNum = 0;
+  let grandTotal = 0, grandHH = 0;
+
+  bloques.forEach(b => {
+    const curso = b.querySelector('select').value || '(sin especificar)';
+    const up = b.querySelector('input[data-role="up"]').value || '(sin especificar)';
+    const nota = b.querySelector('input[data-role="nota"]').value || '';
+
+    // Collect non-zero resources
+    const recs = [];
+    b.querySelectorAll('input[data-rec]').forEach(inp => {
+      const v = parseInt(inp.value) || 0;
+      if(v > 0) recs.push({ id:inp.dataset.rec, cant:v });
+    });
+
+    if(recs.length === 0) return;
+    bloqueNum++;
+
+    md += '## Bloque ' + bloqueNum + '\n\n';
+    md += '| Campo | Valor |\n|---|---|\n';
+    md += '| **Curso** | ' + curso + ' |\n';
+    md += '| **' + ficha.tipoUP + '** | ' + up + ' |\n';
+    if(nota) md += '| **Nota** | ' + nota + ' |\n';
+    md += '\n';
+
+    md += '| Área | Tipo | Comprometidos | h/h |\n|---|---|---|---|\n';
+    let bloqueRec = 0, bloqueHH = 0;
+    recs.forEach(r => {
+      const hh = r.cant * (HH[r.id]||0);
+      const area = AREA_NAME[REC_AREA[r.id]] || '';
+      md += '| ' + area + ' | ' + (REC_LABEL[r.id]||r.id) + ' | ' + r.cant + ' | ' + hh.toFixed(1) + 'h |\n';
+      bloqueRec += r.cant;
+      bloqueHH += hh;
+    });
+    md += '| | **Total bloque** | **' + bloqueRec + '** | **' + bloqueHH.toFixed(1) + 'h** |\n\n';
+    grandTotal += bloqueRec;
+    grandHH += bloqueHH;
+    md += '---\n\n';
+  });
+
+  // Summary
+  md += '## Resumen de la semana\n\n';
+  md += '| Métrica | Valor |\n|---|---|\n';
+  md += '| Total recursos comprometidos | ' + grandTotal + ' |\n';
+  md += '| Total h/h comprometidas | ' + grandHH.toFixed(1) + 'h |\n';
+  md += '| Ritmo requerido | ' + ficha.ritmoRec + ' rec/sem |\n';
+  const pct = ficha.ritmoRec > 0 ? Math.round((grandTotal / ficha.ritmoRec)*100) : 0;
+  md += '| Cobertura del ritmo | ' + pct + '% |\n\n';
+  md += '---\n_Planeación generada · Griky Fábrica · ' + semanaStr + '_\n';
+
+  // Download
+  const blob = new Blob([md], {type:'text/markdown'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const pmSlug = pm.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_');
+  a.href = url;
+  a.download = 'planeacion-semanal-' + pmSlug + '.md';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

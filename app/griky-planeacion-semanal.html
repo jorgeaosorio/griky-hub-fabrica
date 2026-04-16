@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planeación Semanal · Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#22304C; --navy2:#1a2539; --navy3:#131d2e;
+  --red:#FF2D55; --red2:#e01f45;
+  --green:#2BC168; --yellow:#F5A623; --gray:#667078;
+  --light:#F6F7FB; --mid:#E2E8F0; --white:#ffffff;
+  --ra:rgba(255,45,85,.10); --rb:rgba(255,45,85,.20);
+  --ga:rgba(43,193,104,.10); --ya:rgba(245,166,35,.10);
+  --na:rgba(34,48,76,.06);
+  --r:12px; --sh:0 2px 14px rgba(34,48,76,.09);
+  --sh2:0 8px 28px rgba(34,48,76,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;background:var(--light);color:var(--navy);min-height:100vh;display:flex;flex-direction:column;}
+h1,h2,h3{font-family:'Roboto',sans-serif;}
+
+/* TOPBAR */
+.topbar{background:var(--navy3);position:relative;overflow:hidden;flex-shrink:0;}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green) 0%,var(--red) 100%);}
+.topbar-inner{position:relative;z-index:1;display:flex;align-items:center;padding:0 28px;height:56px;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-weight:800;font-size:14px;color:var(--white);}
+.logo-name{font-family:'Roboto',sans-serif;font-weight:700;font-size:16px;color:var(--white);}
+.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.15);margin:0 4px;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-sm{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-family:'Roboto',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-sm:hover{background:rgba(255,255,255,.08);color:var(--white);}
+.btn-sm.primary{background:var(--red);border-color:var(--red);color:var(--white);font-weight:700;}
+.btn-sm.primary:hover{background:var(--red2);}
+
+/* SUBHEADER */
+.subheader{background:var(--navy2);padding:14px 28px;display:flex;align-items:center;gap:18px;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap;}
+.sh-field{display:flex;flex-direction:column;gap:3px;}
+.sh-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.sh-select,.sh-input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;font-family:'Roboto',sans-serif;font-size:13px;color:var(--white);outline:none;appearance:none;cursor:pointer;}
+.sh-select option{background:var(--navy);}
+.sh-input{cursor:text;width:130px;}
+.sh-input::placeholder{color:rgba(255,255,255,.3);}
+.sh-sep{width:1px;height:34px;background:rgba(255,255,255,.08);}
+
+/* RITMO CHIPS */
+.ritmo-strip{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.rchip{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 14px;min-width:80px;}
+.rchip-val{font-family:'Roboto',sans-serif;font-size:16px;font-weight:800;color:var(--white);}
+.rchip-val.ok{color:var(--green);}
+.rchip-val.warn{color:var(--yellow);}
+.rchip-val.over{color:var(--red);}
+.rchip-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.35);margin-top:2px;}
+
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden;height:calc(100vh - 113px);}
+
+/* LEFT PANEL */
+.left{width:340px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid var(--mid);background:var(--white);overflow:hidden;}
+.panel-head{padding:16px 16px 12px;border-bottom:1px solid var(--mid);display:flex;align-items:center;justify-content:space-between;}
+.panel-title{font-family:'Roboto',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray);}
+.btn-add-block{display:flex;align-items:center;gap:6px;padding:7px 12px;background:var(--red);border:none;border-radius:7px;color:var(--white);font-family:'Roboto',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-add-block:hover{background:var(--red2);transform:translateY(-1px);}
+
+.blocks-list{flex:1;overflow-y:auto;padding:10px;}
+.blocks-list::-webkit-scrollbar{width:3px;}
+.blocks-list::-webkit-scrollbar-thumb{background:var(--mid);}
+
+/* BLOQUE DE TRABAJO */
+.work-block{background:var(--light);border:1.5px solid var(--mid);border-radius:var(--r);margin-bottom:10px;overflow:hidden;transition:all .2s;cursor:pointer;}
+.work-block:hover{border-color:rgba(255,45,85,.3);}
+.work-block.selected{border-color:var(--red);background:var(--white);box-shadow:var(--sh);}
+.wb-header{display:flex;align-items:center;gap:10px;padding:12px 14px;}
+.wb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.wb-dot.verde{background:var(--green);}
+.wb-dot.amarillo{background:var(--yellow);}
+.wb-dot.rojo{background:var(--red);}
+.wb-info{flex:1;min-width:0;}
+.wb-proj{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wb-sub{font-size:11px;color:var(--gray);margin-top:1px;}
+.wb-total{font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;color:var(--red);flex-shrink:0;}
+.wb-del{background:none;border:none;color:var(--mid);cursor:pointer;font-size:16px;padding:0 2px;transition:color .2s;flex-shrink:0;}
+.wb-del:hover{color:var(--red);}
+.wb-pills{display:flex;gap:5px;flex-wrap:wrap;padding:0 14px 12px;}
+.wb-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;}
+.wb-pill.di{background:var(--na);color:var(--navy);}
+.wb-pill.video{background:rgba(255,107,138,.12);color:#c41e3a;}
+.wb-pill.grafico{background:rgba(255,179,71,.12);color:#b37400;}
+.wb-pill.multimedia{background:rgba(126,200,227,.15);color:#1a7a9a;}
+.wb-pill.impl{background:var(--ga);color:#1e9a56;}
+
+/* EMPTY BLOCKS */
+.empty-blocks{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:10px;opacity:.45;}
+.empty-icon{font-size:36px;}
+.empty-text{font-size:12px;color:var(--gray);text-align:center;line-height:1.5;}
+
+/* LEFT FOOTER */
+.left-footer{padding:12px 16px;border-top:1px solid var(--mid);display:flex;flex-direction:column;gap:6px;}
+.total-row{display:flex;justify-content:space-between;align-items:center;}
+.total-label{font-size:11px;color:var(--gray);}
+.total-val{font-family:'Roboto',sans-serif;font-size:15px;font-weight:700;color:var(--navy);}
+.progress-bar{height:5px;background:var(--mid);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;background:var(--red);transition:width .4s ease;}
+.progress-fill.ok{background:var(--green);}
+.progress-fill.warn{background:var(--yellow);}
+
+/* RIGHT PANEL */
+.right{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* FORM PANEL */
+.form-panel{flex:1;overflow-y:auto;padding:24px 28px;}
+.form-panel::-webkit-scrollbar{width:4px;}
+.form-panel::-webkit-scrollbar-thumb{background:var(--mid);}
+
+/* WELCOME STATE */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;opacity:.45;}
+.welcome-icon{font-size:52px;}
+.welcome-title{font-family:'Roboto',sans-serif;font-size:18px;font-weight:700;color:var(--navy);}
+.welcome-sub{font-size:13px;color:var(--gray);text-align:center;max-width:320px;line-height:1.6;}
+
+/* FORM */
+.form-title{font-family:'Roboto',sans-serif;font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.form-sub{font-size:13px;color:var(--gray);margin-bottom:24px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.field-row.cols3{grid-template-columns:1fr 1fr 1fr;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);}
+.label .req{color:var(--red);}
+.input,.select,.textarea{background:var(--light);border:1.5px solid var(--mid);border-radius:8px;padding:10px 14px;font-family:'Roboto',sans-serif;font-size:13px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;width:100%;appearance:none;}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--ra);}
+.input::placeholder,.textarea::placeholder{color:var(--gray);font-weight:300;}
+
+/* RECURSOS GRID */
+.recursos-section{margin-top:8px;}
+.area-section{margin-bottom:20px;}
+.area-label{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.area-tag{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:4px;}
+.area-tag.di{background:var(--na);color:var(--navy);}
+.area-tag.video{background:rgba(255,107,138,.12);color:#c41e3a;}
+.area-tag.grafico{background:rgba(255,179,71,.12);color:#b37400;}
+.area-tag.multimedia{background:rgba(126,200,227,.15);color:#1a7a9a;}
+.area-tag.impl{background:var(--ga);color:#1e9a56;}
+.area-line{flex:1;height:1px;background:var(--mid);}
+
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.rec-item{background:var(--white);border:1.5px solid var(--mid);border-radius:10px;padding:12px 14px;transition:border-color .2s;}
+.rec-item:hover{border-color:rgba(255,45,85,.3);}
+.rec-item.has-value{border-color:var(--red);background:var(--ra);}
+.rec-item-label{font-size:12px;font-weight:500;color:var(--navy);margin-bottom:8px;line-height:1.3;}
+.rec-counter{display:flex;align-items:center;gap:8px;}
+.counter-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--mid);background:var(--white);color:var(--navy);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;line-height:1;}
+.counter-btn:hover{border-color:var(--red);color:var(--red);background:var(--ra);}
+.counter-display{flex:1;text-align:center;font-family:'Roboto',sans-serif;font-size:18px;font-weight:800;color:var(--navy);}
+.counter-display.active{color:var(--red);}
+.rec-resp{margin-top:8px;}
+.resp-select{background:var(--light);border:1.5px solid var(--mid);border-radius:6px;padding:5px 8px;font-family:'Roboto',sans-serif;font-size:11px;color:var(--navy);outline:none;width:100%;appearance:none;cursor:pointer;transition:border-color .2s;}
+.resp-select:focus{border-color:var(--red);}
+
+/* SAVE BTN */
+.form-footer{padding:16px 28px;border-top:1px solid var(--mid);background:var(--white);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-shrink:0;}
+.btn-save-block{padding:11px 24px;background:var(--red);color:var(--white);border:none;border-radius:8px;font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(255,45,85,.25);}
+.btn-save-block:hover{background:var(--red2);transform:translateY(-1px);}
+.btn-cancel{padding:11px 18px;background:transparent;color:var(--gray);border:1.5px solid var(--mid);border-radius:8px;font-family:'Roboto',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.btn-cancel:hover{border-color:var(--navy);color:var(--navy);}
+
+/* EXPORT PANEL */
+.export-bar{background:var(--navy2);padding:14px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.eb-text{flex:1;}
+.eb-title{font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.eb-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+.btn-export{padding:9px 18px;border-radius:7px;font-family:'Roboto',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.btn-export.md{background:var(--red);color:var(--white);box-shadow:0 3px 10px rgba(255,45,85,.3);}
+.btn-export.md:hover{background:var(--red2);}
+.btn-export.copy{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);}
+.btn-export.copy:hover{background:rgba(255,255,255,.14);color:var(--white);}
+
+/* RESUMEN TOTALES */
+.totales-card{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);margin-bottom:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
+.tc-item{text-align:center;}
+.tc-val{font-family:'Roboto',sans-serif;font-size:20px;font-weight:800;color:var(--navy);}
+.tc-val.video{color:#c41e3a;}
+.tc-val.grafico{color:#b37400;}
+.tc-val.multimedia{color:#1a7a9a;}
+.tc-val.impl{color:#1e9a56;}
+.tc-val.total{color:var(--red);}
+.tc-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-top:3px;}
+
+/* RITMO ALERT */
+.ritmo-alert{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:12px;}
+.ritmo-alert.ok{background:var(--ga);border:1px solid rgba(43,193,104,.25);color:#1e9a56;}
+.ritmo-alert.warn{background:var(--ya);border:1px solid rgba(245,166,35,.25);color:#c47d00;}
+.ritmo-alert.low{background:var(--ra);border:1px solid var(--rb);color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="logo" aria-label="Griky Planeación Semanal">
+      <div class="logo-mark" aria-hidden="true">G</div>
+      <span class="logo-name">Griky</span>
+      <div class="logo-sep" aria-hidden="true"></div>
+      <span class="logo-sub">Planeación Semanal</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-sm" onclick="window.location.href='griky-fabrica-hub.html'" aria-label="Volver al Hub">← Hub</button>
+      <button class="btn-sm primary" onclick="exportMD()" aria-label="Exportar planeación en formato Markdown">⬇ Exportar .md</button>
+    </div>
+  </div>
+</header>
+
+<!-- SUBHEADER -->
+<div class="subheader" role="toolbar" aria-label="Configuración de la planeación">
+  <div class="sh-field">
+    <label class="sh-label" for="selPM">PM</label>
+    <select class="sh-select" id="selPM" onchange="onPMChange()">
+      <option value="">Seleccionar PM</option>
+      <option>Sophia Pacheco</option>
+      <option>Andrés Briceño</option>
+      <option>Margarita Rosales</option>
+      <option>Vilma Perilla</option>
+    </select>
+  </div>
+  <div class="sh-sep" aria-hidden="true"></div>
+  <div class="sh-field">
+    <label class="sh-label" for="selFecha">Semana del</label>
+    <input class="sh-input" type="date" id="selFecha" onchange="onFechaChange()"/>
+  </div>
+  <div class="sh-sep" aria-hidden="true"></div>
+  <div class="sh-field">
+    <label class="sh-label" for="inputObjetivo">Objetivo de la semana</label>
+    <input class="sh-input" style="width:260px;" id="inputObjetivo" placeholder="Ej: Cerrar Lote 2 ESAM…"/>
+  </div>
+
+  <div class="ritmo-strip">
+    <div class="rchip">
+      <div class="rchip-val" id="rc_comprometidos">0</div>
+      <div class="rchip-label">Comprometidos</div>
+    </div>
+    <div class="rchip">
+      <div class="rchip-val" id="rc_requeridos">—</div>
+      <div class="rchip-label">Requeridos/sem</div>
+    </div>
+    <div class="rchip">
+      <div class="rchip-val ok" id="rc_pct">—</div>
+      <div class="rchip-label">Cobertura</div>
+    </div>
+    <div style="width:1px;height:28px;background:rgba(255,255,255,.1);"></div>
+    <div class="rchip">
+      <div class="rchip-val" id="rc_hh" style="color:var(--yellow);">0h</div>
+      <div class="rchip-label">h/h semana</div>
+    </div>
+    <div class="rchip">
+      <div class="rchip-val" id="rc_personas" style="color:var(--yellow);">0</div>
+      <div class="rchip-label">Personas req.</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- LEFT: LISTA DE BLOQUES -->
+  <aside class="left">
+    <div class="panel-head">
+      <div class="panel-title">Bloques de trabajo</div>
+      <button class="btn-add-block" onclick="showForm()">+ Agregar bloque</button>
+    </div>
+
+    <div class="blocks-list" id="blocksList">
+      <div class="empty-blocks" id="emptyBlocks">
+        <div class="empty-icon">🧱</div>
+        <div class="empty-text">Agrega bloques de trabajo.<br>Cada bloque = un conjunto de recursos para un proyecto · curso · UP.</div>
+      </div>
+    </div>
+
+    <div class="left-footer">
+      <div class="total-row">
+        <span class="total-label">Total recursos comprometidos</span>
+        <span class="total-val" id="ft_total">0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="ft_bar" style="width:0%"></div>
+      </div>
+      <div class="total-row" style="margin-top:2px;">
+        <span class="total-label" style="font-size:10px;" id="ft_status">Selecciona un PM para ver el ritmo</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT: FORMULARIO + RESUMEN -->
+  <div class="right">
+
+    <!-- WELCOME STATE -->
+    <div class="form-panel" id="paneWelcome">
+      <div class="welcome">
+        <div class="welcome-icon">📅</div>
+        <div class="welcome-title">Planeación del lunes</div>
+        <div class="welcome-sub">Selecciona el PM y agrega bloques de trabajo. Cada bloque define cuántos recursos de cada tipo se producirán para un proyecto, curso y unidad pedagógica específica.</div>
+      </div>
+    </div>
+
+    <!-- FORM NUEVO BLOQUE -->
+    <div style="display:none;flex-direction:column;flex:1;overflow:hidden;" id="paneForm">
+      <div class="form-panel">
+
+        <div class="form-title" id="formTitle">Nuevo bloque de trabajo</div>
+        <div class="form-sub">Define el contexto y cuántos recursos se producirán esta semana.</div>
+
+        <!-- CONTEXTO -->
+        <div class="field-row" style="grid-template-columns:1fr;">
+          <div class="field">
+            <label class="label">Proyecto <span class="req">*</span></label>
+            <select class="select" id="f_proyecto" onchange="onProyectoChange()">
+              <option value="">Seleccionar proyecto…</option>
+            </select>
+            <div id="fichaRitmoBanner" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(43,193,104,.08);border:1px solid rgba(43,193,104,.2);border-radius:6px;font-size:11px;color:#1e9a56;">
+              <strong>Ritmo de Ficha cargado</strong> — recursos pre-llenados como propuesta. Puedes ajustarlos.
+            </div>
+          </div>
+        </div>
+
+        <div class="field-row cols3">
+          <div class="field">
+            <label class="label">Curso</label>
+            <select class="select" id="f_curso_select" onchange="document.getElementById('f_curso').value=this.value" style="display:none;">
+              <option value="">Seleccionar curso…</option>
+            </select>
+            <input class="input" id="f_curso" placeholder="Ej: Curso 3 — Liderazgo"/>
+          </div>
+          <div class="field">
+            <label class="label">Unidad pedagógica</label>
+            <input class="input" id="f_up" placeholder="Ej: Módulo 2"/>
+          </div>
+          <div class="field">
+            <label class="label">Nota del bloque</label>
+            <input class="input" id="f_nota" placeholder="Opcional"/>
+          </div>
+        </div>
+
+        <!-- RECURSOS -->
+        <div class="recursos-section">
+          <div style="font-family:'Roboto',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);margin-bottom:14px;">
+            ¿Cuántos recursos de cada tipo?
+          </div>
+
+          <!-- DI -->
+          <div class="area-section">
+            <div class="area-label">
+              <span class="area-tag di">Diseño Instruccional</span>
+              <div class="area-line"></div>
+            </div>
+            <div class="rec-grid">
+              <div class="rec-item" id="ri_di_cont">
+                <div class="rec-item-label">Contenidos teóricos</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('di_cont',-1)">−</button>
+                  <div class="counter-display" id="cd_di_cont">0</div>
+                  <button class="counter-btn" onclick="changeCount('di_cont',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_di_guia">
+                <div class="rec-item-label">Guías para recursos digitales</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('di_guia',-1)">−</button>
+                  <div class="counter-display" id="cd_di_guia">0</div>
+                  <button class="counter-btn" onclick="changeCount('di_guia',1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIDEO -->
+          <div class="area-section">
+            <div class="area-label">
+              <span class="area-tag video">Video</span>
+              <div class="area-line"></div>
+            </div>
+            <div class="rec-grid">
+              <div class="rec-item" id="ri_vid_std">
+                <div class="rec-item-label">Video Standard</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('vid_std',-1)">−</button>
+                  <div class="counter-display" id="cd_vid_std">0</div>
+                  <button class="counter-btn" onclick="changeCount('vid_std',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_vid_ava">
+                <div class="rec-item-label">Video con Avatar</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('vid_ava',-1)">−</button>
+                  <div class="counter-display" id="cd_vid_ava">0</div>
+                  <button class="counter-btn" onclick="changeCount('vid_ava',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_vid_pod">
+                <div class="rec-item-label">Podcast</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('vid_pod',-1)">−</button>
+                  <div class="counter-display" id="cd_vid_pod">0</div>
+                  <button class="counter-btn" onclick="changeCount('vid_pod',1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRÁFICO -->
+          <div class="area-section">
+            <div class="area-label">
+              <span class="area-tag grafico">Gráfico</span>
+              <div class="area-line"></div>
+            </div>
+            <div class="rec-grid">
+              <div class="rec-item" id="ri_gra_inf">
+                <div class="rec-item-label">Infografía</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('gra_inf',-1)">−</button>
+                  <div class="counter-display" id="cd_gra_inf">0</div>
+                  <button class="counter-btn" onclick="changeCount('gra_inf',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_gra_ebo">
+                <div class="rec-item-label">eBook</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('gra_ebo',-1)">−</button>
+                  <div class="counter-display" id="cd_gra_ebo">0</div>
+                  <button class="counter-btn" onclick="changeCount('gra_ebo',1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MULTIMEDIA -->
+          <div class="area-section">
+            <div class="area-label">
+              <span class="area-tag multimedia">Multimedia</span>
+              <div class="area-line"></div>
+            </div>
+            <div class="rec-grid">
+              <div class="rec-item" id="ri_mul_ris">
+                <div class="rec-item-label">Rise</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('mul_ris',-1)">−</button>
+                  <div class="counter-display" id="cd_mul_ris">0</div>
+                  <button class="counter-btn" onclick="changeCount('mul_ris',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_mul_sto">
+                <div class="rec-item-label">Storyline</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('mul_sto',-1)">−</button>
+                  <div class="counter-display" id="cd_mul_sto">0</div>
+                  <button class="counter-btn" onclick="changeCount('mul_sto',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_mul_gen">
+                <div class="rec-item-label">Genially</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('mul_gen',-1)">−</button>
+                  <div class="counter-display" id="cd_mul_gen">0</div>
+                  <button class="counter-btn" onclick="changeCount('mul_gen',1)">+</button>
+                </div>
+              </div>
+              <div class="rec-item" id="ri_mul_h5p">
+                <div class="rec-item-label">Video interactivo H5P</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('mul_h5p',-1)">−</button>
+                  <div class="counter-display" id="cd_mul_h5p">0</div>
+                  <button class="counter-btn" onclick="changeCount('mul_h5p',1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- IMPLEMENTACIÓN -->
+          <div class="area-section">
+            <div class="area-label">
+              <span class="area-tag impl">Implementación</span>
+              <div class="area-line"></div>
+            </div>
+            <div class="rec-grid">
+              <div class="rec-item" id="ri_impl_lms">
+                <div class="rec-item-label">Disponibilización LMS</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('impl_lms',-1)">−</button>
+                  <div class="counter-display" id="cd_impl_lms">0</div>
+                  <button class="counter-btn" onclick="changeCount('impl_lms',1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /recursos-section -->
+      </div><!-- /form-panel -->
+
+      <div class="form-footer">
+        <button class="btn-cancel" onclick="cancelForm()">Cancelar</button>
+        <button class="btn-save-block" onclick="saveBlock()">✓ Guardar bloque</button>
+      </div>
+    </div><!-- /paneForm -->
+
+    <!-- RESUMEN GENERAL -->
+    <div style="display:none;flex-direction:column;flex:1;overflow:hidden;" id="paneResumen">
+      <div class="form-panel">
+        <div class="form-title" style="margin-bottom:4px;">Resumen de la semana</div>
+        <div class="form-sub" id="resumenSub">—</div>
+
+        <div class="totales-card" id="totalesCard">
+          <div class="tc-item"><div class="tc-val di" id="tr_di">0</div><div class="tc-label">DI</div></div>
+          <div class="tc-item"><div class="tc-val video" id="tr_video">0</div><div class="tc-label">Video</div></div>
+          <div class="tc-item"><div class="tc-val grafico" id="tr_grafico">0</div><div class="tc-label">Gráfico</div></div>
+          <div class="tc-item"><div class="tc-val multimedia" id="tr_multimedia">0</div><div class="tc-label">Multimedia</div></div>
+          <div class="tc-item"><div class="tc-val impl" id="tr_impl">0</div><div class="tc-label">Implementación</div></div>
+          <div class="tc-item"><div class="tc-val total" id="tr_total">0</div><div class="tc-label">Total</div></div>
+        </div>
+
+        <div class="ritmo-alert ok" id="ritmoAlert" style="display:none;">
+          <span id="ritmoAlertIcon">✅</span>&nbsp;
+          <span id="ritmoAlertText">—</span>
+        </div>
+
+        <div id="resumenBloques"></div>
+      </div>
+
+      <div class="export-bar">
+        <div class="eb-text">
+          <div class="eb-title">Planeación lista para compartir con el equipo</div>
+          <div class="eb-sub">El .md generado es la línea base del sprint que el reporte del viernes usará como referencia.</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-export copy" onclick="copiarResumen()">📋 Copiar resumen</button>
+          <button class="btn-export md" onclick="exportMD()">⬇ Descargar .md</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /app -->
+
+<script>
+// ── DATOS ─────────────────────────────────────────────────────────────────────
+const PROYECTOS_POR_PM = {
+  'Sophia Pacheco': [
+    { id:'s1', nombre:'América',      color:'verde',   ritmo:12 },
+    { id:'s2', nombre:'Ibero México', color:'verde',   ritmo:5  },
+    { id:'s3', nombre:'UDLA',         color:'amarillo',ritmo:9  },
+    { id:'s4', nombre:'UMB',          color:'verde',   ritmo:7  },
+    { id:'s5', nombre:'USS',          color:'rojo',    ritmo:15 },
+    { id:'s6', nombre:'UPEU',         color:'verde',   ritmo:8  },
+    { id:'s7', nombre:'ESAM',         color:'amarillo',ritmo:8  },
+  ],
+  'Andrés Briceño': [
+    { id:'a1', nombre:'Argos',         color:'verde',   ritmo:6 },
+    { id:'a2', nombre:'Banco Popular', color:'verde',   ritmo:6 },
+    { id:'a3', nombre:'F. Orenda',     color:'verde',   ritmo:4 },
+    { id:'a4', nombre:'Vigo & Coruña', color:'amarillo',ritmo:7 },
+    { id:'a5', nombre:'Griky Talent',  color:'verde',   ritmo:4 },
+  ],
+  'Margarita Rosales': [
+    { id:'m1', nombre:'APUS',          color:'verde',   ritmo:8 },
+    { id:'m2', nombre:'Ibero Colombia',color:'amarillo',ritmo:9 },
+    { id:'m3', nombre:'UDDI',          color:'verde',   ritmo:5 },
+  ],
+  'Vilma Perilla': [
+    { id:'v1', nombre:'CESUN',                   color:'verde',   ritmo:7  },
+    { id:'v2', nombre:'EIA - Líderes',            color:'verde',   ritmo:5  },
+    { id:'v3', nombre:'ESIC - Pregrado Marketing',color:'amarillo',ritmo:10 },
+    { id:'v4', nombre:'Indoamérica',              color:'verde',   ritmo:6  },
+    { id:'v5', nombre:'Politécnica',              color:'verde',   ritmo:8  },
+    { id:'v6', nombre:'USAP',                     color:'verde',   ritmo:5  },
+    { id:'v7', nombre:'Vértice - Especialidades', color:'amarillo',ritmo:12 },
+    { id:'v8', nombre:'Vértice - Italiano',       color:'verde',   ritmo:4  },
+  ],
+};
+
+const REC_IDS = [
+  'vid_web','vid_std','vid_ava','vid_pod','vid_aud','vid_pix','vid_bas','vid_int',
+  'mul_sto','mul_ris','mul_pre','mul_inf','mul_act','mul_vst','mul_gen','mul_dis',
+  'gra_inf','gra_pdf','gra_ebo','gra_ban','gra_pre'
+];
+const REC_AREA = {
+  vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',
+  mul_sto:'multimedia',mul_ris:'multimedia',mul_pre:'multimedia',mul_inf:'multimedia',mul_act:'multimedia',mul_vst:'multimedia',mul_gen:'multimedia',mul_dis:'multimedia',
+  gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico'
+};
+const REC_LABEL = {
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
+  mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
+  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar'
+};
+const AREA_LABEL = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico'};
+
+// ── HORAS / HOMBRE ────────────────────────────────────────────────────────────
+const HH = {
+  vid_web:2.5, vid_std:1.5, vid_ava:1.5, vid_pod:0.5,
+  vid_aud:2.5, vid_pix:8,   vid_bas:0.83, vid_int:2.5,
+  mul_sto:2.5, mul_ris:2.5, mul_pre:1.5, mul_inf:1.5,
+  mul_act:0.5, mul_vst:2.5, mul_gen:1.5, mul_dis:1.5,
+  gra_inf:0.83, gra_pdf:0.83, gra_ebo:1.5, gra_ban:0.5, gra_pre:0.83
+};
+const HORAS_SEMANA = 34.5; // 46h × 75% eficiencia
+
+// ── ESTADO ────────────────────────────────────────────────────────────────────
+let bloques = [];     // [{id, proyId, proyNombre, color, curso, up, nota, responsable, counts:{...}}]
+let proyectos = [];
+let semanaStr = '';
+let editingId = null;
+let counts = {};      // contadores del formulario activo
+
+function resetCounts(){ counts = {}; REC_IDS.forEach(id => counts[id]=0); }
+resetCounts();
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(function(){
+  const today = new Date();
+  const diff = today.getDay()===0 ? -6 : 1-today.getDay();
+  const lunes = new Date(today); lunes.setDate(today.getDate()+diff);
+  document.getElementById('selFecha').value = lunes.toISOString().split('T')[0];
+  onFechaChange();
+  const saved = localStorage.getItem('hub_nombre');
+  if(saved){
+    const sel = document.getElementById('selPM');
+    for(let i=0;i<sel.options.length;i++) if(sel.options[i].value===saved){ sel.value=saved; break; }
+    onPMChange();
+  }
+})();
+
+// ── LOCALSTORAGE BRIDGE ───────────────────────────────────────────────────────
+function cargarFichasDeLocalStorage(pm){
+  let fichas=[];
+  try { fichas=JSON.parse(localStorage.getItem('griky_fichas'))||[]; } catch(e){}
+  return fichas
+    .filter(f=>f.pm===pm)
+    .map(f=>({ id:f.id, nombre:f.proyecto, cliente:f.cliente, color:f.sem||'verde', ritmo:Math.round(f.ritmoRec)||0, desdeFicha:true, fichaData:f }));
+}
+
+// ── PM ────────────────────────────────────────────────────────────────────────
+function onPMChange(){
+  const pm = document.getElementById('selPM').value;
+  // Combinar proyectos hardcodeados + los de Ficha (localStorage)
+  const base = PROYECTOS_POR_PM[pm]||[];
+  const deFicha = cargarFichasDeLocalStorage(pm);
+  // Evitar duplicados: si un proyecto de ficha tiene el mismo nombre que uno base, reemplazar
+  const baseNames = new Set(base.map(p=>p.nombre.toLowerCase()));
+  const nuevos = deFicha.filter(f=>!baseNames.has(f.nombre.toLowerCase()));
+  proyectos = [...base, ...nuevos];
+
+  bloques = [];
+  renderBlocksList();
+  updateRitmoChips();
+  showPane('welcome');
+  // Llenar select de proyectos en el form
+  const sel = document.getElementById('f_proyecto');
+  sel.innerHTML = '<option value="">Seleccionar proyecto…</option>';
+  proyectos.forEach(p => {
+    const tag = p.desdeFicha ? ' (Ficha)' : '';
+    sel.innerHTML += `<option value="${p.id}">${p.nombre}${tag}</option>`;
+  });
+}
+
+function onFechaChange(){
+  const val = document.getElementById('selFecha').value;
+  if(!val) return;
+  const d = new Date(val+'T12:00:00');
+  const vie = new Date(d); vie.setDate(d.getDate()+4);
+  const fmt = dt => dt.toLocaleDateString('es-CO',{day:'numeric',month:'short'});
+  semanaStr = fmt(d)+' – '+fmt(vie);
+  document.querySelector('.logo-sub').textContent = semanaStr;
+}
+
+// ── FORM ──────────────────────────────────────────────────────────────────────
+function showForm(editId){
+  editingId = editId||null;
+  resetCounts();
+
+  // Reset curso UI
+  document.getElementById('f_curso_select').style.display = 'none';
+  document.getElementById('f_curso').style.display = 'block';
+  document.getElementById('fichaRitmoBanner').style.display = 'none';
+
+  if(editId){
+    const b = bloques.find(x=>x.id===editId);
+    if(b){
+      document.getElementById('f_proyecto').value = b.proyId;
+      document.getElementById('f_curso').value = b.curso;
+      document.getElementById('f_up').value = b.up;
+      document.getElementById('f_nota').value = b.nota;
+      Object.assign(counts, b.counts);
+      // Trigger proyecto change to load curso dropdown if ficha project
+      onProyectoChange();
+      if(b.curso){
+        document.getElementById('f_curso_select').value = b.curso;
+        document.getElementById('f_curso').value = b.curso;
+      }
+    }
+    document.getElementById('formTitle').textContent = 'Editar bloque de trabajo';
+  } else {
+    document.getElementById('f_proyecto').value = '';
+    document.getElementById('f_curso').value = '';
+    document.getElementById('f_curso_select').value = '';
+    document.getElementById('f_up').value = '';
+    document.getElementById('f_nota').value = '';
+    document.getElementById('formTitle').textContent = 'Nuevo bloque de trabajo';
+  }
+
+  REC_IDS.forEach(id => updateCounterUI(id));
+  showPane('form');
+}
+
+function onProyectoChange(){
+  const proyId = document.getElementById('f_proyecto').value;
+  const proy = proyectos.find(p=>p.id===proyId);
+  const banner = document.getElementById('fichaRitmoBanner');
+  const cursoSelect = document.getElementById('f_curso_select');
+  const cursoInput = document.getElementById('f_curso');
+
+  // Reset curso dropdown
+  cursoSelect.style.display = 'none';
+  cursoSelect.innerHTML = '<option value="">Seleccionar curso…</option>';
+
+  if(proy && proy.desdeFicha && proy.fichaData){
+    const ficha = proy.fichaData;
+
+    // Pre-llenar recursos con el ritmo por tipo de la Ficha
+    if(ficha.ritmoPorTipo){
+      resetCounts();
+      Object.entries(ficha.ritmoPorTipo).forEach(([id,val])=>{
+        if(counts.hasOwnProperty(id)) counts[id] = Math.round(val);
+      });
+      REC_IDS.forEach(id => updateCounterUI(id));
+      banner.style.display = 'block';
+    }
+
+    // Llenar dropdown de cursos desde la Ficha
+    if(ficha.cursos && ficha.cursos.length>0){
+      ficha.cursos.forEach(c=>{
+        cursoSelect.innerHTML += `<option value="${c.nombre}">${c.nombre} (${c.unidades} ${ficha.tipoUP||'Unidades'})</option>`;
+      });
+      cursoSelect.style.display = 'block';
+      cursoInput.style.display = 'none';
+    } else {
+      cursoInput.style.display = 'block';
+    }
+  } else {
+    banner.style.display = 'none';
+    cursoInput.style.display = 'block';
+  }
+}
+
+function cancelForm(){
+  showPane(bloques.length>0 ? 'resumen' : 'welcome');
+  // Reset curso UI
+  document.getElementById('f_curso_select').style.display = 'none';
+  document.getElementById('f_curso').style.display = 'block';
+  document.getElementById('fichaRitmoBanner').style.display = 'none';
+}
+
+function changeCount(id, delta){
+  counts[id] = Math.max(0, (counts[id]||0)+delta);
+  updateCounterUI(id);
+}
+
+function updateCounterUI(id){
+  const val = counts[id]||0;
+  const disp = document.getElementById('cd_'+id);
+  const item = document.getElementById('ri_'+id);
+  if(disp){ disp.textContent = val; disp.className = 'counter-display'+(val>0?' active':''); }
+  if(item) item.className = 'rec-item'+(val>0?' has-value':'');
+}
+
+function saveBlock(){
+  try {
+    const proyId = document.getElementById('f_proyecto').value;
+    if(!proyId){ alert('Selecciona un proyecto'); return; }
+
+    const total = REC_IDS.reduce((a,id)=>a+(counts[id]||0),0);
+    if(total===0){ alert('Agrega al menos un recurso'); return; }
+
+    const proy = proyectos.find(p=>p.id===proyId);
+    const bloque = {
+      id: editingId || 'b_'+Date.now(),
+      proyId,
+      proyNombre: proy?.nombre||'—',
+      color: proy?.color||'verde',
+      curso: document.getElementById('f_curso_select').value || document.getElementById('f_curso').value||'',
+      up: document.getElementById('f_up').value||'',
+      nota: document.getElementById('f_nota').value||'',
+      counts: {...counts},
+      total,
+    };
+
+    if(editingId){
+      const idx = bloques.findIndex(x=>x.id===editingId);
+      if(idx>=0) bloques[idx]=bloque;
+    } else {
+      bloques.push(bloque);
+    }
+    editingId = null;
+
+    renderBlocksList();
+    renderResumen();
+    updateRitmoChips();
+    showPane('resumen');
+  } catch(e) {
+    console.error('Error en saveBlock:', e);
+    alert('Error al guardar bloque: '+e.message);
+  }
+}
+
+// ── RENDER BLOCKS ─────────────────────────────────────────────────────────────
+function renderBlocksList(){
+  const list = document.getElementById('blocksList');
+  let empty = document.getElementById('emptyBlocks');
+  // Si emptyBlocks fue destruido por innerHTML='', recrearlo
+  if(!empty){
+    empty = document.createElement('div');
+    empty.className = 'empty-blocks';
+    empty.id = 'emptyBlocks';
+    empty.innerHTML = '<div style="font-size:48px;">📦</div><div style="font-size:13px;color:var(--gray);text-align:center;line-height:1.6;">Agrega bloques de trabajo.<br>Cada bloque = un conjunto de recursos para un<br>proyecto · curso · UP.</div>';
+  }
+  if(bloques.length===0){ list.innerHTML=''; list.appendChild(empty); empty.style.display='flex'; return; }
+  empty.style.display='none';
+  // Remover empty del DOM antes de limpiar para no destruirlo
+  if(empty.parentNode) empty.parentNode.removeChild(empty);
+  list.innerHTML='';
+
+  bloques.forEach(b => {
+    // Pills de recursos
+    const areaCount = {di:0,video:0,grafico:0,multimedia:0,impl:0};
+    REC_IDS.forEach(id=>{ areaCount[REC_AREA[id]]+=(b.counts[id]||0); });
+    const pills = Object.entries(areaCount)
+      .filter(([,v])=>v>0)
+      .map(([k,v])=>`<span class="wb-pill ${k}">${AREA_LABEL[k]}: ${v}</span>`)
+      .join('');
+
+    const div = document.createElement('div');
+    div.className = 'work-block';
+    div.id = 'wb_'+b.id;
+    div.innerHTML=`
+      <div class="wb-header">
+        <div class="wb-dot ${b.color}"></div>
+        <div class="wb-info">
+          <div class="wb-proj">${b.proyNombre}</div>
+          <div class="wb-sub">${[b.curso,b.up].filter(Boolean).join(' · ')||'Sin especificar'}</div>
+        </div>
+        <div class="wb-total">${b.total}</div>
+        <button class="wb-del" onclick="event.stopPropagation();deleteBlock('${b.id}')">×</button>
+      </div>
+      ${pills?`<div class="wb-pills">${pills}</div>`:''}`;
+    div.onclick = () => showForm(b.id);
+    list.appendChild(div);
+  });
+
+  // Footer totals
+  const totalComprometidos = bloques.reduce((a,b)=>a+b.total,0);
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  const pct = totalRitmo>0?Math.min(100,Math.round((totalComprometidos/totalRitmo)*100)):0;
+  document.getElementById('ft_total').textContent = totalComprometidos;
+  const bar = document.getElementById('ft_bar');
+  bar.style.width = pct+'%';
+  bar.className = 'progress-fill'+(pct>=90?' ok':pct>=60?' warn':'');
+  const st = document.getElementById('ft_status');
+  if(totalRitmo===0){ st.textContent='Selecciona un PM para ver el ritmo'; }
+  else { st.textContent=`${totalComprometidos} / ${totalRitmo} recursos requeridos (${pct}%)`; }
+}
+
+function deleteBlock(id){
+  bloques = bloques.filter(b=>b.id!==id);
+  renderBlocksList();
+  renderResumen();
+  updateRitmoChips();
+  if(bloques.length===0) showPane('welcome');
+  else showPane('resumen');
+}
+
+// ── RESUMEN ───────────────────────────────────────────────────────────────────
+function renderResumen(){
+  const pm = document.getElementById('selPM').value||'—';
+  document.getElementById('resumenSub').textContent = `${pm} · ${semanaStr} · ${bloques.length} bloques`;
+
+  // Totales por área
+  const tot = {di:0,video:0,grafico:0,multimedia:0,impl:0,total:0};
+  bloques.forEach(b => REC_IDS.forEach(id=>{
+    const v=b.counts[id]||0;
+    tot[REC_AREA[id]]+=v; tot.total+=v;
+  }));
+  ['di','video','grafico','multimedia','impl','total'].forEach(k=>{
+    const el=document.getElementById('tr_'+k); if(el) el.textContent=tot[k];
+  });
+
+  // Ritmo
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  const pct = totalRitmo>0?Math.round((tot.total/totalRitmo)*100):0;
+  const ra = document.getElementById('ritmoAlert');
+  if(totalRitmo>0){
+    ra.style.display='flex';
+    if(pct>=90){ ra.className='ritmo-alert ok'; document.getElementById('ritmoAlertIcon').textContent='✅'; document.getElementById('ritmoAlertText').textContent=`Sprint en ritmo: ${tot.total} de ${totalRitmo} recursos requeridos (${pct}%)`; }
+    else if(pct>=60){ ra.className='ritmo-alert warn'; document.getElementById('ritmoAlertIcon').textContent='⚠️'; document.getElementById('ritmoAlertText').textContent=`Ritmo parcial: ${tot.total} de ${totalRitmo} recursos (${pct}%). Faltan ${totalRitmo-tot.total}.`; }
+    else { ra.className='ritmo-alert low'; document.getElementById('ritmoAlertIcon').textContent='🔴'; document.getElementById('ritmoAlertText').textContent=`Ritmo bajo: ${tot.total} de ${totalRitmo} recursos (${pct}%). Revisa la capacidad del equipo.`; }
+  } else { ra.style.display='none'; }
+
+  // Bloques detalle
+  const rb = document.getElementById('resumenBloques');
+  rb.innerHTML='';
+  bloques.forEach(b=>{
+    let bloqueHH = 0;
+    const lineas = REC_IDS.filter(id=>b.counts[id]>0)
+      .map(id=>{
+        const hh = b.counts[id]*(HH[id]||0);
+        bloqueHH += hh;
+        return `<span style="font-size:12px;margin-right:12px;"><strong>${b.counts[id]}</strong> ${REC_LABEL[id]} <span style="color:var(--gray);font-size:10px;">(${hh}h)</span></span>`;
+      })
+      .join('');
+    rb.innerHTML+=`
+      <div style="background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:14px 18px;margin-bottom:10px;box-shadow:var(--sh);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--${b.color==='verde'?'green':b.color==='rojo'?'red':'yellow'});flex-shrink:0;"></div>
+          <strong style="font-size:13px;">${b.proyNombre}</strong>
+          ${b.curso?`<span style="font-size:11px;color:var(--gray);">· ${b.curso}</span>`:''}
+          ${b.up?`<span style="font-size:11px;color:var(--gray);">· ${b.up}</span>`:''}
+          <span style="margin-left:auto;font-size:11px;font-weight:700;color:var(--yellow);background:rgba(245,166,35,.1);padding:2px 8px;border-radius:4px;">${bloqueHH}h</span>
+        </div>
+        <div style="flex-wrap:wrap;display:flex;gap:4px;">${lineas}</div>
+        ${b.nota?`<div style="font-size:11px;color:var(--gray);margin-top:6px;font-style:italic;">${b.nota}</div>`:''}
+      </div>`;
+  });
+}
+
+// ── RITMO CHIPS SUBHEADER ─────────────────────────────────────────────────────
+function updateRitmoChips(){
+  const total = bloques.reduce((a,b)=>a+b.total,0);
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  const pct = totalRitmo>0?Math.round((total/totalRitmo)*100):0;
+  document.getElementById('rc_comprometidos').textContent = total;
+  document.getElementById('rc_requeridos').textContent = totalRitmo>0?totalRitmo:'—';
+  const pctEl = document.getElementById('rc_pct');
+  pctEl.textContent = totalRitmo>0?pct+'%':'—';
+  pctEl.className = 'rchip-val '+(pct>=90?'ok':pct>=60?'':'over');
+
+  // h/h calculation
+  let hhTotal = 0;
+  bloques.forEach(b => {
+    REC_IDS.forEach(id => { hhTotal += (b.counts[id]||0) * (HH[id]||0); });
+  });
+  const personasReq = Math.ceil(hhTotal / HORAS_SEMANA);
+  document.getElementById('rc_hh').textContent = hhTotal + 'h';
+  document.getElementById('rc_personas').textContent = personasReq;
+  const personasEl = document.getElementById('rc_personas');
+  personasEl.className = 'rchip-val '+(personasReq<=3?'ok':personasReq<=6?'':'over');
+  personasEl.style.color = '';
+}
+
+// ── PANES ─────────────────────────────────────────────────────────────────────
+function showPane(id){
+  document.getElementById('paneWelcome').style.display   = id==='welcome'?'flex':'none';
+  document.getElementById('paneForm').style.display      = id==='form'?'flex':'none';
+  document.getElementById('paneResumen').style.display   = id==='resumen'?'flex':'none';
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function exportMD(){
+  const pm = document.getElementById('selPM').value||'—';
+  const objetivo = document.getElementById('inputObjetivo').value||'—';
+  const fecha = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const fn = `planeacion-${semanaStr.replace(/[^a-zA-Z0-9]/g,'-')}-${pm.split(' ')[0].toLowerCase()}.md`;
+
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  const totalComp = bloques.reduce((a,b)=>a+b.total,0);
+
+  let bloquesMD = '';
+  bloques.forEach((b,i) => {
+    bloquesMD += `\n### Bloque ${i+1}: ${b.proyNombre}${b.curso?' — '+b.curso:''}${b.up?' · '+b.up:''}\n`;
+    if(b.nota) bloquesMD += `**Nota:** ${b.nota}\n`;
+    bloquesMD += '\n| Área | Tipo | Cantidad |\n|---|---|---|\n';
+    REC_IDS.filter(id=>b.counts[id]>0).forEach(id=>{
+      bloquesMD += `| ${AREA_LABEL[REC_AREA[id]]} | ${REC_LABEL[id]} | **${b.counts[id]}** |\n`;
+    });
+    bloquesMD += `\n**Subtotal bloque:** ${b.total} recursos\n`;
+  });
+
+  const md = `# Planeación Semanal — Griky Fábrica
+**PM:** ${pm}
+**Semana:** ${semanaStr}
+**Generada:** ${fecha}
+**Objetivo:** ${objetivo}
+
+---
+
+## Resumen del sprint
+
+| Métrica | Valor |
+|---|---|
+| Recursos comprometidos | **${totalComp}** |
+| Ritmo requerido | ${totalRitmo} rec/sem |
+| Cobertura del sprint | ${totalRitmo>0?Math.round((totalComp/totalRitmo)*100)+'%':'—'} |
+| Bloques de trabajo | ${bloques.length} |
+
+---
+
+## Bloques de trabajo
+${bloquesMD}
+---
+_Planeación generada · Griky Fábrica · ${fecha}_
+_Línea base del sprint — el reporte del viernes comparará comprometido vs. entregado._
+`;
+
+  // ── GUARDAR EN LOCALSTORAGE para Seguimiento Semanal ──
+  guardarPlaneacionEnLS(pm, objetivo);
+
+  const blob = new Blob([md],{type:'text/markdown'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=fn; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// buildPlaneacionJSON kept for potential Hub sync use
+function buildPlaneacionJSON(pm, objetivo){
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  const totalComp = bloques.reduce((a,b)=>a+b.total,0);
+  const bloquesJSON = bloques.map((b,i)=>{
+    const counts={};
+    REC_IDS.filter(id=>b.counts[id]>0).forEach(id=>{ counts[id]=b.counts[id]; });
+    return { proyecto:b.proyNombre, curso:b.curso||'', up:b.up||'', nota:b.nota||'', counts, total:b.total };
+  });
+
+  let fichas=[];
+  try { fichas=JSON.parse(localStorage.getItem('griky_fichas'))||[]; } catch(e){}
+  const proyJSON = [];
+  const porProy={};
+  bloques.forEach(b=>{
+    if(!porProy[b.proyNombre]) porProy[b.proyNombre]={nombre:b.proyNombre,totalRec:0};
+    porProy[b.proyNombre].totalRec+=b.total;
+  });
+  Object.values(porProy).forEach(p=>{
+    const ficha=fichas.find(f=>f.pm===pm && f.proyecto.toLowerCase()===p.nombre.toLowerCase());
+    proyJSON.push({
+      nombre:p.nombre,
+      comprometidosSemana:p.totalRec,
+      totalRecProyecto:ficha?ficha.totalRec:0,
+      inicio:ficha?ficha.inicio:'', cierre:ficha?ficha.cierre:'',
+      nCursos:ficha?ficha.nCursos:0
+    });
+  });
+
+  return {
+    tipo:'planeacion', version:'1.0',
+    pm, semana:semanaStr, objetivo,
+    fecha:new Date().toISOString(),
+    totalComprometidos:totalComp, totalRitmo,
+    cobertura:totalRitmo>0?Math.round((totalComp/totalRitmo)*100):0,
+    bloques:bloquesJSON,
+    proyectos:proyJSON
+  };
+}
+
+function guardarPlaneacionEnLS(pm, objetivo){
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  const totalComp = bloques.reduce((a,b)=>a+b.total,0);
+
+  // Calcular totales por proyecto con detalle de recursos
+  const porProyecto = {};
+  bloques.forEach(b => {
+    if(!porProyecto[b.proyNombre]) porProyecto[b.proyNombre] = { nombre:b.proyNombre, color:b.color, bloques:[], totalRec:0 };
+    const detalle = {};
+    REC_IDS.forEach(id => { if(b.counts[id]>0) detalle[id]=b.counts[id]; });
+    porProyecto[b.proyNombre].bloques.push({ curso:b.curso, up:b.up, nota:b.nota, counts:detalle, total:b.total });
+    porProyecto[b.proyNombre].totalRec += b.total;
+  });
+
+  // Buscar datos de Ficha para cada proyecto (para % planeado)
+  let fichas=[];
+  try { fichas=JSON.parse(localStorage.getItem('griky_fichas'))||[]; } catch(e){}
+
+  Object.values(porProyecto).forEach(p => {
+    const ficha = fichas.find(f=>f.pm===pm && f.proyecto.toLowerCase()===p.nombre.toLowerCase());
+    if(ficha){
+      p.totalRecProyecto = ficha.totalRec;
+      p.cierre = ficha.cierre;
+      p.inicio = ficha.inicio;
+      p.cursos = ficha.cursos;
+      p.nCursos = ficha.nCursos;
+      p.tipoUP = ficha.tipoUP;
+      p.totalUP = ficha.totalUP;
+    }
+  });
+
+  const planeacion = {
+    pm, semana:semanaStr, objetivo,
+    fecha: new Date().toISOString(),
+    totalComprometidos: totalComp,
+    totalRitmo,
+    proyectos: Object.values(porProyecto)
+  };
+
+  // Guardar — reemplazar si ya hay una para el mismo PM y semana
+  let planes=[];
+  try { planes=JSON.parse(localStorage.getItem('griky_planeaciones'))||[]; } catch(e){}
+  const idx = planes.findIndex(p=>p.pm===pm && p.semana===semanaStr);
+  if(idx>=0) planes[idx]=planeacion; else planes.push(planeacion);
+  localStorage.setItem('griky_planeaciones', JSON.stringify(planes));
+}
+
+function copiarResumen(){
+  const pm = document.getElementById('selPM').value||'—';
+  const totalComp = bloques.reduce((a,b)=>a+b.total,0);
+  const totalRitmo = proyectos.reduce((a,p)=>a+p.ritmo,0);
+  let txt = `📅 Planeación ${semanaStr} — ${pm}\n🎯 Objetivo: ${document.getElementById('inputObjetivo').value||'—'}\n📦 Total comprometidos: ${totalComp} / ${totalRitmo} requeridos\n\n`;
+  bloques.forEach(b => {
+    txt += `• ${b.proyNombre}${b.curso?' ('+b.curso+(b.up?' · '+b.up:'')+ ')':''}: ${b.total} recursos\n`;
+  });
+  navigator.clipboard.writeText(txt).then(()=>alert('Resumen copiado ✓'));
+}
+
+// Mostrar welcome al inicio
+showPane('welcome');
+</script>
+</body>
+</html>

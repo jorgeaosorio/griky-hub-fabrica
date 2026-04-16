@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fábrica Hub · Griky</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ──────────────────────────────────────────────────────────────── */
+:root {
+  --navy:    #22304C;
+  --navy2:   #1a2539;
+  --navy3:   #131d2e;
+  --red:     #FF2D55;
+  --red2:    #e01f45;
+  --green:   #2BC168;
+  --yellow:  #F5A623;
+  --gray:    #667078;
+  --light:   #F6F7FB;
+  --mid:     #E2E8F0;
+  --white:   #ffffff;
+  --ra: rgba(255,45,85,.10);
+  --rb: rgba(255,45,85,.22);
+  --rc: rgba(255,45,85,.06);
+  --na: rgba(34,48,76,.06);
+  --nb: rgba(34,48,76,.55);
+  --r: 12px;
+  --sh: 0 2px 16px rgba(34,48,76,.10);
+  --sh2: 0 8px 32px rgba(34,48,76,.16);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--light);
+  color: var(--navy);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
+
+/* ── TOPBAR ──────────────────────────────────────────────────────────────── */
+.topbar {
+  background: var(--navy3);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.topbar::before {
+  content:'';
+  position: absolute; top:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--red) 30%, transparent 100%);
+}
+
+.topbar-inner {
+  position: relative; z-index: 1;
+  display: flex; align-items: center;
+  padding: 0 32px;
+  height: 60px;
+  gap: 24px;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800; font-size: 16px; color: var(--white);
+  flex-shrink: 0;
+}
+
+.logo-name {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700; font-size: 17px;
+  color: var(--white); letter-spacing: -0.3px;
+}
+
+.logo-sep {
+  width: 1px; height: 18px;
+  background: rgba(255,255,255,.15);
+  margin: 0 2px;
+}
+
+.logo-sub {
+  font-size: 11px; color: rgba(255,255,255,.4);
+  font-weight: 400; letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* NAV TABS */
+.nav-tabs {
+  display: flex; gap: 2px;
+  margin-left: 24px;
+}
+
+.nav-tab {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,.45);
+  cursor: pointer;
+  transition: all .2s;
+  border: none; background: transparent;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: .2px;
+}
+
+.nav-tab:hover { color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); }
+.nav-tab.active { color: var(--white); background: rgba(255,255,255,.10); }
+
+/* TOPBAR RIGHT */
+.topbar-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 16px;
+}
+
+.day-badge {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .5px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+}
+
+.day-badge.lunes { background: rgba(43,193,104,.15); color: var(--green); border: 1px solid rgba(43,193,104,.3); }
+.day-badge.viernes { background: var(--ra); color: var(--red); border: 1px solid var(--rb); }
+.day-badge.otro { background: rgba(255,255,255,.07); color: rgba(255,255,255,.4); border: 1px solid rgba(255,255,255,.1); }
+
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px 5px 5px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; cursor: pointer;
+  transition: all .2s;
+}
+
+.user-chip:hover { background: rgba(255,255,255,.12); }
+
+.user-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700; font-size: 11px; color: var(--white);
+}
+
+.user-name { font-size: 12px; color: rgba(255,255,255,.7); font-weight: 500; }
+
+/* ── VIEWS ───────────────────────────────────────────────────────────────── */
+.view { display: none; flex:1; flex-direction: column; }
+.view.active { display: flex; }
+
+/* ── HOME VIEW ───────────────────────────────────────────────────────────── */
+.home-header {
+  background: var(--navy2);
+  padding: 28px 32px 0;
+  position: relative; overflow: hidden;
+}
+
+.home-header::after {
+  content:'';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: rgba(255,255,255,.06);
+}
+
+.home-bg-shape {
+  position: absolute; right: -40px; top: -60px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,45,85,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.home-header-inner {
+  position: relative; z-index: 1;
+  display: flex; align-items: flex-end; gap: 32px;
+  padding-bottom: 24px;
+}
+
+.greeting-block {}
+
+.greeting-eyebrow {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 6px;
+}
+
+.greeting-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 26px; font-weight: 800;
+  color: var(--white); letter-spacing: -0.5px;
+  line-height: 1.1; margin-bottom: 6px;
+}
+
+.greeting-sub {
+  font-size: 13px; color: rgba(255,255,255,.45);
+  font-weight: 300;
+}
+
+.header-stats {
+  margin-left: auto;
+  display: flex; gap: 12px;
+}
+
+.hstat {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--r);
+  padding: 12px 18px;
+  text-align: center; min-width: 90px;
+}
+
+.hstat-val {
+  font-family: 'Roboto', sans-serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--white); line-height: 1;
+  margin-bottom: 4px;
+}
+
+.hstat-val.green { color: var(--green); }
+.hstat-val.yellow { color: var(--yellow); }
+.hstat-val.red { color: var(--red); }
+
+.hstat-label {
+  font-size: 10px; color: rgba(255,255,255,.35);
+  font-weight: 500; letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* ACTION BANNER */
+.action-banner {
+  margin: 0 32px;
+  transform: translateY(-50%);
+}
+
+.action-card {
+  border-radius: var(--r);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: var(--sh2);
+  cursor: pointer;
+  transition: all .2s;
+  border: 1px solid transparent;
+}
+
+.action-card:hover { transform: translateY(-1px); box-shadow: 0 12px 40px rgba(34,48,76,.2); }
+
+.action-card.lunes { background: linear-gradient(135deg, #1e9a56 0%, var(--green) 100%); }
+.action-card.viernes { background: linear-gradient(135deg, var(--red2) 0%, var(--red) 100%); }
+.action-card.otro { background: var(--white); border-color: var(--mid); }
+
+.action-icon { font-size: 28px; flex-shrink: 0; }
+
+.action-text {}
+.action-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--white); margin-bottom: 3px;
+}
+.action-card.otro .action-title { color: var(--navy); }
+
+.action-sub { font-size: 12px; color: rgba(255,255,255,.7); font-weight: 300; }
+.action-card.otro .action-sub { color: var(--gray); }
+
+.action-arrow {
+  margin-left: auto;
+  font-size: 20px; color: rgba(255,255,255,.5);
+  transition: transform .2s;
+}
+.action-card:hover .action-arrow { transform: translateX(4px); }
+.action-card.otro .action-arrow { color: var(--mid); }
+
+/* HOME BODY */
+.home-body {
+  padding: 0 32px 32px;
+  flex: 1; overflow-y: auto;
+}
+
+.home-body::-webkit-scrollbar { width: 4px; }
+.home-body::-webkit-scrollbar-thumb { background: var(--mid); border-radius: 2px; }
+
+/* SECTION HEADER */
+.sec-hdr {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.sec-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--navy); letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+.sec-link {
+  font-size: 12px; color: var(--red);
+  font-weight: 500; cursor: pointer;
+  border: none; background: none;
+  font-family: 'Roboto', sans-serif;
+  transition: opacity .2s;
+}
+.sec-link:hover { opacity: .7; }
+
+/* PROJECTS GRID */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.proj-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  box-shadow: var(--sh);
+  cursor: pointer;
+  transition: all .2s;
+  position: relative; overflow: hidden;
+}
+
+.proj-card::before {
+  content:'';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+
+.proj-card.verde::before { background: var(--green); }
+.proj-card.amarillo::before { background: var(--yellow); }
+.proj-card.rojo::before { background: var(--red); }
+
+.proj-card:hover { transform: translateY(-2px); box-shadow: var(--sh2); border-color: transparent; }
+
+.proj-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 10px;
+  margin-bottom: 12px;
+}
+
+.proj-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: var(--navy); line-height: 1.3;
+}
+
+.proj-client {
+  font-size: 11px; color: var(--gray);
+  font-weight: 400; margin-top: 2px;
+}
+
+.sem-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 4px;
+}
+.sem-dot.verde { background: var(--green); }
+.sem-dot.amarillo { background: var(--yellow); }
+.sem-dot.rojo { background: var(--red); }
+
+.proj-progress {
+  margin-bottom: 12px;
+}
+
+.prog-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.prog-label { font-size: 11px; color: var(--gray); font-weight: 500; }
+.prog-pct { font-size: 12px; font-weight: 700; color: var(--navy); }
+
+.prog-bar {
+  height: 5px; background: var(--light);
+  border-radius: 3px; overflow: hidden;
+}
+
+.prog-fill {
+  height: 100%; border-radius: 3px;
+  transition: width .6s ease;
+}
+
+.prog-fill.verde { background: var(--green); }
+.prog-fill.amarillo { background: var(--yellow); }
+.prog-fill.rojo { background: var(--red); }
+
+.proj-meta {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+
+.meta-pill {
+  font-size: 10px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px;
+  letter-spacing: .3px;
+}
+
+.meta-pill.fecha { background: var(--na); color: var(--navy); }
+.meta-pill.sprint { background: rgba(43,193,104,.1); color: #1e9a56; }
+.meta-pill.alert { background: var(--ra); color: var(--red); }
+
+/* MODULES GRID */
+.mod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.mod-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--r);
+  padding: 18px 18px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: var(--sh);
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.mod-card:hover {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px var(--ra), var(--sh2);
+  transform: translateY(-1px);
+}
+
+.mod-card.disabled {
+  opacity: .45; cursor: not-allowed;
+  filter: grayscale(.4);
+}
+
+.mod-card.disabled:hover {
+  border-color: var(--mid);
+  box-shadow: var(--sh);
+  transform: none;
+}
+
+.mod-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+
+.mod-icon.red { background: var(--ra); }
+.mod-icon.navy { background: var(--na); }
+.mod-icon.green { background: rgba(43,193,104,.1); }
+.mod-icon.yellow { background: rgba(245,166,35,.1); }
+
+.mod-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--navy); line-height: 1.3;
+}
+
+.mod-desc {
+  font-size: 11px; color: var(--gray);
+  font-weight: 400; line-height: 1.5;
+}
+
+.mod-status {
+  margin-top: auto;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .5px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+  width: fit-content;
+}
+
+.mod-status.live { background: rgba(43,193,104,.1); color: #1e9a56; }
+.mod-status.soon { background: var(--na); color: var(--navy); opacity: .6; }
+.mod-status.wip { background: rgba(245,166,35,.12); color: #c47d00; }
+
+/* QUICK LINKS */
+.links-row {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.quick-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: 8px;
+  font-size: 12px; font-weight: 500;
+  color: var(--navy);
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: var(--sh);
+  text-decoration: none;
+}
+
+.quick-link:hover {
+  border-color: var(--navy);
+  box-shadow: var(--sh2);
+}
+
+.quick-link-icon { font-size: 16px; }
+
+/* SPRINT WIDGET */
+.sprint-widget {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--r);
+  padding: 20px;
+  box-shadow: var(--sh);
+  margin-bottom: 28px;
+}
+
+.sprint-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sprint-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--navy);
+}
+
+.sprint-week {
+  font-size: 11px; color: var(--gray);
+  font-weight: 400;
+}
+
+.sprint-rows { display: flex; flex-direction: column; gap: 8px; }
+
+.sprint-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--light);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.sprint-resource { flex: 1; font-weight: 500; color: var(--navy); }
+.sprint-project { color: var(--gray); font-size: 11px; flex: 1; }
+.sprint-estado { font-size: 14px; }
+
+.sprint-footer {
+  margin-top: 14px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+}
+
+.sprint-pct-label { font-size: 11px; color: var(--gray); }
+.sprint-pct-val { font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 700; }
+.sprint-pct-val.high { color: var(--green); }
+.sprint-pct-val.mid { color: var(--yellow); }
+.sprint-pct-val.low { color: var(--red); }
+
+/* ── PLACEHOLDER VIEWS ───────────────────────────────────────────────────── */
+.placeholder-view {
+  flex: 1;
+  display: flex; align-items: center;
+  justify-content: center;
+  flex-direction: column; gap: 16px;
+  padding: 40px;
+}
+
+.ph-icon { font-size: 48px; opacity: .3; }
+
+.ph-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--navy); opacity: .4;
+}
+
+.ph-sub { font-size: 13px; color: var(--gray); text-align: center; max-width: 360px; line-height: 1.6; }
+
+.ph-badge {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--ra); color: var(--red);
+  border: 1px solid var(--rb);
+}
+
+/* ── MODAL / PROFILE SELECTOR ────────────────────────────────────────────── */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(13,19,31,.7);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+
+.modal-bg.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 32px;
+  width: 440px;
+  max-width: 90vw;
+  box-shadow: 0 24px 60px rgba(13,19,31,.25);
+  transform: translateY(12px);
+  transition: transform .25s;
+}
+
+.modal-bg.open .modal { transform: translateY(0); }
+
+.modal-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px; font-weight: 800;
+  color: var(--navy); margin-bottom: 6px;
+}
+
+.modal-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; line-height: 1.5; }
+
+.modal-field { margin-bottom: 16px; }
+
+.modal-label {
+  display: block; font-size: 11px; font-weight: 700;
+  letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gray); margin-bottom: 6px;
+}
+
+.modal-input, .modal-select {
+  width: 100%;
+  background: var(--light);
+  border: 1.5px solid var(--mid);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px; color: var(--navy);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  appearance: none;
+}
+
+.modal-input:focus, .modal-select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px var(--ra);
+}
+
+.modal-btn {
+  width: 100%; padding: 13px;
+  background: var(--red);
+  color: var(--white);
+  border: none; border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 14px rgba(255,45,85,.3);
+  letter-spacing: .3px;
+}
+
+.modal-btn:hover { background: var(--red2); transform: translateY(-1px); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .topbar-inner { padding: 0 16px; }
+  .home-header { padding: 20px 16px 0; }
+  .action-banner { margin: 0 16px; }
+  .home-body { padding: 0 16px 24px; }
+  .header-stats { display: none; }
+  .nav-tabs { display: none; }
+}
+
+/* ANIM */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.anim { animation: fadeUp .35s ease both; }
+.anim-1 { animation-delay: .05s; }
+.anim-2 { animation-delay: .10s; }
+.anim-3 { animation-delay: .15s; }
+.anim-4 { animation-delay: .20s; }
+.anim-5 { animation-delay: .25s; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" onclick="showView('home')" role="button" aria-label="Ir al inicio del Hub" tabindex="0">
+      <div class="logo-mark" aria-hidden="true">G</div>
+      <span class="logo-name">Griky</span>
+      <div class="logo-sep" aria-hidden="true"></div>
+      <span class="logo-sub">Fábrica Hub</span>
+    </a>
+
+    <nav class="nav-tabs" aria-label="Navegación principal">
+      <button class="nav-tab active" onclick="showView('home');setTab(this)">Inicio</button>
+      <button class="nav-tab" onclick="openModule('griky-dashboard.html');setTab(this)">Dashboard</button>
+      <button class="nav-tab" onclick="openModule('griky-ficha-proyecto.html');setTab(this)">Proyectos</button>
+      <button class="nav-tab" onclick="openModule('griky-planeacion-semanal.html');setTab(this)">Planeación</button>
+      <button class="nav-tab" onclick="openModule('reporte-pm-griky-v3.html');setTab(this)">Seguimiento</button>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="day-badge" id="dayBadge" aria-label="Día de la semana">—</div>
+      <div class="user-chip" onclick="openModal()" role="button" aria-label="Configurar perfil" tabindex="0">
+        <div class="user-avatar" id="userAvatar" aria-hidden="true">?</div>
+        <span class="user-name" id="userName">Seleccionar PM</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── HOME VIEW ─────────────────────────────────────────────────────────── -->
+<div class="view active" id="view-home">
+
+  <div class="home-header">
+    <div class="home-bg-shape"></div>
+    <div class="home-header-inner">
+      <div class="greeting-block">
+        <div class="greeting-eyebrow" id="greetingEyebrow">Equipo Dedicado</div>
+        <h1 class="greeting-name" id="greetingName">Bienvenido a Fábrica Hub</h1>
+        <p class="greeting-sub" id="greetingSub">Selecciona tu perfil para personalizar tu espacio de trabajo</p>
+      </div>
+      <div class="header-stats" id="headerStats">
+        <div class="hstat">
+          <div class="hstat-val" id="statProyectos">—</div>
+          <div class="hstat-label">Proyectos</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-val green" id="statVerdes">—</div>
+          <div class="hstat-label">En verde</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-val yellow" id="statAmarillo">—</div>
+          <div class="hstat-label">En riesgo</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-val red" id="statRojo">—</div>
+          <div class="hstat-label">Críticos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION BANNER -->
+  <div class="action-banner">
+    <div class="action-card" id="actionCard" onclick="handleAction()">
+      <div class="action-icon" id="actionIcon">📋</div>
+      <div class="action-text">
+        <div class="action-title" id="actionTitle">Acción del día</div>
+        <div class="action-sub" id="actionSub">Selecciona tu perfil para ver la acción recomendada</div>
+      </div>
+      <div class="action-arrow">→</div>
+    </div>
+  </div>
+
+  <div class="home-body">
+
+    <!-- PROYECTOS ACTIVOS -->
+    <div class="anim anim-1">
+      <div class="sec-hdr">
+        <span class="sec-title">Proyectos activos</span>
+        <button class="sec-link" onclick="openModule('griky-dashboard.html')">Ver todos →</button>
+      </div>
+      <div class="proj-grid" id="projGrid">
+        <!-- Demo cards -->
+        <div class="proj-card verde anim anim-2" onclick="openModule('griky-dashboard.html')">
+          <div class="proj-top">
+            <div>
+              <div class="proj-name">América</div>
+              <div class="proj-client">ED Sophia Pacheco</div>
+            </div>
+            <div class="sem-dot verde"></div>
+          </div>
+          <div class="proj-progress">
+            <div class="prog-row">
+              <span class="prog-label">Avance</span>
+              <span class="prog-pct">—</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill verde" style="width:0%"></div></div>
+          </div>
+          <div class="proj-meta">
+            <span class="meta-pill fecha">En curso</span>
+          </div>
+        </div>
+
+        <div class="proj-card verde anim anim-3" onclick="openModule('griky-dashboard.html')">
+          <div class="proj-top">
+            <div>
+              <div class="proj-name">Argos</div>
+              <div class="proj-client">ED Andrés Briceño</div>
+            </div>
+            <div class="sem-dot verde"></div>
+          </div>
+          <div class="proj-progress">
+            <div class="prog-row">
+              <span class="prog-label">Avance</span>
+              <span class="prog-pct">—</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill verde" style="width:0%"></div></div>
+          </div>
+          <div class="proj-meta">
+            <span class="meta-pill fecha">En curso</span>
+          </div>
+        </div>
+
+        <div class="proj-card verde anim anim-4" onclick="openModule('griky-dashboard.html')">
+          <div class="proj-top">
+            <div>
+              <div class="proj-name">Ver todos los proyectos →</div>
+              <div class="proj-client">Dashboard completo de Fábrica</div>
+            </div>
+            <div class="sem-dot verde"></div>
+          </div>
+          <div class="proj-progress">
+            <div class="prog-row">
+              <span class="prog-label">23 proyectos activos</span>
+              <span class="prog-pct">4 EDs</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill verde" style="width:100%"></div></div>
+          </div>
+          <div class="proj-meta">
+            <span class="meta-pill fecha">Sophia · Andrés · Margarita · Vilma</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPRINT ACTUAL -->
+    <div class="anim anim-3">
+      <div class="sec-hdr">
+        <span class="sec-title">Sprint actual</span>
+        <button class="sec-link" onclick="openModule('reporte-pm-griky-v3.html')">Ver reporte →</button>
+      </div>
+      <div class="sprint-widget">
+        <div class="sprint-header">
+          <div>
+            <div class="sprint-title">Semana 01-04</div>
+            <div class="sprint-week">Compromisos del lunes · Cierre viernes</div>
+          </div>
+        </div>
+        <div class="sprint-rows">
+          <div class="sprint-row">
+            <div class="sprint-resource">Recurso comprometido 1</div>
+            <div class="sprint-project">— Proyecto</div>
+            <div class="sprint-estado">⏳</div>
+          </div>
+          <div class="sprint-row">
+            <div class="sprint-resource">Recurso comprometido 2</div>
+            <div class="sprint-project">— Proyecto</div>
+            <div class="sprint-estado">⏳</div>
+          </div>
+          <div class="sprint-row">
+            <div class="sprint-resource">Recurso comprometido 3</div>
+            <div class="sprint-project">— Proyecto</div>
+            <div class="sprint-estado">⏳</div>
+          </div>
+        </div>
+        <div class="sprint-footer">
+          <div class="sprint-pct-label">Completa la planeación del lunes para ver el sprint</div>
+          <div class="sprint-pct-val mid">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULOS DEL SISTEMA -->
+    <div class="anim anim-4">
+      <div class="sec-hdr">
+        <span class="sec-title">Módulos del sistema</span>
+      </div>
+      <div class="mod-grid">
+
+        <div class="mod-card" onclick="openModule('griky-ficha-proyecto.html')">
+          <div class="mod-icon navy">📁</div>
+          <div class="mod-name">Ficha de Proyecto</div>
+          <div class="mod-desc">Línea base, estructura pedagógica, recursos por curso y ritmo calculado.</div>
+          <div class="mod-status live">✅ Disponible</div>
+        </div>
+
+        <div class="mod-card" onclick="openModule('griky-planeacion-semanal.html')">
+          <div class="mod-icon green">📅</div>
+          <div class="mod-name">Planeación Semanal</div>
+          <div class="mod-desc">Define el sprint del lunes por bloques de trabajo. Exporta la línea base.</div>
+          <div class="mod-status live">✅ Disponible</div>
+        </div>
+
+        <div class="mod-card" onclick="openModule('reporte-pm-griky-v3.html')">
+          <div class="mod-icon red">📊</div>
+          <div class="mod-name">Seguimiento Semanal</div>
+          <div class="mod-desc">Asistente conversacional del viernes. Genera el .md con SCRUM integrado.</div>
+          <div class="mod-status live">✅ Disponible</div>
+        </div>
+
+        <div class="mod-card" onclick="openModule('griky-dashboard.html')">
+          <div class="mod-icon navy">🗂</div>
+          <div class="mod-name">Dashboard</div>
+          <div class="mod-desc">Vista global de Fábrica y por Equipo Dedicado. Semáforos y ritmo.</div>
+          <div class="mod-status live">✅ Disponible</div>
+        </div>
+
+        <div class="mod-card disabled">
+          <div class="mod-icon yellow">🚦</div>
+          <div class="mod-name">Alistamiento</div>
+          <div class="mod-desc">Checklist de arranque integrado en la Ficha de Proyecto.</div>
+          <div class="mod-status live">✅ En Ficha</div>
+        </div>
+
+        <div class="mod-card disabled">
+          <div class="mod-icon navy">🔗</div>
+          <div class="mod-name">Monday.com</div>
+          <div class="mod-desc">Integración fuente de verdad. Costos, trazabilidad y reportería automática.</div>
+          <div class="mod-status soon">Próximamente</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SINCRONIZACIÓN -->
+    <div class="anim anim-5" id="syncSection">
+      <div class="sec-hdr">
+        <span class="sec-title">Sincronización de datos</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:18px 22px;box-shadow:var(--sh);display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">📤 Exportar datos para consolidación</div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.6;">Exporta los JSONs de Fichas, Planeaciones y Seguimientos guardados en tu navegador. Deposítalos en la carpeta <code style="background:var(--light);border:1px solid var(--mid);padding:1px 5px;border-radius:3px;font-size:11px;">data/</code> de la carpeta compartida.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="syncData()" style="padding:10px 20px;border-radius:8px;border:none;background:var(--red);color:var(--white);font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(255,45,85,.28);transition:all .2s;" onmouseover="this.style.background='#e01f45'" onmouseout="this.style.background='var(--red)'">Sincronizar ahora</button>
+        </div>
+        <div id="syncStatus" style="width:100%;display:none;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.6;margin-top:4px;"></div>
+      </div>
+    </div>
+
+    <!-- CONSOLIDADO DIRECCIÓN (solo visible para Director) -->
+    <div class="anim anim-5" id="directorSection" style="display:none;">
+      <div class="sec-hdr">
+        <span class="sec-title">Consolidado de Dirección</span>
+      </div>
+      <div style="background:var(--white);border:1.5px solid rgba(255,45,85,.18);border-radius:var(--r);padding:22px;box-shadow:var(--sh);margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:240px;">
+            <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;">📊 Generar reporte consolidado</div>
+            <div style="font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:12px;">
+              Lee los seguimientos de todos los PMs guardados en este navegador y genera un reporte ejecutivo con cumplimiento de sprint, avance por proyecto, riesgos y alertas.<br>
+              <span style="font-size:11px;color:var(--gray);font-style:italic;">Nota: solo incluye PMs que hayan usado este mismo navegador. Para consolidación completa desde archivos, usa la tarea programada de los lunes.</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <button onclick="generarConsolidado()" id="btnConsolidar" style="padding:11px 24px;border-radius:8px;border:none;background:var(--navy);color:var(--white);font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(34,48,76,.2);transition:all .2s;" onmouseover="this.style.background='#1a2539'" onmouseout="this.style.background='var(--navy)'">Generar consolidado ahora</button>
+              <button onclick="descargarConsolidado()" id="btnDescargarConsolidado" style="display:none;padding:11px 24px;border-radius:8px;border:1.5px solid var(--mid);background:var(--white);color:var(--navy);font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--mid)';this.style.color='var(--navy)'">⬇ Descargar .md</button>
+            </div>
+          </div>
+          <div id="consolidadoKPIs" style="display:none;display:none;gap:10px;flex-wrap:wrap;"></div>
+        </div>
+        <div id="consolidadoResult" style="display:none;margin-top:16px;background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:16px;max-height:350px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;color:var(--gray);white-space:pre-wrap;line-height:1.7;"></div>
+      </div>
+    </div>
+
+    <!-- ACCESOS RÁPIDOS -->
+    <div class="anim anim-5">
+      <div class="sec-hdr">
+        <span class="sec-title">Accesos rápidos</span>
+      </div>
+      <div class="links-row">
+        <a class="quick-link" href="#" onclick="alert('Conecta tu carpeta de Teams aquí')">
+          <span class="quick-link-icon">📂</span> Carpeta Teams
+        </a>
+        <a class="quick-link" href="https://claude.ai" target="_blank">
+          <span class="quick-link-icon">✳️</span> Claude Projects
+        </a>
+        <a class="quick-link" href="https://monday.com" target="_blank">
+          <span class="quick-link-icon">📋</span> Monday.com
+        </a>
+        <a class="quick-link" href="griky-planeacion-semanal.html">
+          <span class="quick-link-icon">📅</span> Planear semana
+        </a>
+        <a class="quick-link" href="reporte-pm-griky-v3.html">
+          <span class="quick-link-icon">📝</span> Nuevo reporte
+        </a>
+        <a class="quick-link" href="griky-ficha-proyecto.html">
+          <span class="quick-link-icon">➕</span> Nuevo proyecto
+        </a>
+        <a class="quick-link" href="griky-dashboard.html">
+          <span class="quick-link-icon">📊</span> Ver dashboard
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── PROYECTOS VIEW ─────────────────────────────────────────────────────── -->
+<div class="view" id="view-proyectos">
+  <div class="placeholder-view">
+    <div class="ph-icon">📁</div>
+    <div class="ph-title">Ficha de Proyecto</div>
+    <p class="ph-sub">Aquí vivirán las fichas de todos tus proyectos activos: estructura pedagógica, equipo dedicado, ritmo calculado y fecha de cierre. <br><br>Se construye en el próximo sprint.</p>
+    <div class="ph-badge">Módulo 1 · En construcción</div>
+  </div>
+</div>
+
+<!-- ── ALISTAMIENTO VIEW ──────────────────────────────────────────────────── -->
+<div class="view" id="view-alistamiento">
+  <div class="placeholder-view">
+    <div class="ph-icon">🚦</div>
+    <div class="ph-title">Alistamiento de Proyecto</div>
+    <p class="ph-sub">Checklist de arranque: carpeta en Teams, proyecto en Claude, diseño instruccional completado por curso. Sin alistamiento verde, el proyecto no entra a planeación.<br><br>Se construye en el próximo sprint.</p>
+    <div class="ph-badge">Módulo 2 · En construcción</div>
+  </div>
+</div>
+
+<!-- ── PLANEACIÓN VIEW ────────────────────────────────────────────────────── -->
+<div class="view" id="view-planeacion">
+  <div class="placeholder-view">
+    <div class="ph-icon">📅</div>
+    <div class="ph-title">Planeación Semanal</div>
+    <p class="ph-sub">El asistente del lunes. El PM define el sprint: qué unidades pedagógicas y recursos se producirán esta semana, basado en el ritmo calculado de cada proyecto. Genera la línea base para el reporte del viernes.<br><br>Se construye en el próximo sprint.</p>
+    <div class="ph-badge">Módulo 3 · En construcción</div>
+  </div>
+</div>
+
+<!-- ── SEGUIMIENTO VIEW ───────────────────────────────────────────────────── -->
+<div class="view" id="view-seguimiento">
+  <div class="placeholder-view">
+    <div class="ph-icon">📊</div>
+    <div class="ph-title">Seguimiento Semanal</div>
+    <p class="ph-sub">El asistente conversacional del viernes ya está construido y funcional. Ábrelo desde aquí o descárgalo para compartir con tu equipo.</p>
+    <div class="ph-badge">Módulo 4 · Disponible</div>
+    <button class="modal-btn" style="width:auto;padding:12px 28px;margin-top:8px;" onclick="openModule('reporte-pm-griky-v3.html')">
+      Abrir asistente de reporte →
+    </button>
+  </div>
+</div>
+
+<!-- ── DASHBOARD VIEW ────────────────────────────────────────────────────── -->
+<div class="view" id="view-dashboard">
+  <div class="placeholder-view">
+    <div class="ph-icon">🗂</div>
+    <div class="ph-title">Dashboard Fábrica</div>
+    <p class="ph-sub">Vista global con filtros por Equipo Dedicado y proyecto. Semáforos en tiempo real, cumplimiento de sprint, ritmo vs. fecha de cierre y alertas automáticas para el Director y los PMs.<br><br>Se construye en el próximo sprint.</p>
+    <div class="ph-badge">Módulo 5 · En construcción</div>
+  </div>
+</div>
+
+<!-- ── FICHA VIEW ─────────────────────────────────────────────────────────── -->
+<div class="view" id="view-ficha">
+  <div class="placeholder-view">
+    <div class="ph-icon">📋</div>
+    <div class="ph-title">Nueva Ficha de Proyecto</div>
+    <p class="ph-sub">Aquí el PM registrará la línea base del proyecto: datos del contrato, estructura pedagógica, componentes por unidad, equipo dedicado y fecha de cierre. El sistema calculará el ritmo necesario automáticamente.<br><br>Se construye en el próximo sprint.</p>
+    <div class="ph-badge">Módulo 1 · En construcción</div>
+  </div>
+</div>
+
+<!-- ── MODAL PERFIL ────────────────────────────────────────────────────────── -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">¿Quién eres?</div>
+    <p class="modal-sub">Selecciona tu perfil para personalizar el Hub con tus proyectos y equipo dedicado.</p>
+
+    <div class="modal-field">
+      <label class="modal-label" for="inputNombre">Tu nombre</label>
+      <input class="modal-input" id="inputNombre" placeholder="Ej: Sophia Pacheco" />
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label" for="inputRol">Rol</label>
+      <select class="modal-select" id="inputRol">
+        <option value="director">Director de Fábrica</option>
+        <option value="pm">Project Manager</option>
+      </select>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label" for="inputED">Nombre / Equipo Dedicado</label>
+      <select class="modal-select" id="inputED">
+        <option value="">— Seleccionar —</option>
+        <option value="Jorge Osorio">Director de Fábrica (Jorge Osorio)</option>
+        <option value="Sophia Pacheco">ED Sophia Pacheco</option>
+        <option value="Andrés Briceño">ED Andrés Briceño</option>
+        <option value="Margarita Rosales">ED Margarita Rosales</option>
+        <option value="Vilma Perilla">ED Vilma Perilla</option>
+      </select>
+    </div>
+
+    <button class="modal-btn" onclick="saveProfile()">Entrar al Hub →</button>
+  </div>
+</div>
+
+<script>
+// ── ESTADO ────────────────────────────────────────────────────────────────────
+const profile = {
+  nombre: localStorage.getItem('hub_nombre') || '',
+  rol: localStorage.getItem('hub_rol') || 'pm',
+  ed: localStorage.getItem('hub_ed') || ''
+};
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('view-' + id);
+  if (el) el.classList.add('active');
+}
+
+function setTab(btn) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setTabByName(name) {
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.textContent.trim() === name) t.classList.add('active');
+    else t.classList.remove('active');
+  });
+}
+
+// ── DÍA ───────────────────────────────────────────────────────────────────────
+function setupDay() {
+  const day = new Date().getDay(); // 0=dom 1=lun ... 5=vie
+  const badge = document.getElementById('dayBadge');
+  const card = document.getElementById('actionCard');
+  const icon = document.getElementById('actionIcon');
+  const title = document.getElementById('actionTitle');
+  const sub = document.getElementById('actionSub');
+
+  const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const today = days[day];
+
+  if (day === 1) { // Lunes
+    badge.className = 'day-badge lunes';
+    badge.textContent = '🟢 ' + today;
+    card.className = 'action-card lunes';
+    icon.textContent = '📅';
+    title.textContent = 'Es lunes — tiempo de planear el sprint';
+    sub.textContent = 'Define los compromisos de tu equipo para esta semana antes de que arranque la producción.';
+  } else if (day === 5) { // Viernes
+    badge.className = 'day-badge viernes';
+    badge.textContent = '🔴 ' + today;
+    card.className = 'action-card viernes';
+    icon.textContent = '📊';
+    title.textContent = 'Es viernes — cierra el reporte semanal';
+    sub.textContent = 'Registra el seguimiento del sprint y genera el .md para Cowork antes del cierre del día.';
+  } else {
+    badge.className = 'day-badge otro';
+    badge.textContent = today;
+    card.className = 'action-card otro';
+    icon.textContent = '👀';
+    title.textContent = 'Revisa el estado de tus proyectos';
+    sub.textContent = 'Consulta el avance del sprint actual y el semáforo de cada proyecto.';
+  }
+}
+
+function handleAction() {
+  const day = new Date().getDay();
+  if (day === 1) openModule('griky-planeacion-semanal.html');
+  else if (day === 5) openModule('reporte-pm-griky-v3.html');
+  else openModule('griky-dashboard.html');
+}
+
+// ── PERFIL ────────────────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('inputNombre').value = profile.nombre;
+  document.getElementById('inputRol').value = profile.rol;
+  const edSel = document.getElementById('inputED');
+  if (profile.ed) edSel.value = profile.ed;
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+}
+
+function saveProfile() {
+  const nombre = document.getElementById('inputNombre').value.trim();
+  const rol = document.getElementById('inputRol').value;
+  const ed = document.getElementById('inputED').value;
+
+  if (!nombre) { document.getElementById('inputNombre').focus(); return; }
+
+  profile.nombre = nombre;
+  profile.rol = rol;
+  profile.ed = ed;
+
+  localStorage.setItem('hub_nombre', nombre);
+  localStorage.setItem('hub_rol', rol);
+  localStorage.setItem('hub_ed', ed);
+  // Save for auto-detection by Seguimiento Semanal
+  localStorage.setItem('griky_hub_user', JSON.stringify({nombre, rol, ed}));
+
+  applyProfile();
+  updateRoleVisibility();
+  closeModal();
+}
+
+function applyProfile() {
+  if (!profile.nombre) {
+    openModal();
+    return;
+  }
+
+  const first = profile.nombre.split(' ')[0];
+  const initials = profile.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
+  const rolLabel = profile.rol === 'director' ? 'Director de Fábrica' : 'Project Manager';
+
+  document.getElementById('userAvatar').textContent = initials;
+  document.getElementById('userName').textContent = first;
+  document.getElementById('greetingEyebrow').textContent = profile.ed ? `Equipo Dedicado · ${profile.ed}` : rolLabel;
+  document.getElementById('greetingName').textContent = `${greet}, ${first}`;
+  document.getElementById('greetingSub').textContent = `${rolLabel} · ${new Date().toLocaleDateString('es-CO', {weekday:'long', day:'numeric', month:'long'})}`;
+
+  // Demo stats (en el sistema real vendrán de los datos)
+  document.getElementById('statProyectos').textContent = '5';
+  document.getElementById('statVerdes').textContent = '2';
+  document.getElementById('statAmarillo').textContent = '2';
+  document.getElementById('statRojo').textContent = '1';
+}
+
+function openModule(file) {
+  window.location.href = file;
+}
+
+// ── SYNC DATA ────────────────────────────────────────────────────────────────
+function syncData(){
+  const status = document.getElementById('syncStatus');
+  const pm = profile.nombre || 'desconocido';
+  const pmSlug = pm.toLowerCase().replace(/\s+/g,'_');
+  let exported = 0;
+  const details = [];
+
+  // Helper: trigger download
+  function downloadJSON(data, filename){
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // 1. Export Fichas
+  try {
+    const fichas = JSON.parse(localStorage.getItem('griky_fichas')) || [];
+    const misFichas = fichas.filter(f => f.pm === pm);
+    if(misFichas.length > 0){
+      misFichas.forEach(f => {
+        const fn = 'ficha-'+f.proyecto.toLowerCase().replace(/\s+/g,'_')+'-'+pmSlug+'.json';
+        downloadJSON({tipo:'ficha', version:'1.0', ...f}, fn);
+        exported++;
+      });
+      details.push('✅ '+misFichas.length+' ficha(s) de proyecto');
+    } else {
+      details.push('⏭ Sin fichas guardadas');
+    }
+  } catch(e){ details.push('⚠ Error leyendo fichas'); }
+
+  // 2. Export Planeaciones
+  try {
+    const planes = JSON.parse(localStorage.getItem('griky_planeaciones')) || [];
+    const misPlanes = planes.filter(p => p.pm === pm);
+    if(misPlanes.length > 0){
+      misPlanes.forEach(p => {
+        const fn = 'planeacion-'+p.semana.replace(/[^a-zA-Z0-9]/g,'-')+'-'+pmSlug+'.json';
+        downloadJSON({tipo:'planeacion', version:'1.0', ...p}, fn);
+        exported++;
+      });
+      details.push('✅ '+misPlanes.length+' planeación(es) semanal(es)');
+    } else {
+      details.push('⏭ Sin planeaciones guardadas');
+    }
+  } catch(e){ details.push('⚠ Error leyendo planeaciones'); }
+
+  // 3. Export Seguimientos
+  try {
+    const segs = JSON.parse(localStorage.getItem('griky_seguimientos')) || [];
+    const misSegs = segs.filter(s => s.pm === pm);
+    if(misSegs.length > 0){
+      misSegs.forEach(s => {
+        const fn = 'seguimiento-'+s.semana.replace(/[^a-zA-Z0-9]/g,'-')+'-'+pmSlug+'.json';
+        downloadJSON({tipo:'seguimiento', version:'1.0', ...s}, fn);
+        exported++;
+      });
+      details.push('✅ '+misSegs.length+' seguimiento(s) semanal(es)');
+    } else {
+      details.push('⏭ Sin seguimientos guardados');
+    }
+  } catch(e){ details.push('⚠ Error leyendo seguimientos'); }
+
+  // Show result
+  status.style.display = 'block';
+  if(exported > 0){
+    status.style.background = 'rgba(43,193,104,0.08)';
+    status.style.border = '1px solid rgba(43,193,104,0.25)';
+    status.style.color = '#1e9a56';
+    status.innerHTML = '<strong>'+exported+' archivo(s) exportados.</strong> Deposítalos en la carpeta <code>data/</code> de la carpeta compartida.<br>'+details.join('<br>');
+  } else {
+    status.style.background = 'rgba(245,166,35,0.08)';
+    status.style.border = '1px solid rgba(245,166,35,0.25)';
+    status.style.color = '#c47d00';
+    status.innerHTML = '<strong>No hay datos para exportar.</strong> Completa al menos una Ficha, Planeación o Seguimiento primero.<br>'+details.join('<br>');
+  }
+}
+
+// ── CONSOLIDADO DIRECCIÓN ─────────────────────────────────────────────────────
+const REC_LABEL_HUB = {
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
+  mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
+  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar'
+};
+
+let consolidadoMD = '';
+let consolidadoFN = '';
+
+function generarConsolidado(){
+  // Read all seguimientos from localStorage
+  let segs = [];
+  try { segs = JSON.parse(localStorage.getItem('griky_seguimientos')) || []; } catch(e){}
+
+  if(segs.length === 0){
+    alert('No hay seguimientos guardados en este navegador. Los PMs deben completar su Seguimiento Semanal primero.');
+    return;
+  }
+
+  // Find the most recent week
+  const semanas = [...new Set(segs.map(s=>s.semana))];
+  semanas.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+  const semanaActual = segs.reduce((latest, s) => new Date(s.fecha) > new Date(latest.fecha) ? s : latest, segs[0]).semana;
+  const segsWeek = segs.filter(s => s.semana === semanaActual);
+
+  const fecha = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const PMsConocidos = ['Sophia Pacheco','Andrés Briceño','Margarita Rosales','Vilma Perilla'];
+  const PMsReportando = segsWeek.map(s=>s.pm);
+  const PMsPendientes = PMsConocidos.filter(p => !PMsReportando.includes(p));
+
+  // Global metrics
+  const totalComp = segsWeek.reduce((a,s) => a + (s.totalComprometidos||s.cumplimiento?.totalComprometidos||0), 0);
+  const totalEnt = segsWeek.reduce((a,s) => a + (s.totalEntregados||s.cumplimiento?.totalEntregados||0), 0);
+  const pctGlobal = totalComp > 0 ? Math.round((totalEnt/totalComp)*100) : 0;
+
+  // Count semaforos
+  let nVerde=0, nAmarillo=0, nRojo=0;
+  segsWeek.forEach(s => {
+    const sem = s.cierre?.sem || '';
+    if(sem.includes('Verde')) nVerde++;
+    else if(sem.includes('Amarillo')) nAmarillo++;
+    else if(sem.includes('Rojo')) nRojo++;
+  });
+
+  // All risks
+  const allRiesgos = [];
+  segsWeek.forEach(s => {
+    (s.riesgos||[]).forEach(r => allRiesgos.push({...r, pm:s.pm}));
+  });
+
+  // --- Build table: Cumplimiento por PM ---
+  let tablaPM = '| PM | Comprometidos | Entregados | % Cumplimiento | Semáforo |\n|---|---|---|---|---|\n';
+  segsWeek.forEach(s => {
+    const comp = s.totalComprometidos || s.cumplimiento?.totalComprometidos || 0;
+    const ent = s.totalEntregados || s.cumplimiento?.totalEntregados || 0;
+    const pct = s.pctCumplimiento || s.cumplimiento?.pctCumplimiento || 0;
+    const sem = s.cierre?.sem || '—';
+    tablaPM += '| '+s.pm+' | '+comp+' | '+ent+' | '+pct+'% | '+sem+' |\n';
+  });
+
+  // --- Build table: Avance por Proyecto ---
+  let tablaProyectos = '| Proyecto | PM | % Avance real | % Planeado | Brecha | Estado |\n|---|---|---|---|---|---|\n';
+  segsWeek.forEach(s => {
+    const pResults = s.proyResultados || {};
+    Object.entries(pResults).forEach(([nombre, stats]) => {
+      const real = stats.pctReal || 0;
+      const plan = stats.pctPlaneado || 0;
+      const brecha = real - plan;
+      const icon = brecha >= 0 ? '🟢' : (brecha >= -10 ? '🟡' : '🔴');
+      tablaProyectos += '| '+nombre+' | '+s.pm+' | '+real+'% | '+plan+'% | '+(brecha>=0?'+':'')+brecha+'pp | '+icon+' |\n';
+    });
+  });
+
+  // --- Producción por tipo ---
+  const porTipo = {};
+  segsWeek.forEach(s => {
+    (s.entregas||[]).forEach(e => {
+      const label = e.recLabel || REC_LABEL_HUB[e.recId] || e.recId;
+      if(!porTipo[label]) porTipo[label] = {comp:0, ent:0};
+      porTipo[label].comp += e.comprometidos;
+      porTipo[label].ent += e.entregados;
+    });
+  });
+  let tablaTipo = '| Tipo recurso | Comprometidos | Entregados | % |\n|---|---|---|---|\n';
+  Object.entries(porTipo).forEach(([label, v]) => {
+    const pct = v.comp > 0 ? Math.round((v.ent/v.comp)*100) : 0;
+    tablaTipo += '| '+label+' | '+v.comp+' | '+v.ent+' | '+pct+'% |\n';
+  });
+
+  // --- Riesgos ---
+  let detalleR = '';
+  if(allRiesgos.length > 0){
+    allRiesgos.forEach(r => {
+      detalleR += '\n#### ⚠ '+r.nombre+' (PM: '+(r.pm||'—')+')\n';
+      detalleR += '- Avance real: **'+r.pctReal+'%** vs planeado: **'+r.pctPlaneado+'%** (brecha: '+(r.pctReal-r.pctPlaneado)+'pp)\n';
+      detalleR += '- '+(r.detalle||'Sin detalle')+'\n';
+    });
+  } else {
+    detalleR = '\n_Sin proyectos en riesgo esta semana._\n';
+  }
+
+  // --- Equipo ---
+  let equipoMD = '';
+  segsWeek.forEach(s => {
+    if(s.equipo?.composicion){
+      equipoMD += '\n**'+s.pm+':** '+s.equipo.composicion+'\n';
+    }
+  });
+  if(!equipoMD) equipoMD = '\n_Sin datos de equipo._\n';
+
+  // --- Lecciones ---
+  let lecciones = '';
+  segsWeek.forEach(s => {
+    if(s.cierre?.leccion){
+      lecciones += '\n- **'+s.pm+':** '+s.cierre.leccion+'\n';
+    }
+  });
+  if(!lecciones) lecciones = '\n_Sin lecciones registradas._\n';
+
+  // --- Alertas ---
+  let alertas = '';
+  segsWeek.forEach(s => {
+    const pct = s.pctCumplimiento || s.cumplimiento?.pctCumplimiento || 0;
+    if(pct < 60) alertas += '\n- ⚠ **'+s.pm+'** con cumplimiento de sprint al **'+pct+'%** (por debajo del 60%)\n';
+  });
+  allRiesgos.forEach(r => {
+    const brecha = (r.pctPlaneado||0) - (r.pctReal||0);
+    if(brecha > 15) alertas += '\n- 🔴 **'+r.nombre+'** tiene brecha de **'+brecha+'pp** entre avance real y planeado\n';
+  });
+  if(PMsPendientes.length > 0){
+    alertas += '\n- 📋 **'+PMsPendientes.length+' PM(s) no han reportado** esta semana: '+PMsPendientes.join(', ')+'\n';
+  }
+  if(!alertas) alertas = '\n_Sin alertas esta semana._\n';
+
+  const pctIcon = pctGlobal>=80?'🟢':pctGlobal>=50?'🟡':'🔴';
+
+  consolidadoMD = '# Consolidado Semanal — Griky Fábrica\n' +
+    '**Semana:** '+semanaActual+'\n' +
+    '**Generado:** '+fecha+'\n' +
+    '**PMs reportando:** '+PMsReportando.length+' de '+PMsConocidos.length+'\n\n' +
+    '---\n\n' +
+    '## Resumen Ejecutivo\n\n' +
+    '- Cumplimiento global del sprint: '+pctIcon+' **'+pctGlobal+'%**\n' +
+    '- Total recursos comprometidos: **'+totalComp+'** / Entregados: **'+totalEnt+'**\n' +
+    '- Proyectos en riesgo: **'+allRiesgos.length+'**\n' +
+    '- Semáforos: '+nVerde+' verde / '+nAmarillo+' amarillo / '+nRojo+' rojo\n' +
+    '- PMs pendientes de reporte: '+PMsPendientes.length+'\n\n' +
+    '---\n\n' +
+    '## Cumplimiento por PM\n\n' +
+    tablaPM + '\n' +
+    '---\n\n' +
+    '## Avance por Proyecto\n\n' +
+    tablaProyectos + '\n' +
+    '> % calculados automáticamente por el sistema\n\n' +
+    '---\n\n' +
+    '## Producción por Tipo de Recurso\n\n' +
+    tablaTipo + '\n' +
+    '---\n\n' +
+    '## Proyectos en Riesgo\n' +
+    detalleR + '\n' +
+    '---\n\n' +
+    '## Equipo\n' +
+    equipoMD + '\n' +
+    '---\n\n' +
+    '## Lecciones Aprendidas\n' +
+    lecciones + '\n' +
+    '---\n\n' +
+    '## Alertas para Dirección\n' +
+    alertas + '\n' +
+    '---\n\n' +
+    '## PMs Pendientes de Reporte\n\n' +
+    (PMsPendientes.length > 0 ? PMsPendientes.map(p=>'- ❌ '+p).join('\n') : '- ✅ Todos los PMs han reportado') + '\n\n' +
+    '---\n' +
+    '_Consolidado generado desde Hub · Griky Fábrica · '+fecha+'_\n';
+
+  consolidadoFN = 'consolidado-semana-'+semanaActual.replace(/[^a-zA-Z0-9]/g,'-')+'.md';
+
+  // Show KPIs
+  const kpis = document.getElementById('consolidadoKPIs');
+  kpis.style.display = 'flex';
+  const colorPct = pctGlobal>=80?'#2BC168':pctGlobal>=50?'#F5A623':'#FF2D55';
+  kpis.innerHTML =
+    '<div style="background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 16px;text-align:center;min-width:100px;">' +
+      '<div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Cumplimiento</div>' +
+      '<div style="font-size:22px;font-weight:700;color:'+colorPct+';">'+pctGlobal+'%</div>' +
+      '<div style="font-size:10px;color:var(--gray);">'+totalEnt+'/'+totalComp+' rec.</div>' +
+    '</div>' +
+    '<div style="background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 16px;text-align:center;min-width:100px;">' +
+      '<div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Riesgos</div>' +
+      '<div style="font-size:22px;font-weight:700;color:'+(allRiesgos.length>0?'#FF2D55':'#2BC168')+';">'+allRiesgos.length+'</div>' +
+      '<div style="font-size:10px;color:var(--gray);">proyecto(s)</div>' +
+    '</div>' +
+    '<div style="background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 16px;text-align:center;min-width:100px;">' +
+      '<div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">PMs</div>' +
+      '<div style="font-size:22px;font-weight:700;color:var(--navy);">'+PMsReportando.length+'/'+PMsConocidos.length+'</div>' +
+      '<div style="font-size:10px;color:var(--gray);">reportando</div>' +
+    '</div>';
+
+  // Show preview
+  const result = document.getElementById('consolidadoResult');
+  result.style.display = 'block';
+  result.textContent = consolidadoMD;
+
+  // Show download button
+  document.getElementById('btnDescargarConsolidado').style.display = 'inline-flex';
+}
+
+function descargarConsolidado(){
+  if(!consolidadoMD) return;
+  const blob = new Blob([consolidadoMD], {type:'text/markdown'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=consolidadoFN; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function updateRoleVisibility(){
+  const isDirector = profile.rol === 'director';
+  const dirSection = document.getElementById('directorSection');
+  if(dirSection) dirSection.style.display = isDirector ? 'block' : 'none';
+  // Sync section visible for everyone (PMs export, Director can too)
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+setupDay();
+applyProfile();
+updateRoleVisibility();
+
+// Si no hay perfil guardado, abre el modal al inicio
+if (!profile.nombre) {
+  setTimeout(openModal, 200);
+}
+</script>
+</body>
+</html>
