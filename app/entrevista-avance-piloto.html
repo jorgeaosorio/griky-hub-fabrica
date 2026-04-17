@@ -86,7 +86,7 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
     <p class="sub">Selecciona tu nombre para cargar tu proyecto.</p>
     <div class="field">
       <label>PM</label>
-      <select id="selPM">
+      <select id="selPM" onchange="onPMSelect()">
         <option value="">— Selecciona tu nombre —</option>
         <option value="andres">Andrés Briceño</option>
         <option value="margarita">Margarita Rosales</option>
@@ -96,7 +96,7 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
       </select>
     </div>
     <div class="proj-banner hidden" id="projBanner"></div>
-    <button class="btn btn-primary" id="btnStart" disabled onclick="startInterview()" style="margin-top:12px;opacity:.4;cursor:not-allowed;">Comenzar entrevista</button>
+    <button class="btn btn-primary" id="btnStart" onclick="startInterview()" style="margin-top:12px;opacity:.4;pointer-events:none;">Comenzar entrevista</button>
   </div>
 
   <!-- SOPHIA: REGISTRO COMPLETO (only visible for Sophia) -->
@@ -322,8 +322,6 @@ let currentStep = 0;
 let steps = [];
 
 // Bind event with addEventListener for maximum compatibility
-document.getElementById('selPM').addEventListener('change', onPMSelect);
-
 function onPMSelect(){
   pmKey = document.getElementById('selPM').value;
   var banner = document.getElementById('projBanner');
@@ -331,9 +329,8 @@ function onPMSelect(){
 
   if(!pmKey){
     banner.classList.add('hidden');
-    btn.disabled = true;
     btn.style.opacity = '.4';
-    btn.style.cursor = 'not-allowed';
+    btn.style.pointerEvents = 'none';
     return;
   }
 
@@ -347,9 +344,8 @@ function onPMSelect(){
     banner.innerHTML = '<div><div class="name">'+ficha.proyecto+'</div><div class="meta">'+ficha.cliente+' · '+ficha.totalRec+' recursos · '+ficha.ritmo+' rec/sem</div></div>';
   }
   banner.classList.remove('hidden');
-  btn.disabled = false;
   btn.style.opacity = '1';
-  btn.style.cursor = 'pointer';
+  btn.style.pointerEvents = 'auto';
 }
 
 function startInterview(){
