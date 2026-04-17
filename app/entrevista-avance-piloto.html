@@ -95,6 +95,12 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
         <option value="jean">Jean Villegas</option>
       </select>
     </div>
+    <div class="field hidden" id="projSelectField">
+      <label>Proyecto</label>
+      <select id="selProj" onchange="onProjSelect()">
+        <option value="">— Selecciona el proyecto —</option>
+      </select>
+    </div>
     <div class="proj-banner hidden" id="projBanner"></div>
     <button class="btn btn-primary" id="btnStart" onclick="startInterview()" style="margin-top:12px;opacity:.4;pointer-events:none;">Comenzar entrevista</button>
   </div>
@@ -247,7 +253,8 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
 // ══════════════════════════════════════════════════════════════════════════════
 // DATOS DE FICHAS
 // ══════════════════════════════════════════════════════════════════════════════
-const PMS = {
+// Fichas con datos completos (un proyecto por entrada)
+var PMS = {
   andres: {
     nombre: 'Andrés Briceño',
     proyecto: 'Diplomados pruebas',
@@ -266,20 +273,6 @@ const PMS = {
       gra_inf:120,gra_pdf:12,gra_ebo:12,gra_ban:12,gra_pre:12
     }
   },
-  margarita: {
-    nombre: 'Margarita Rosales',
-    proyecto: 'Cursos intro',
-    cliente: 'Universidad XYZ',
-    inicio: '2026-04-13',
-    cierre: '2026-06-25',
-    semanas: 10,
-    tipoUP: 'Semana',
-    cursos: [{nombre:'AAAAAA',ups:1},{nombre:'BBBBB',ups:2},{nombre:'CCCCC',ups:2}],
-    totalRec: 27,
-    ritmo: 2.7,
-    recVideo: 15, recMulti: 5, recGraf: 7,
-    recursos: {vid_std:5,vid_ava:5,vid_pod:5,mul_dis:5,gra_pdf:7}
-  },
   vilma: {
     nombre: 'Vilma Perilla',
     proyecto: 'ITALIANO',
@@ -293,10 +286,27 @@ const PMS = {
     ritmo: 32.7,
     recVideo: 112, recMulti: 112, recGraf: 70,
     recursos: {vid_std:28,vid_pod:28,vid_pix:56,mul_ris:28,mul_pre:28,mul_act:28,mul_dis:28,gra_pdf:42,gra_ban:28}
-  },
-  sophia: null,
-  jean: null
+  }
 };
+
+// PMs sin ficha (modo registro completo)
+var NO_FICHA = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
+
+// PMs con múltiples proyectos (sin datos aún — cada uno entra en modo registro)
+var PM_PROYECTOS = {
+  margarita: {
+    nombre: 'Margarita Rosales',
+    proyectos: [
+      {id:'apus_ingles', nombre:'Apus Inglés', cliente:'Apus'},
+      {id:'apus_espanol', nombre:'Apus Español', cliente:'Apus'},
+      {id:'apus_mba', nombre:'Apus MBA', cliente:'Apus'},
+      {id:'uddi', nombre:'UDDI', cliente:'UDDI'},
+      {id:'ibero_col', nombre:'Ibero Colombia', cliente:'Ibero Colombia'},
+      {id:'buen_cafe', nombre:'Buen Café cursos sueltos', cliente:'Buen Café'}
+    ]
+  }
+};
+var selectedProj = null; // proyecto seleccionado para PMs multi-proyecto
 
 const REC_LABEL = {
   vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',
@@ -314,38 +324,91 @@ const REC_AREA_NAME = {
 // ══════════════════════════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════════════════════════
-let pmKey = '';
-let ficha = null;
-let isSophia = false;
-let semaforo = '';
-let currentStep = 0;
-let steps = [];
+var pmKey = '';
+var ficha = null;
+var isSophia = false;
+var isMultiProj = false;
+var semaforo = '';
+var currentStep = 0;
+var steps = [];
 
-// Bind event with addEventListener for maximum compatibility
+function enableBtn(){
+  var btn = document.getElementById('btnStart');
+  btn.style.opacity = '1';
+  btn.style.pointerEvents = 'auto';
+}
+function disableBtn(){
+  var btn = document.getElementById('btnStart');
+  btn.style.opacity = '.4';
+  btn.style.pointerEvents = 'none';
+}
+
 function onPMSelect(){
   pmKey = document.getElementById('selPM').value;
   var banner = document.getElementById('projBanner');
-  var btn = document.getElementById('btnStart');
+  var projField = document.getElementById('projSelectField');
+  selectedProj = null;
+  isMultiProj = false;
 
   if(!pmKey){
     banner.classList.add('hidden');
-    btn.style.opacity = '.4';
-    btn.style.pointerEvents = 'none';
+    projField.classList.add('hidden');
+    disableBtn();
     return;
   }
 
-  var NO_FICHA = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
-  isSophia = !!NO_FICHA[pmKey];
-  ficha = PMS[pmKey];
-
-  if(isSophia){
-    banner.innerHTML = '<div><div class="name">'+NO_FICHA[pmKey]+'</div><div class="meta">Sin ficha registrada — llenarás los datos del proyecto primero</div></div>';
-  } else {
-    banner.innerHTML = '<div><div class="name">'+ficha.proyecto+'</div><div class="meta">'+ficha.cliente+' · '+ficha.totalRec+' recursos · '+ficha.ritmo+' rec/sem</div></div>';
+  // Caso 1: PM con múltiples proyectos
+  if(PM_PROYECTOS[pmKey]){
+    isMultiProj = true;
+    isSophia = true; // todos entran en modo registro
+    ficha = null;
+    var mp = PM_PROYECTOS[pmKey];
+    var sel = document.getElementById('selProj');
+    sel.innerHTML = '<option value="">— Selecciona el proyecto —</option>';
+    mp.proyectos.forEach(function(p){
+      sel.innerHTML += '<option value="'+p.id+'">'+p.nombre+' ('+p.cliente+')</option>';
+    });
+    projField.classList.remove('hidden');
+    banner.innerHTML = '<div><div class="name">'+mp.nombre+'</div><div class="meta">'+mp.proyectos.length+' proyectos asignados — selecciona uno</div></div>';
+    banner.classList.remove('hidden');
+    disableBtn();
+    return;
   }
+
+  projField.classList.add('hidden');
+
+  // Caso 2: PM sin ficha
+  if(NO_FICHA[pmKey]){
+    isSophia = true;
+    ficha = null;
+    banner.innerHTML = '<div><div class="name">'+NO_FICHA[pmKey]+'</div><div class="meta">Sin ficha registrada — llenarás los datos del proyecto primero</div></div>';
+    banner.classList.remove('hidden');
+    enableBtn();
+    return;
+  }
+
+  // Caso 3: PM con ficha completa
+  isSophia = false;
+  ficha = PMS[pmKey];
+  banner.innerHTML = '<div><div class="name">'+ficha.proyecto+'</div><div class="meta">'+ficha.cliente+' · '+ficha.totalRec+' recursos · '+ficha.ritmo+' rec/sem</div></div>';
   banner.classList.remove('hidden');
-  btn.style.opacity = '1';
-  btn.style.pointerEvents = 'auto';
+  enableBtn();
+}
+
+function onProjSelect(){
+  var projId = document.getElementById('selProj').value;
+  var banner = document.getElementById('projBanner');
+  var mp = PM_PROYECTOS[pmKey];
+
+  if(!projId){
+    disableBtn();
+    banner.innerHTML = '<div><div class="name">'+mp.nombre+'</div><div class="meta">'+mp.proyectos.length+' proyectos asignados — selecciona uno</div></div>';
+    return;
+  }
+
+  selectedProj = mp.proyectos.find(function(p){ return p.id === projId; });
+  banner.innerHTML = '<div><div class="name">'+selectedProj.nombre+'</div><div class="meta">Cliente: '+selectedProj.cliente+' · Sin ficha — llenarás los datos del proyecto</div></div>';
+  enableBtn();
 }
 
 function startInterview(){
@@ -358,6 +421,11 @@ function startInterview(){
     document.getElementById('recNum').textContent = '4';
     document.getElementById('riesgoNum').textContent = '5';
     document.getElementById('stepTotal').textContent = '5';
+    // Pre-fill project data if multi-project PM
+    if(selectedProj){
+      document.getElementById('sCliente').value = selectedProj.cliente;
+      document.getElementById('sProyecto').value = selectedProj.nombre;
+    }
   } else {
     steps = ['stepAvance','stepRecursos','stepRiesgos'];
     document.getElementById('stepTotal').textContent = '4';
@@ -478,8 +546,9 @@ function toggleRiesgo(){
 // EXPORT
 // ══════════════════════════════════════════════════════════════════════════════
 function exportMD(){
-  const NO_FICHA_NAMES = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
-  const pm = isSophia ? (NO_FICHA_NAMES[pmKey] || ficha.nombre) : ficha.nombre;
+  var pmNombres = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
+  if(PM_PROYECTOS[pmKey]) pmNombres[pmKey] = PM_PROYECTOS[pmKey].nombre;
+  var pm = isSophia ? (pmNombres[pmKey] || 'PM') : ficha.nombre;
   const hoy = new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
   let md = '# Entrevista de Avance — Griky Fábrica\n\n';

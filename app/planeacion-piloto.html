@@ -161,27 +161,6 @@ const FICHAS = {
       gra_inf:120, gra_pdf:12, gra_ebo:12, gra_ban:12, gra_pre:12
     }
   },
-  'Margarita Rosales': {
-    proyecto: 'Cursos intro',
-    cliente: 'Universidad XYZ',
-    inicio: '2026-04-13',
-    cierre: '2026-06-25',
-    semanas: 10,
-    tipoUP: 'Semana',
-    cursos: [
-      { nombre:'AAAAAA', ups:1 },
-      { nombre:'BBBBB', ups:2 },
-      { nombre:'CCCCC', ups:2 }
-    ],
-    totalUPs: 5,
-    totalRec: 27,
-    ritmoRec: 2.7,
-    recursos: {
-      vid_std:5, vid_ava:5, vid_pod:5,
-      mul_dis:5,
-      gra_pdf:7
-    }
-  },
   'Vilma Perilla': {
     proyecto: 'ITALIANO',
     cliente: 'VERTICE',
@@ -238,7 +217,7 @@ let recIds = []; // resource IDs for the selected PM
 // INIT
 // ══════════════════════════════════════════════════════════════════════════════
 // PMs sin ficha (se agregarán al selector con aviso)
-const PM_SIN_FICHA = ['Jean Villegas'];
+const PM_SIN_FICHA = ['Margarita Rosales', 'Jean Villegas'];
 
 (function init(){
   const sel = document.getElementById('selPM');
