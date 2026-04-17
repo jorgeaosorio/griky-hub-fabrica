@@ -701,6 +701,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
       <button class="nav-tab" onclick="openModule('griky-ficha-proyecto.html');setTab(this)">Proyectos</button>
       <button class="nav-tab" onclick="openModule('griky-planeacion-semanal.html');setTab(this)">Planeación</button>
       <button class="nav-tab" onclick="openModule('reporte-pm-griky-v3.html');setTab(this)">Seguimiento</button>
+      <button class="nav-tab" onclick="openModule('griky-okrs.html');setTab(this)">OKRs</button>
     </nav>
 
     <div class="topbar-right">
@@ -901,6 +902,13 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
           <div class="mod-status live">✅ Disponible</div>
         </div>
 
+        <div class="mod-card" onclick="openModule('griky-okrs.html')">
+          <div class="mod-icon red">🎯</div>
+          <div class="mod-name">OKRs &amp; KPIs</div>
+          <div class="mod-desc">Dashboard trimestral con heatmap y ranking comparativo entre equipos dedicados.</div>
+          <div class="mod-status live">✅ Disponible</div>
+        </div>
+
         <div class="mod-card disabled">
           <div class="mod-icon yellow">🚦</div>
           <div class="mod-name">Alistamiento</div>
@@ -985,6 +993,9 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
         </a>
         <a class="quick-link" href="griky-dashboard.html">
           <span class="quick-link-icon">📊</span> Ver dashboard
+        </a>
+        <a class="quick-link" href="griky-okrs.html">
+          <span class="quick-link-icon">🎯</span> OKRs &amp; KPIs
         </a>
       </div>
     </div>

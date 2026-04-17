@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrevista de Avance — Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#22304C;--coral:#FF2D55;--green:#2BC168;--yellow:#F5A623;--light:#F5F6FA;--mid:#E0E3EA;--gray:#8A93A6;--white:#FFF;--font:'Roboto',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--light);color:var(--navy);min-height:100vh;}
+.header{background:var(--navy);color:var(--white);padding:18px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.header h1{font-size:18px;font-weight:700;}
+.header .badge{background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;font-size:12px;}
+
+.container{max-width:640px;margin:24px auto;padding:0 16px 120px;}
+.card{background:var(--white);border-radius:14px;padding:24px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.card h2{font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card h2 .num{background:var(--coral);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.card p.sub{font-size:13px;color:var(--gray);margin-bottom:16px;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field select,.field input,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--mid);border-radius:10px;font-size:14px;font-family:var(--font);color:var(--navy);background:var(--white);}
+.field textarea{min-height:60px;resize:vertical;}
+.field select:focus,.field input:focus,.field textarea:focus{outline:none;border-color:var(--coral);}
+.field .hint{font-size:11px;color:var(--gray);margin-top:3px;}
+.field-row{display:flex;gap:10px;}
+.field-row .field{flex:1;}
+
+.sem-options{display:flex;gap:8px;margin-top:4px;}
+.sem-btn{flex:1;padding:10px;border:2px solid var(--mid);border-radius:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;background:var(--white);}
+.sem-btn:hover{transform:translateY(-1px);}
+.sem-btn.selected{color:var(--white);}
+.sem-btn[data-v="verde"].selected{background:var(--green);border-color:var(--green);}
+.sem-btn[data-v="amarillo"].selected{background:var(--yellow);border-color:var(--yellow);}
+.sem-btn[data-v="rojo"].selected{background:var(--coral);border-color:var(--coral);}
+
+.rec-section{margin-top:12px;}
+.rec-section h3{font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--mid);}
+.rec-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--light);}
+.rec-row .rec-name{flex:1;font-size:13px;}
+.rec-row .rec-total{font-size:12px;color:var(--gray);width:60px;text-align:center;}
+.rec-row input{width:60px;padding:6px;border:1.5px solid var(--mid);border-radius:8px;text-align:center;font-size:13px;font-family:var(--font);}
+.rec-row input:focus{outline:none;border-color:var(--coral);}
+.rec-header{font-size:11px;color:var(--gray);font-weight:600;}
+
+.proj-banner{background:var(--light);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.proj-banner .name{font-weight:700;font-size:15px;}
+.proj-banner .meta{font-size:12px;color:var(--gray);}
+
+.btn{padding:10px 22px;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-primary{background:var(--coral);color:var(--white);}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-green{background:var(--green);color:var(--white);}
+.btn-green:hover{opacity:.9;}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.15);}
+.bottom-bar .progress-text{color:var(--white);font-size:13px;}
+.bottom-bar .progress-text span{color:var(--coral);font-weight:700;}
+
+.hidden{display:none !important;}
+
+/* Sophia extra fields */
+.sophia-field{background:#FFF9E6;border:1px dashed var(--yellow);border-radius:10px;padding:16px;margin-bottom:14px;}
+.sophia-field h3{font-size:13px;color:var(--yellow);margin-bottom:10px;font-weight:700;}
+
+@media(max-width:500px){
+  .field-row{flex-direction:column;gap:0;}
+  .rec-row .rec-total{width:40px;font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Entrevista de Avance</h1>
+  <span class="badge">Piloto Fábrica</span>
+</div>
+
+<div class="container">
+
+  <!-- STEP 0: SELECT PM -->
+  <div class="card" id="step0">
+    <h2><span class="num">1</span> Identificación</h2>
+    <p class="sub">Selecciona tu nombre para cargar tu proyecto.</p>
+    <div class="field">
+      <label>PM</label>
+      <select id="selPM" onchange="onPMSelect()">
+        <option value="">— Selecciona tu nombre —</option>
+        <option value="andres">Andrés Briceño</option>
+        <option value="margarita">Margarita Rosales</option>
+        <option value="vilma">Vilma Perilla</option>
+        <option value="sophia">Sophia Pacheco</option>
+        <option value="jean">Jean Villegas</option>
+      </select>
+    </div>
+    <div id="pmConfirm" class="hidden">
+      <div class="proj-banner" id="projBanner"></div>
+      <button class="btn btn-primary" onclick="startInterview()">Comenzar entrevista</button>
+    </div>
+  </div>
+
+  <!-- SOPHIA: REGISTRO COMPLETO (only visible for Sophia) -->
+  <div class="card hidden" id="stepSophia">
+    <h2><span class="num">2</span> Datos del proyecto</h2>
+    <p class="sub">Como es tu primera vez, necesitamos los datos básicos de tu proyecto.</p>
+    <div class="sophia-field">
+      <h3>Identificación</h3>
+      <div class="field"><label>Cliente</label><input type="text" id="sCliente" placeholder="Nombre del cliente"></div>
+      <div class="field"><label>Proyecto</label><input type="text" id="sProyecto" placeholder="Nombre del proyecto"></div>
+      <div class="field"><label>Equipo dedicado</label><input type="text" id="sEquipo" placeholder="Nombre del equipo"></div>
+    </div>
+    <div class="sophia-field">
+      <h3>Contrato</h3>
+      <div class="field-row">
+        <div class="field"><label>Fecha inicio</label><input type="date" id="sInicio"></div>
+        <div class="field"><label>Fecha cierre</label><input type="date" id="sCierre"></div>
+      </div>
+      <div class="field"><label>Valor total</label><input type="text" id="sValor" placeholder="Ej: USD $15.000"></div>
+    </div>
+    <div class="sophia-field">
+      <h3>Estructura pedagógica</h3>
+      <div class="field">
+        <label>Tipo de unidad pedagógica</label>
+        <select id="sTipoUP">
+          <option value="Módulo">Módulo</option>
+          <option value="Unidad">Unidad</option>
+          <option value="Semana">Semana</option>
+          <option value="Sesión">Sesión</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cursos (uno por línea: nombre, cantidad de UPs)</label>
+        <textarea id="sCursos" placeholder="Ej:&#10;Liderazgo, 4&#10;Comunicación, 3&#10;Innovación, 5"></textarea>
+        <div class="hint">Formato: nombre del curso, número de unidades. Un curso por línea.</div>
+      </div>
+    </div>
+    <div class="sophia-field">
+      <h3>Recursos por vertical</h3>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:10px;">Escribe el TOTAL de recursos del proyecto completo por vertical.</p>
+      <div class="field-row">
+        <div class="field"><label>Total Video</label><input type="number" id="sRecVideo" min="0" value="0"></div>
+        <div class="field"><label>Total Multimedia</label><input type="number" id="sRecMulti" min="0" value="0"></div>
+        <div class="field"><label>Total Gráfico</label><input type="number" id="sRecGraf" min="0" value="0"></div>
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:8px;">
+      <button class="btn btn-primary" onclick="goToAvance()">Continuar al avance →</button>
+    </div>
+  </div>
+
+  <!-- STEP: AVANCE (all PMs) -->
+  <div class="card hidden" id="stepAvance">
+    <h2><span class="num" id="avanceNum">2</span> Estado actual del proyecto</h2>
+    <p class="sub">¿Cómo va tu proyecto a hoy?</p>
+
+    <div class="field">
+      <label>Semáforo del proyecto</label>
+      <div class="sem-options">
+        <div class="sem-btn" data-v="verde" onclick="setSem(this)">🟢 Verde</div>
+        <div class="sem-btn" data-v="amarillo" onclick="setSem(this)">🟡 Amarillo</div>
+        <div class="sem-btn" data-v="rojo" onclick="setSem(this)">🔴 Rojo</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿En qué sprint/semana de producción estás?</label>
+      <input type="number" id="sprint" min="0" placeholder="Ej: 3">
+      <div class="hint">Semana de trabajo contada desde el inicio del proyecto.</div>
+    </div>
+
+    <div class="field-row">
+      <div class="field"><label>Fecha real de inicio</label><input type="date" id="fechaInicio"></div>
+      <div class="field"><label>Fecha original de cierre</label><input type="date" id="fechaCierre"></div>
+    </div>
+
+    <div class="field">
+      <label>¿Ha cambiado la fecha de cierre?</label>
+      <select id="cierreChanged" onchange="toggleNewDate()">
+        <option value="no">No, se mantiene la fecha original</option>
+        <option value="si">Sí, hay nueva fecha</option>
+      </select>
+    </div>
+    <div class="field hidden" id="newDateField">
+      <label>Nueva fecha de cierre</label>
+      <input type="date" id="nuevaFecha">
+    </div>
+
+    <div class="field">
+      <label>Cursos aprobados por el cliente</label>
+      <input type="number" id="cursosAprobados" min="0" placeholder="¿Cuántos cursos tienen DI aprobado?">
+      <div class="hint">Cursos cuyo Diseño Instruccional ya fue aprobado por el cliente.</div>
+    </div>
+  </div>
+
+  <!-- STEP: RECURSOS HECHOS -->
+  <div class="card hidden" id="stepRecursos">
+    <h2><span class="num" id="recNum">3</span> Recursos terminados</h2>
+    <p class="sub">¿Cuántos recursos de cada vertical ya están 100% terminados?</p>
+    <div id="recContainer"></div>
+  </div>
+
+  <!-- STEP: RIESGOS -->
+  <div class="card hidden" id="stepRiesgos">
+    <h2><span class="num" id="riesgoNum">4</span> Riesgos y comentarios</h2>
+    <p class="sub">¿Hay algo que debamos saber?</p>
+
+    <div class="field">
+      <label>¿Hay algún riesgo o bloqueo activo?</label>
+      <select id="hayRiesgo" onchange="toggleRiesgo()">
+        <option value="no">No, todo va bien</option>
+        <option value="si">Sí, hay riesgos</option>
+      </select>
+    </div>
+    <div class="field hidden" id="riesgoField">
+      <label>Describe los riesgos</label>
+      <textarea id="riesgos" placeholder="Ej: El cliente no ha enviado los insumos del curso 2. Esto puede retrasar la entrega una semana."></textarea>
+    </div>
+
+    <div class="field">
+      <label>¿Cómo está la carga de tu equipo?</label>
+      <select id="cargaEquipo">
+        <option value="bien">Bien — carga manejable</option>
+        <option value="alta">Alta — al límite pero cumpliendo</option>
+        <option value="sobrecarga">Sobrecarga — necesitamos ayuda</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Comentario adicional (opcional)</label>
+      <textarea id="comentario" placeholder="Algo que quieras compartir con Dirección..."></textarea>
+    </div>
+
+    <div style="text-align:right;margin-top:16px;">
+      <button class="btn btn-green" onclick="exportMD()">Exportar respuestas (.md)</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar hidden" id="bottomBar">
+  <div class="progress-text">Paso <span id="stepCurrent">1</span> de <span id="stepTotal">4</span></div>
+  <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Siguiente →</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// DATOS DE FICHAS
+// ══════════════════════════════════════════════════════════════════════════════
+const PMS = {
+  andres: {
+    nombre: 'Andrés Briceño',
+    proyecto: 'Diplomados pruebas',
+    cliente: 'Universidad prueba',
+    inicio: '2026-04-07',
+    cierre: '2026-05-05',
+    semanas: 4,
+    tipoUP: 'Módulo',
+    cursos: [{nombre:'C1',ups:4},{nombre:'C2',ups:4},{nombre:'C3',ups:4}],
+    totalRec: 600,
+    ritmo: 150,
+    recVideo: 228, recMulti: 204, recGraf: 168,
+    recursos: {
+      vid_web:24,vid_std:12,vid_ava:36,vid_pod:24,vid_aud:36,vid_pix:48,vid_bas:24,vid_int:24,
+      mul_sto:24,mul_ris:12,mul_pre:24,mul_inf:48,mul_act:48,mul_vst:12,mul_gen:24,mul_dis:12,
+      gra_inf:120,gra_pdf:12,gra_ebo:12,gra_ban:12,gra_pre:12
+    }
+  },
+  margarita: {
+    nombre: 'Margarita Rosales',
+    proyecto: 'Cursos intro',
+    cliente: 'Universidad XYZ',
+    inicio: '2026-04-13',
+    cierre: '2026-06-25',
+    semanas: 10,
+    tipoUP: 'Semana',
+    cursos: [{nombre:'AAAAAA',ups:1},{nombre:'BBBBB',ups:2},{nombre:'CCCCC',ups:2}],
+    totalRec: 27,
+    ritmo: 2.7,
+    recVideo: 15, recMulti: 5, recGraf: 7,
+    recursos: {vid_std:5,vid_ava:5,vid_pod:5,mul_dis:5,gra_pdf:7}
+  },
+  vilma: {
+    nombre: 'Vilma Perilla',
+    proyecto: 'ITALIANO',
+    cliente: 'VERTICE',
+    inicio: '2026-03-26',
+    cierre: '2026-05-29',
+    semanas: 9,
+    tipoUP: 'Unidad',
+    cursos: [{nombre:'Bienestar',ups:14},{nombre:'Psicología',ups:14},{nombre:'Mindfulness',ups:14}],
+    totalRec: 294,
+    ritmo: 32.7,
+    recVideo: 112, recMulti: 112, recGraf: 70,
+    recursos: {vid_std:28,vid_pod:28,vid_pix:56,mul_ris:28,mul_pre:28,mul_act:28,mul_dis:28,gra_pdf:42,gra_ban:28}
+  },
+  sophia: null,
+  jean: null
+};
+
+const REC_LABEL = {
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',
+  vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
+  mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',
+  mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
+  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar'
+};
+const REC_AREA_NAME = {
+  vid_web:'Video',vid_std:'Video',vid_ava:'Video',vid_pod:'Video',vid_aud:'Video',vid_pix:'Video',vid_bas:'Video',vid_int:'Video',
+  mul_sto:'Multimedia',mul_ris:'Multimedia',mul_pre:'Multimedia',mul_inf:'Multimedia',mul_act:'Multimedia',mul_vst:'Multimedia',mul_gen:'Multimedia',mul_dis:'Multimedia',
+  gra_inf:'Gráfico',gra_pdf:'Gráfico',gra_ebo:'Gráfico',gra_ban:'Gráfico',gra_pre:'Gráfico'
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════════════
+let pmKey = '';
+let ficha = null;
+let isSophia = false;
+let semaforo = '';
+let currentStep = 0;
+let steps = [];
+
+function onPMSelect(){
+  pmKey = document.getElementById('selPM').value;
+  const confirm = document.getElementById('pmConfirm');
+  const banner = document.getElementById('projBanner');
+  if(!pmKey){ confirm.classList.add('hidden'); return; }
+
+  const NO_FICHA = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
+  isSophia = !!NO_FICHA[pmKey];
+  ficha = PMS[pmKey];
+
+  if(isSophia){
+    banner.innerHTML = '<div><div class="name">'+NO_FICHA[pmKey]+'</div><div class="meta">Sin ficha registrada — llenarás los datos del proyecto primero</div></div>';
+  } else {
+    banner.innerHTML = '<div><div class="name">'+ficha.proyecto+'</div><div class="meta">'+ficha.cliente+' · '+ficha.totalRec+' recursos · '+ficha.ritmo+' rec/sem</div></div>';
+  }
+  confirm.classList.remove('hidden');
+}
+
+function startInterview(){
+  document.getElementById('step0').classList.add('hidden');
+  document.getElementById('bottomBar').classList.remove('hidden');
+
+  if(isSophia){
+    steps = ['stepSophia','stepAvance','stepRecursos','stepRiesgos'];
+    document.getElementById('avanceNum').textContent = '3';
+    document.getElementById('recNum').textContent = '4';
+    document.getElementById('riesgoNum').textContent = '5';
+    document.getElementById('stepTotal').textContent = '5';
+  } else {
+    steps = ['stepAvance','stepRecursos','stepRiesgos'];
+    document.getElementById('stepTotal').textContent = '4';
+    // Pre-fill dates
+    document.getElementById('fechaInicio').value = ficha.inicio;
+    document.getElementById('fechaCierre').value = ficha.cierre;
+    // Build resource rows
+    buildRecRows();
+  }
+  showStep(0);
+}
+
+function showStep(idx){
+  currentStep = idx;
+  steps.forEach((s,i) => document.getElementById(s).classList.toggle('hidden', i !== idx));
+  document.getElementById('stepCurrent').textContent = idx + 2; // +2 because step0 was step 1
+  document.getElementById('btnNext').textContent = idx === steps.length - 1 ? '✓ Listo' : 'Siguiente →';
+  if(idx === steps.length - 1) document.getElementById('btnNext').classList.add('hidden');
+  else document.getElementById('btnNext').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function nextStep(){
+  if(currentStep === 0 && isSophia){
+    // After Sophia fills project data, build her ficha and resource rows
+    buildSophiaFicha();
+  }
+  if(currentStep < steps.length - 1) showStep(currentStep + 1);
+}
+
+function goToAvance(){
+  buildSophiaFicha();
+  showStep(1);
+}
+
+function buildSophiaFicha(){
+  const recV = parseInt(document.getElementById('sRecVideo').value)||0;
+  const recM = parseInt(document.getElementById('sRecMulti').value)||0;
+  const recG = parseInt(document.getElementById('sRecGraf').value)||0;
+  ficha = {
+    nombre: 'Sophia Pacheco',
+    proyecto: document.getElementById('sProyecto').value || '(sin nombre)',
+    cliente: document.getElementById('sCliente').value || '(sin cliente)',
+    equipo: document.getElementById('sEquipo').value || '',
+    inicio: document.getElementById('sInicio').value || '',
+    cierre: document.getElementById('sCierre').value || '',
+    valor: document.getElementById('sValor').value || '',
+    tipoUP: document.getElementById('sTipoUP').value,
+    cursosRaw: document.getElementById('sCursos').value,
+    totalRec: recV + recM + recG,
+    recVideo: recV, recMulti: recM, recGraf: recG,
+    recursos: null
+  };
+  document.getElementById('fechaInicio').value = ficha.inicio;
+  document.getElementById('fechaCierre').value = ficha.cierre;
+  buildRecRows();
+}
+
+function buildRecRows(){
+  const container = document.getElementById('recContainer');
+  container.innerHTML = '';
+
+  if(ficha.recursos){
+    // Known resources — show each type
+    const areas = {};
+    Object.keys(ficha.recursos).forEach(id => {
+      const area = REC_AREA_NAME[id] || 'Otro';
+      if(!areas[area]) areas[area] = [];
+      areas[area].push({id:id, label:REC_LABEL[id]||id, total:ficha.recursos[id]});
+    });
+    ['Video','Multimedia','Gráfico'].forEach(area => {
+      if(!areas[area]) return;
+      let html = '<div class="rec-section"><h3>'+area+'</h3>';
+      html += '<div class="rec-row"><span class="rec-name rec-header">Tipo</span><span class="rec-total rec-header">Total</span><span style="width:60px" class="rec-header" style="text-align:center">Hechos</span></div>';
+      areas[area].forEach(r => {
+        html += '<div class="rec-row">';
+        html += '<span class="rec-name">'+r.label+'</span>';
+        html += '<span class="rec-total">'+r.total+'</span>';
+        html += '<input type="number" min="0" max="'+r.total+'" value="" placeholder="0" data-rec="'+r.id+'" data-total="'+r.total+'">';
+        html += '</div>';
+      });
+      html += '</div>';
+      container.innerHTML += html;
+    });
+  } else {
+    // Sophia — only verticals
+    let html = '<div class="rec-section"><h3>Video</h3>';
+    html += '<div class="rec-row"><span class="rec-name">Total video del proyecto</span><span class="rec-total">'+ficha.recVideo+'</span>';
+    html += '<input type="number" min="0" value="" placeholder="0" data-rec="vertical_video" data-total="'+ficha.recVideo+'"></div></div>';
+
+    html += '<div class="rec-section"><h3>Multimedia</h3>';
+    html += '<div class="rec-row"><span class="rec-name">Total multimedia del proyecto</span><span class="rec-total">'+ficha.recMulti+'</span>';
+    html += '<input type="number" min="0" value="" placeholder="0" data-rec="vertical_multi" data-total="'+ficha.recMulti+'"></div></div>';
+
+    html += '<div class="rec-section"><h3>Gráfico</h3>';
+    html += '<div class="rec-row"><span class="rec-name">Total gráfico del proyecto</span><span class="rec-total">'+ficha.recGraf+'</span>';
+    html += '<input type="number" min="0" value="" placeholder="0" data-rec="vertical_graf" data-total="'+ficha.recGraf+'"></div></div>';
+
+    container.innerHTML = html;
+  }
+}
+
+function setSem(el){
+  document.querySelectorAll('.sem-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  semaforo = el.dataset.v;
+}
+
+function toggleNewDate(){
+  document.getElementById('newDateField').classList.toggle('hidden', document.getElementById('cierreChanged').value !== 'si');
+}
+
+function toggleRiesgo(){
+  document.getElementById('riesgoField').classList.toggle('hidden', document.getElementById('hayRiesgo').value !== 'si');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════════════════════════════════
+function exportMD(){
+  const NO_FICHA_NAMES = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
+  const pm = isSophia ? (NO_FICHA_NAMES[pmKey] || ficha.nombre) : ficha.nombre;
+  const hoy = new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  let md = '# Entrevista de Avance — Griky Fábrica\n\n';
+  md += '| Campo | Valor |\n|---|---|\n';
+  md += '| **PM** | '+pm+' |\n';
+  md += '| **Fecha** | '+hoy+' |\n';
+  md += '| **Proyecto** | '+ficha.proyecto+' |\n';
+  md += '| **Cliente** | '+ficha.cliente+' |\n\n---\n\n';
+
+  // Sophia project data
+  if(isSophia){
+    md += '## Datos del proyecto (nuevo)\n\n';
+    md += '| Campo | Valor |\n|---|---|\n';
+    md += '| Equipo dedicado | '+(ficha.equipo||'—')+' |\n';
+    md += '| Valor | '+(ficha.valor||'—')+' |\n';
+    md += '| Tipo UP | '+ficha.tipoUP+' |\n';
+    md += '| Total recursos | '+ficha.totalRec+' |\n\n';
+    if(ficha.cursosRaw){
+      md += '**Cursos:**\n\n'+ficha.cursosRaw+'\n\n';
+    }
+    md += '---\n\n';
+  }
+
+  // Avance
+  md += '## Estado actual\n\n';
+  md += '| Campo | Valor |\n|---|---|\n';
+  md += '| Semáforo | '+semaforo+' |\n';
+  md += '| Sprint/Semana | '+(document.getElementById('sprint').value||'—')+' |\n';
+  md += '| Fecha inicio | '+(document.getElementById('fechaInicio').value||'—')+' |\n';
+  md += '| Fecha cierre original | '+(document.getElementById('fechaCierre').value||'—')+' |\n';
+  if(document.getElementById('cierreChanged').value === 'si'){
+    md += '| **Nueva fecha cierre** | '+(document.getElementById('nuevaFecha').value||'—')+' |\n';
+  }
+  md += '| Cursos aprobados | '+(document.getElementById('cursosAprobados').value||'0')+' |\n';
+  md += '\n---\n\n';
+
+  // Recursos hechos
+  md += '## Recursos terminados\n\n';
+  md += '| Tipo | Total proyecto | Hechos | % |\n|---|---|---|---|\n';
+  let totalHechos = 0, totalProy = 0;
+  document.querySelectorAll('#recContainer input[data-rec]').forEach(inp => {
+    const hechos = parseInt(inp.value)||0;
+    const total = parseInt(inp.dataset.total)||0;
+    const pct = total > 0 ? Math.round((hechos/total)*100) : 0;
+    const label = REC_LABEL[inp.dataset.rec] || inp.dataset.rec.replace('vertical_','');
+    md += '| '+label+' | '+total+' | '+hechos+' | '+pct+'% |\n';
+    totalHechos += hechos;
+    totalProy += total;
+  });
+  const totalPct = totalProy > 0 ? Math.round((totalHechos/totalProy)*100) : 0;
+  md += '| **TOTAL** | **'+totalProy+'** | **'+totalHechos+'** | **'+totalPct+'%** |\n';
+  md += '\n---\n\n';
+
+  // Riesgos
+  md += '## Riesgos y equipo\n\n';
+  md += '| Campo | Valor |\n|---|---|\n';
+  md += '| Riesgos | '+(document.getElementById('hayRiesgo').value==='si' ? document.getElementById('riesgos').value||'(no especificado)' : 'Ninguno')+' |\n';
+  md += '| Carga del equipo | '+document.getElementById('cargaEquipo').value+' |\n';
+  const comentario = document.getElementById('comentario').value;
+  if(comentario) md += '| Comentario | '+comentario+' |\n';
+  md += '\n---\n_Entrevista generada · Griky Fábrica · '+hoy+'_\n';
+
+  // Download
+  const blob = new Blob([md],{type:'text/markdown'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const slug = pm.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_');
+  a.href = url;
+  a.download = 'avance-'+slug+'.md';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

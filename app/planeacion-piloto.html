@@ -237,11 +237,19 @@ let recIds = []; // resource IDs for the selected PM
 // ══════════════════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════════════════
+// PMs sin ficha (se agregarán al selector con aviso)
+const PM_SIN_FICHA = ['Jean Villegas'];
+
 (function init(){
   const sel = document.getElementById('selPM');
   Object.keys(FICHAS).forEach(name => {
     const o = document.createElement('option');
     o.value = name; o.textContent = name;
+    sel.appendChild(o);
+  });
+  PM_SIN_FICHA.forEach(name => {
+    const o = document.createElement('option');
+    o.value = name; o.textContent = name + ' (sin ficha)';
     sel.appendChild(o);
   });
   // Default to this Monday
@@ -267,6 +275,12 @@ function onPMChange(){
     btn.disabled = false;
     // Build recIds from ficha recursos
     recIds = Object.keys(ficha.recursos).filter(id => ficha.recursos[id] > 0);
+  } else if(pm && PM_SIN_FICHA.includes(pm)){
+    info.classList.remove('hidden');
+    document.getElementById('proyNombre').textContent = pm;
+    document.getElementById('proyMeta').textContent =
+      '⚠️ Sin ficha registrada — completa primero la Entrevista de Avance para habilitar la planeación.';
+    btn.disabled = true;
   } else {
     info.classList.add('hidden');
     btn.disabled = true;

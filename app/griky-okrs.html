@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKRs & KPIs · Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#22304C; --navy2:#1a2539; --navy3:#131d2e;
+  --red:#FF2D55; --red2:#e01f45;
+  --green:#2BC168; --yellow:#F5A623; --gray:#667078;
+  --light:#F6F7FB; --mid:#E2E8F0; --white:#ffffff;
+  --ra:rgba(255,45,85,.10); --rb:rgba(255,45,85,.20);
+  --ga:rgba(43,193,104,.10); --gb:rgba(43,193,104,.22);
+  --ya:rgba(245,166,35,.10); --yb:rgba(245,166,35,.25);
+  --na:rgba(34,48,76,.06);
+  --r:12px; --sh:0 2px 14px rgba(34,48,76,.09); --sh2:0 8px 28px rgba(34,48,76,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;background:var(--light);color:var(--navy);min-height:100vh;display:flex;flex-direction:column;}
+
+/* TOPBAR */
+.topbar{background:var(--navy3);position:relative;overflow:hidden;flex-shrink:0;}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red) 0%,#ff6b8a 60%,transparent 100%);}
+.topbar-inner{position:relative;z-index:1;display:flex;align-items:center;padding:0 28px;height:56px;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;}
+.logo-name{font-weight:700;font-size:16px;color:#fff;}
+.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.15);}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-sm{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.7);font-size:12px;cursor:pointer;transition:.2s;}
+.btn-sm:hover{background:rgba(255,255,255,.08);color:#fff;}
+.btn-sm.primary{background:var(--red);border-color:var(--red);color:#fff;}
+.btn-sm.primary:hover{background:var(--red2);}
+
+/* CTRL BAR */
+.ctrlbar{background:var(--navy2);padding:12px 28px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap;flex-shrink:0;}
+.ctrl-field{display:flex;flex-direction:column;gap:3px;}
+.ctrl-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.ctrl-select{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;font-size:12px;color:#fff;outline:none;appearance:none;cursor:pointer;min-width:160px;}
+.ctrl-select option{background:var(--navy);}
+.ctrl-sep{width:1px;height:32px;background:rgba(255,255,255,.08);}
+.fecha-badge{font-size:11px;color:rgba(255,255,255,.35);margin-left:auto;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:24px 28px 60px;}
+.main::-webkit-scrollbar{width:6px;}
+.main::-webkit-scrollbar-thumb{background:var(--mid);border-radius:3px;}
+
+.page-title{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.page-sub{font-size:13px;color:var(--gray);margin-bottom:24px;}
+
+.banner{background:#fff8e1;border-left:4px solid var(--yellow);padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:12px;color:#8a6d22;display:flex;align-items:center;gap:10px;}
+.banner.info{background:#eef4ff;border-color:#3d6df5;color:#2b4ba0;}
+.banner.ok{background:var(--ga);border-color:var(--green);color:#1e9a56;}
+
+/* SECTION */
+.section{margin-bottom:32px;}
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;}
+.section-title{font-size:15px;font-weight:800;color:var(--navy);letter-spacing:.2px;}
+.section-sub{font-size:11px;color:var(--gray);}
+.section-line{flex:1;height:1px;background:var(--mid);margin-left:8px;}
+
+/* OKR CARDS */
+.okr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;}
+.okr-card{background:#fff;border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.okr-head{padding:14px 16px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:10px;}
+.okr-badge{background:var(--red);color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:800;}
+.okr-title{font-size:13px;font-weight:700;line-height:1.3;}
+.okr-body{padding:12px 16px;}
+.kr-row{padding:10px 0;border-bottom:1px dashed var(--mid);display:flex;align-items:center;gap:10px;}
+.kr-row:last-child{border-bottom:none;}
+.kr-num{background:var(--na);color:var(--navy);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:800;flex-shrink:0;}
+.kr-text{flex:1;}
+.kr-desc{font-size:11px;color:var(--navy);line-height:1.35;}
+.kr-meta{font-size:10px;color:var(--gray);margin-top:2px;}
+.kr-prog{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;min-width:80px;}
+.kr-val{font-size:15px;font-weight:800;}
+.kr-val.verde{color:var(--green);} .kr-val.amarillo{color:var(--yellow);} .kr-val.rojo{color:var(--red);} .kr-val.gris{color:var(--gray);}
+.kr-goal{font-size:10px;color:var(--gray);}
+
+/* HEATMAP */
+.heatmap-wrap{background:#fff;border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow:auto;}
+.heatmap{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;}
+.heatmap th, .heatmap td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--mid);}
+.heatmap thead th{background:var(--navy);color:#fff;font-weight:600;position:sticky;top:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px;}
+.heatmap th.kpi-col{text-align:left;background:var(--navy2);color:#fff;min-width:230px;}
+.heatmap td.kpi-name{text-align:left;background:var(--light);font-weight:500;color:var(--navy);min-width:230px;padding:10px 12px;}
+.heatmap td.kpi-name .kpi-title{font-size:12px;font-weight:600;}
+.heatmap td.kpi-name .kpi-sub{font-size:10px;color:var(--gray);font-weight:400;margin-top:2px;}
+.heatmap td.kpi-name .kpi-src{display:inline-block;margin-top:4px;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
+.src-d{background:#e6f2ea;color:#1e9a56;}
+.src-m{background:#fff4e3;color:#c47d00;}
+.src-c{background:#eef4ff;color:#2b4ba0;}
+.cell{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.cell-val{font-size:15px;font-weight:800;}
+.cell-sub{font-size:10px;color:var(--gray);}
+.cell-rank{font-size:9px;color:var(--gray);font-weight:700;text-transform:uppercase;}
+.cell.verde{background:var(--ga);} .cell.amarillo{background:var(--ya);} .cell.rojo{background:var(--ra);} .cell.gris{background:transparent;}
+.cell.verde .cell-val{color:#1e9a56;} .cell.amarillo .cell-val{color:#c47d00;} .cell.rojo .cell-val{color:var(--red);} .cell.gris .cell-val{color:var(--gray);}
+.heatmap td.cell-wrap{padding:0;}
+.heatmap td.cell-wrap .cell{padding:10px 8px;min-height:56px;justify-content:center;}
+.heatmap td.cell-wrap.best{box-shadow:inset 0 0 0 2px var(--green);}
+.heatmap td.cell-wrap.worst{box-shadow:inset 0 0 0 2px var(--red);}
+.heatmap tr:last-child td{border-bottom:none;}
+
+/* RANKING */
+.rank-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.rank-card{background:#fff;border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.rank-head{padding:12px 14px;color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.rank-head.tiempo{background:#3d6df5;}
+.rank-head.costo{background:#9b59b6;}
+.rank-head.calidad{background:#e67e22;}
+.rank-body{padding:12px;}
+.rank-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px dashed var(--mid);}
+.rank-row:last-child{border-bottom:none;}
+.rank-pos{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;background:var(--gray);flex-shrink:0;}
+.rank-pos.p1{background:#2BC168;} .rank-pos.p2{background:#7dd4a0;} .rank-pos.p3{background:#b8a8d9;} .rank-pos.p4{background:var(--red);}
+.rank-name{flex:1;font-size:12px;font-weight:500;color:var(--navy);}
+.rank-score{font-size:13px;font-weight:800;color:var(--navy);}
+.rank-score.verde{color:var(--green);} .rank-score.amarillo{color:var(--yellow);} .rank-score.rojo{color:var(--red);}
+
+/* VERTICAL TABS */
+.vtabs{display:flex;gap:4px;background:var(--white);padding:4px;border-radius:8px;border:1px solid var(--mid);width:fit-content;margin-bottom:12px;box-shadow:var(--sh);}
+.vtab{padding:8px 18px;border-radius:6px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;transition:.2s;border:none;background:transparent;}
+.vtab:hover{color:var(--navy);}
+.vtab.active{background:var(--navy);color:#fff;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(19,29,46,.7);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:var(--r);max-width:880px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh2);}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--mid);display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:#fff;}
+.modal-title{font-size:15px;font-weight:700;}
+.modal-close{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:22px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:22px;overflow-y:auto;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--mid);display:flex;justify-content:flex-end;gap:10px;background:var(--light);}
+.btn{padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--mid);background:#fff;color:var(--navy);transition:.2s;}
+.btn:hover{background:var(--light);}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;}
+.btn.primary:hover{background:var(--red2);}
+
+/* MANUAL FORM */
+.form-section{margin-bottom:20px;}
+.form-section-title{font-size:12px;font-weight:800;text-transform:uppercase;color:var(--navy);margin-bottom:10px;letter-spacing:.3px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.form-field{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.3px;}
+.form-input{padding:7px 10px;border-radius:6px;border:1px solid var(--mid);font-size:12px;color:var(--navy);outline:none;}
+.form-input:focus{border-color:var(--red);}
+.form-help{font-size:10px;color:var(--gray);margin-top:2px;}
+.form-tabs{display:flex;gap:4px;border-bottom:1px solid var(--mid);margin-bottom:16px;}
+.form-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.form-tab.active{color:var(--navy);border-bottom-color:var(--red);}
+
+/* LEGEND */
+.legend{display:flex;align-items:center;gap:16px;font-size:11px;color:var(--gray);margin-bottom:10px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:6px;}
+.legend-dot{width:12px;height:12px;border-radius:3px;}
+.legend-dot.verde{background:var(--green);} .legend-dot.amarillo{background:var(--yellow);} .legend-dot.rojo{background:var(--red);} .legend-dot.gris{background:var(--mid);}
+
+/* CONFIG TEAM TABLE */
+.team-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.team-tbl th, .team-tbl td{padding:8px 10px;border-bottom:1px solid var(--mid);text-align:left;}
+.team-tbl th{background:var(--light);font-size:10px;text-transform:uppercase;font-weight:700;color:var(--gray);letter-spacing:.3px;}
+.team-tbl input{width:60px;padding:4px 6px;border-radius:4px;border:1px solid var(--mid);text-align:center;font-size:12px;}
+
+@media (max-width:900px){
+  .rank-grid{grid-template-columns:1fr;}
+  .ctrlbar{gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">
+      <div class="logo-mark">G</div>
+      <div class="logo-name">Griky Fábrica</div>
+      <div class="logo-sep"></div>
+      <div class="logo-sub">OKRs &amp; KPIs</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-sm" onclick="location.href='griky-fabrica-hub.html'">← Hub</button>
+      <button class="btn-sm" onclick="openConfigTeam()">⚙ Equipos</button>
+      <button class="btn-sm" onclick="exportSnapshot()">⬇ Exportar</button>
+      <button class="btn-sm primary" onclick="openCapture()">+ Capturar KPIs semana</button>
+    </div>
+  </div>
+</div>
+
+<div class="ctrlbar">
+  <div class="ctrl-field">
+    <div class="ctrl-label">Semana</div>
+    <select id="selSemana" class="ctrl-select" onchange="rerender()"></select>
+  </div>
+  <div class="ctrl-field">
+    <div class="ctrl-label">Equipo (filtro vertical)</div>
+    <select id="selPM" class="ctrl-select" onchange="rerender()">
+      <option value="__all__">Todos los equipos</option>
+    </select>
+  </div>
+  <div class="ctrl-sep"></div>
+  <div class="ctrl-field">
+    <div class="ctrl-label">Trimestre</div>
+    <select id="selQ" class="ctrl-select" onchange="rerender()">
+      <option value="2026-Q2" selected>Q2 2026 (abr–jun)</option>
+      <option value="2026-Q1">Q1 2026 (ene–mar)</option>
+    </select>
+  </div>
+  <div class="fecha-badge" id="fechaBadge">—</div>
+</div>
+
+<div class="main">
+  <div class="page-title">Sistema de OKRs &amp; KPIs — Fábrica de Contenidos</div>
+  <div class="page-sub">Comparación entre equipos dedicados · monitoreo semanal · parámetro base 34.5 h productivas/persona/semana · multiplicador reproceso 2×</div>
+
+  <div class="banner" id="bannerData"></div>
+
+  <!-- SECCIÓN 1 · OKRs Q2 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">OKRs del trimestre</div>
+      <div class="section-sub">¿Logramos cambiar algo que estaba roto?</div>
+      <div class="section-line"></div>
+    </div>
+    <div id="okrGrid" class="okr-grid"></div>
+  </div>
+
+  <!-- SECCIÓN 2 · Heatmap Nivel 1 Fábrica -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">Nivel 1 · Salud global por equipo dedicado</div>
+      <div class="section-sub">7 KPIs de fábrica, comparados entre PMs</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot verde"></span>En meta</div>
+      <div class="legend-item"><span class="legend-dot amarillo"></span>Alerta</div>
+      <div class="legend-item"><span class="legend-dot rojo"></span>Fuera de rango</div>
+      <div class="legend-item"><span class="legend-dot gris"></span>Sin data</div>
+      <div class="legend-item"><span class="src-d kpi-src" style="padding:1px 6px;">Derivado</span> se calcula solo</div>
+      <div class="legend-item"><span class="src-m kpi-src" style="padding:1px 6px;">Manual</span> captura semanal</div>
+      <div class="legend-item"><span class="src-c kpi-src" style="padding:1px 6px;">Calculado</span> depende de manual</div>
+    </div>
+    <div class="heatmap-wrap" id="heatFabricaWrap"></div>
+  </div>
+
+  <!-- SECCIÓN 3 · Ranking por dimensión -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">Ranking entre equipos por dimensión</div>
+      <div class="section-sub">Score compuesto sobre KPIs disponibles</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="rank-grid" id="rankGrid"></div>
+  </div>
+
+  <!-- SECCIÓN 4 · Heatmap Nivel 3 Producción por vertical -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">Nivel 3 · Producción por vertical</div>
+      <div class="section-sub">Los 7 KPIs se replican por vertical. La comparación entre verticales es la función central.</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="vtabs" id="vtabs">
+      <button class="vtab active" data-v="video">Video</button>
+      <button class="vtab" data-v="multimedia">Multimedia</button>
+      <button class="vtab" data-v="grafico">Gráfico</button>
+    </div>
+    <div class="heatmap-wrap" id="heatVerticalWrap"></div>
+  </div>
+
+</div>
+
+<!-- MODAL CAPTURA -->
+<div class="modal-bg" id="mCapture">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Capturar KPIs de la semana</div>
+      <button class="modal-close" onclick="closeCapture()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="form-field">
+            <div class="form-label">PM / Equipo</div>
+            <select id="capPM" class="form-input"></select>
+          </div>
+          <div class="form-field">
+            <div class="form-label">Semana (lunes – domingo)</div>
+            <input type="text" id="capSemana" class="form-input" placeholder="ej. 14-abr – 20-abr">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Fecha de registro</div>
+            <input type="date" id="capFecha" class="form-input">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-tabs">
+        <button class="form-tab active" data-tab="f">Fábrica (global)</button>
+        <button class="form-tab" data-tab="video">Video</button>
+        <button class="form-tab" data-tab="multimedia">Multimedia</button>
+        <button class="form-tab" data-tab="grafico">Gráfico</button>
+        <button class="form-tab" data-tab="di">DI &amp; Impl.</button>
+      </div>
+
+      <div class="form-pane" data-pane="f">
+        <div class="form-section">
+          <div class="form-section-title">Nivel 1 · Salud global</div>
+          <div class="form-grid">
+            <div class="form-field">
+              <div class="form-label">h/h reales consumidas por el equipo</div>
+              <input type="number" step="0.1" id="f_hhReales" class="form-input" placeholder="h">
+              <div class="form-help">Para eficiencia h/h global (#4).</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">h/h estándar entregadas</div>
+              <input type="number" step="0.1" id="f_hhEstandar" class="form-input" placeholder="h">
+              <div class="form-help">Σ h/h estándar de recursos entregados. Si no lo tienes, déjalo vacío y se estima desde las fichas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-pane" data-pane="video" style="display:none;">
+        <div class="form-section">
+          <div class="form-section-title">Vertical Video</div>
+          <div class="form-grid">
+            <div class="form-field">
+              <div class="form-label">Recursos reprocesados</div>
+              <input type="number" id="v_reproc" class="form-input">
+            </div>
+            <div class="form-field">
+              <div class="form-label">Recursos entregados</div>
+              <input type="number" id="v_entreg" class="form-input">
+              <div class="form-help">Si lo dejas vacío, se estima del reporte PM.</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Aprobados al 1er intento</div>
+              <input type="number" id="v_fpy_ok" class="form-input">
+            </div>
+            <div class="form-field">
+              <div class="form-label">Total sometidos a revisión</div>
+              <input type="number" id="v_fpy_tot" class="form-input">
+            </div>
+            <div class="form-field">
+              <div class="form-label">Lead time promedio (días)</div>
+              <input type="number" step="0.1" id="v_lead" class="form-input">
+            </div>
+            <div class="form-field">
+              <div class="form-label">h/h reales consumidas (vertical)</div>
+              <input type="number" step="0.1" id="v_hh" class="form-input">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-pane" data-pane="multimedia" style="display:none;">
+        <div class="form-section">
+          <div class="form-section-title">Vertical Multimedia</div>
+          <div class="form-grid">
+            <div class="form-field"><div class="form-label">Recursos reprocesados</div><input type="number" id="m_reproc" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Recursos entregados</div><input type="number" id="m_entreg" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Aprobados al 1er intento</div><input type="number" id="m_fpy_ok" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Total sometidos a revisión</div><input type="number" id="m_fpy_tot" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Lead time promedio (días)</div><input type="number" step="0.1" id="m_lead" class="form-input"></div>
+            <div class="form-field"><div class="form-label">h/h reales consumidas</div><input type="number" step="0.1" id="m_hh" class="form-input"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-pane" data-pane="grafico" style="display:none;">
+        <div class="form-section">
+          <div class="form-section-title">Vertical Gráfico</div>
+          <div class="form-grid">
+            <div class="form-field"><div class="form-label">Recursos reprocesados</div><input type="number" id="g_reproc" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Recursos entregados</div><input type="number" id="g_entreg" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Aprobados al 1er intento</div><input type="number" id="g_fpy_ok" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Total sometidos a revisión</div><input type="number" id="g_fpy_tot" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Lead time promedio (días)</div><input type="number" step="0.1" id="g_lead" class="form-input"></div>
+            <div class="form-field"><div class="form-label">h/h reales consumidas</div><input type="number" step="0.1" id="g_hh" class="form-input"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-pane" data-pane="di" style="display:none;">
+        <div class="form-section">
+          <div class="form-section-title">Diseño Instruccional &amp; Implementación</div>
+          <div class="form-grid">
+            <div class="form-field"><div class="form-label">Recursos bloqueados por falta de DI</div><input type="number" id="di_cola" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Reprocesos causados por DI</div><input type="number" id="di_reproc" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Recursos aún sin montar en LMS</div><input type="number" id="im_cola" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Riesgos identificados antes de materializarse</div><input type="number" id="pm_riesgos_ok" class="form-input"></div>
+            <div class="form-field"><div class="form-label">Eventos negativos totales (riesgos + no detectados)</div><input type="number" id="pm_riesgos_tot" class="form-input"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeCapture()">Cancelar</button>
+      <button class="btn primary" onclick="saveCapture()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIG EQUIPOS -->
+<div class="modal-bg" id="mTeam">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Configuración de equipos dedicados</div>
+      <button class="modal-close" onclick="closeConfigTeam()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--gray);margin-bottom:14px;">Define cuántas personas productivas tiene cada PM por vertical. Se usa para el denominador de utilización de capacidad (N° personas × 34.5 h/semana).</p>
+      <table class="team-tbl" id="teamTbl"></table>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeConfigTeam()">Cancelar</button>
+      <button class="btn primary" onclick="saveConfigTeam()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ======================================================================
+   GRIKY OKRs · Dashboard comparativo entre equipos dedicados
+   Data sources: griky_fichas, griky_planeaciones, griky_seguimientos (rw)
+                 griky_kpis_manual, griky_team_config (rw, propios)
+   ====================================================================== */
+
+const H_PROD = 34.5;     // horas productivas por persona/semana
+const R_MULT = 2;        // multiplicador reproceso
+const H_IMPL = 2;        // h/h estándar por implementación LMS
+
+const PMs_DEFAULT = ["Andrés Briceño", "Margarita Rosales", "Sophia Pacheco", "Vilma Perilla"];
+
+// h/h estándar por tipo de recurso (catálogo Griky)
+const HH_STD = {
+  vid_std:16, vid_ava:12, vid_pod:8, vid_web:10, vid_audb:14, vid_pix:18, vid_bas:6, vid_int:20,
+  mul_sto:20, mul_ris:10, mul_gen:12, mul_h5p:12, mul_pres:8, mul_vst:16, mul_vgn:14, mul_act:10, mul_plat:6,
+  gra_inf:6, gra_pdf:4, gra_ebo:10, gra_ban:2, gra_pres:5,
+  di_cont:8, di_guia:6, impl_lms:2
+};
+
+// Mapeo tipo → vertical
+const TIPO_VERTICAL = {};
+["vid_std","vid_ava","vid_pod","vid_web","vid_audb","vid_pix","vid_bas","vid_int"].forEach(k=>TIPO_VERTICAL[k]="video");
+["mul_sto","mul_ris","mul_gen","mul_h5p","mul_pres","mul_vst","mul_vgn","mul_act","mul_plat"].forEach(k=>TIPO_VERTICAL[k]="multimedia");
+["gra_inf","gra_pdf","gra_ebo","gra_ban","gra_pres"].forEach(k=>TIPO_VERTICAL[k]="grafico");
+["di_cont","di_guia"].forEach(k=>TIPO_VERTICAL[k]="di");
+TIPO_VERTICAL["impl_lms"]="impl";
+
+/* -------- CATÁLOGO DE KPIs Nivel 1 Fábrica (7) -------- */
+const KPIS_FABRICA = [
+  { id:"cum_plazos", n:"Cumplimiento global de plazos", sub:"(Entregados en fecha / Comprometidos) × 100", src:"d", dim:"tiempo", thresh:{ok:90,warn:80}, fmt:"%", goal:"≥ 90%", okr:"O4·KR1" },
+  { id:"proj_riesgo", n:"Proyectos en riesgo de atraso", sub:">80% semanas consumidas y <80% entregado", src:"d", dim:"tiempo", thresh:{ok:10,warn:20,inv:true}, fmt:"%", goal:"≤ 10%", okr:"O4·KR3" },
+  { id:"util_cap", n:"Utilización de capacidad instalada", sub:"h/h asignadas / (N° × 34.5 h)", src:"d", dim:"costo", thresh:{ok:65,okMax:80,warn:60,warnMax:90}, fmt:"%", goal:"65–80%", okr:"O1·KR2" },
+  { id:"ef_hh", n:"Eficiencia h/h global", sub:"h/h estándar entregadas / h/h reales", src:"m", dim:"costo", thresh:{ok:90,warn:75}, fmt:"%", goal:"≥ 90%", okr:"O1·KR2" },
+  { id:"tasa_reproc", n:"Tasa de reprocesos global", sub:"Reprocesados / Entregados × 100", src:"m", dim:"calidad", thresh:{ok:10,warn:15,inv:true}, fmt:"%", goal:"≤ 10%", okr:"O1·KR1" },
+  { id:"costo_nc", n:"Costo oculto de no-calidad", sub:"Σ(reprocesados × h/h std × 2)", src:"c", dim:"calidad", thresh:{ok:20,warn:40,inv:true,raw:true}, fmt:"h", goal:"↓ vs. base", okr:"O1·KR1" },
+  { id:"worst_vertical", n:"Vertical con mayor tasa de reprocesos", sub:"MAX(video, multimedia, gráfico)", src:"d", dim:"calidad", thresh:{ok:10,warn:15,inv:true}, fmt:"vert", goal:"≤ 15%", okr:"O1·KR3" }
+];
+
+/* -------- KPIs Nivel 3 Producción (7 × por vertical) -------- */
+const KPIS_VERTICAL = [
+  { id:"cum_sem", n:"Cumplimiento semanal del plan", sub:"Entregados / Comprometidos vertical × 100", src:"d", dim:"tiempo", thresh:{ok:90,warn:80}, fmt:"%", okr:"O4·KR1" },
+  { id:"lead_t", n:"Lead time promedio (días)", sub:"Días entre entrada a producción y entrega", src:"m", dim:"tiempo", thresh:{ok:7,warn:14,inv:true,raw:true}, fmt:"d", okr:"O2·KR3" },
+  { id:"ef_hh_v", n:"Eficiencia h/h por vertical", sub:"h/h std entregadas / h/h reales", src:"m", dim:"costo", thresh:{ok:90,warn:75}, fmt:"%", okr:"O1·KR2" },
+  { id:"util_v", n:"Utilización de capacidad", sub:"h/h asignadas / (N° × 34.5 h)", src:"d", dim:"costo", thresh:{ok:65,okMax:80,warn:60,warnMax:90}, fmt:"%", okr:"O1·KR2" },
+  { id:"reproc_v", n:"Tasa de reprocesos", sub:"Reprocesados / Entregados × 100", src:"m", dim:"calidad", thresh:{ok:10,warn:15,inv:true}, fmt:"%", okr:"O3·KR3" },
+  { id:"fpy", n:"First Pass Yield", sub:"Aprobados 1er intento / Total revisados × 100", src:"m", dim:"calidad", thresh:{ok:80,warn:70}, fmt:"%", okr:"O3·KR1" },
+  { id:"hh_perd", n:"h/h perdidas por reprocesos", sub:"Σ(reprocesados × h/h std × 2)", src:"c", dim:"calidad", thresh:{ok:20,warn:40,inv:true,raw:true}, fmt:"h", okr:"O1·KR1" }
+];
+
+/* -------- OKRs Q2 -------- */
+const OKRS = [
+  { id:"O1", title:"La fábrica deja de perder capacidad en retrabajo y opera cerca de su potencial real",
+    krs:[
+      { id:"KR1", desc:"Costo oculto de no-calidad se reduce a la mitad respecto a línea base", goal:"−50% vs. base", fromKpi:"costo_nc", direction:"down", baselinePct:0.5 },
+      { id:"KR2", desc:"Utilización de capacidad sostenida en rango eficiente ≥ 8 de 12 semanas", goal:"65–80% sostenido", fromKpi:"util_cap", direction:"range", range:[65,80] },
+      { id:"KR3", desc:"Vertical con mayor tasa de reprocesos baja ≥ 10pp vs. base", goal:"−10pp vs. base", fromKpi:"worst_vertical", direction:"down", baselinePpt:10 }
+    ]},
+  { id:"O2", title:"El Diseño Instruccional entrega a tiempo y sin contaminar la línea de producción",
+    krs:[
+      { id:"KR1", desc:"Ninguna semana cierra con >3 recursos bloqueados por falta de DI aprobado", goal:"≤ 3 recursos/sem", fromKpi:"di_cola", direction:"down", target:3 },
+      { id:"KR2", desc:"Reprocesos de producción causados por DI ≤ 5% del total", goal:"≤ 5%", fromKpi:"di_reproc_rate", direction:"down", target:5 },
+      { id:"KR3", desc:"Lead time promedio de un curso baja ≥ 30% vs. base", goal:"−30% vs. base", fromKpi:"lead_t", direction:"down", baselinePct:0.3 }
+    ]},
+  { id:"O3", title:"La producción es predecible, trazable y comparable entre verticales",
+    krs:[
+      { id:"KR1", desc:"First Pass Yield ≥ 80% en las 3 verticales al cierre del trimestre", goal:"≥ 80% c/u", fromKpi:"fpy", direction:"up", target:80 },
+      { id:"KR2", desc:"Asignación desde Monday en 100% de proyectos activos", goal:"100%", fromKpi:"monday_adopt", direction:"up", target:100 },
+      { id:"KR3", desc:"Ninguna vertical supera 15% de reprocesos >2 semanas consecutivas", goal:"≤ 15% sostenido", fromKpi:"reproc_v", direction:"down", target:15 }
+    ]},
+  { id:"O4", title:"Los PMs pasan de gestionar por intuición a gestionar con datos y anticipación",
+    krs:[
+      { id:"KR1", desc:"Cumplimiento de planeación semanal (SPI) sube ≥ 30pp vs. base", goal:"+30pp vs. base", fromKpi:"cum_plazos", direction:"up", baselinePpt:30 },
+      { id:"KR2", desc:"Ningún PM cierra con carga asignada >100% de capacidad disponible", goal:"≤ 100% c/PM", fromKpi:"util_cap", direction:"down", target:100 },
+      { id:"KR3", desc:"≥ 60% de eventos negativos fueron identificados como riesgo antes", goal:"≥ 60%", fromKpi:"riesgos_pct", direction:"up", target:60 }
+    ]}
+];
+
+/* ====================== ESTADO & STORAGE ====================== */
+let state = {
+  semanas: [],           // semanas detectadas
+  semanaSel: null,
+  pmSel: "__all__",
+  vertical: "video",
+  fichas: [],
+  planeaciones: [],
+  seguimientos: [],
+  kpisManual: {},        // { "pm||semana": { ...manual } }
+  teamConfig: {},        // { pm: {video:1, multimedia:1, grafico:1, di:2, impl:1, qa:1} }
+  PMs: []
+};
+
+function loadAll(){
+  state.fichas = JSON.parse(localStorage.getItem("griky_fichas")||"[]");
+  state.planeaciones = JSON.parse(localStorage.getItem("griky_planeaciones")||"[]");
+  state.seguimientos = JSON.parse(localStorage.getItem("griky_seguimientos")||"[]");
+  state.kpisManual = JSON.parse(localStorage.getItem("griky_kpis_manual")||"{}");
+  state.teamConfig = JSON.parse(localStorage.getItem("griky_team_config")||"{}");
+
+  const pmsFound = new Set(PMs_DEFAULT);
+  [...state.fichas,...state.planeaciones,...state.seguimientos].forEach(x=>{ if(x.pm) pmsFound.add(x.pm); });
+  state.PMs = Array.from(pmsFound).sort();
+  state.PMs.forEach(pm=>{
+    if(!state.teamConfig[pm]) state.teamConfig[pm] = { video:1, multimedia:1, grafico:1, di:2, impl:1, qa:1 };
+  });
+
+  const sem = new Set();
+  state.planeaciones.forEach(p=>{ if(p.semana) sem.add(p.semana); });
+  state.seguimientos.forEach(s=>{ if(s.semana) sem.add(s.semana); });
+  Object.keys(state.kpisManual).forEach(k=>{ const [,s]=k.split("||"); if(s) sem.add(s); });
+  if(sem.size===0){ // fallback: semana actual
+    sem.add(semanaActualLabel());
+  }
+  state.semanas = Array.from(sem).sort().reverse();
+  if(!state.semanaSel || !state.semanas.includes(state.semanaSel)) state.semanaSel = state.semanas[0];
+}
+
+function semanaActualLabel(){
+  const d = new Date();
+  const day = d.getDay() || 7;
+  const mon = new Date(d); mon.setDate(d.getDate()-day+1);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  const mm = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  return `${mon.getDate()}-${mm[mon.getMonth()]} – ${sun.getDate()}-${mm[sun.getMonth()]}`;
+}
+
+function fillSelectors(){
+  const selS = document.getElementById("selSemana");
+  selS.innerHTML = state.semanas.map(s=>`<option value="${s}"${s===state.semanaSel?' selected':''}>${s}</option>`).join("");
+
+  const selP = document.getElementById("selPM");
+  selP.innerHTML = `<option value="__all__">Todos los equipos</option>` +
+    state.PMs.map(pm=>`<option value="${pm}"${pm===state.pmSel?' selected':''}>${pm}</option>`).join("");
+
+  const capP = document.getElementById("capPM");
+  capP.innerHTML = state.PMs.map(pm=>`<option value="${pm}">${pm}</option>`).join("");
+}
+
+/* ====================== CÁLCULOS DERIVADOS ====================== */
+
+// Recursos comprometidos y entregados por PM en una semana (desde seguimientos + planeaciones)
+function rfPorPM(pm, semana){
+  const seg = state.seguimientos.find(s=>s.pm===pm && s.semana===semana);
+  if(seg && seg.proyResultados){
+    let e=0, c=0;
+    Object.values(seg.proyResultados).forEach(r=>{ e+=(r.entregados||0); c+=(r.comprometidos||0); });
+    return {entreg:e, comprom:c, has:true, src:"seguimiento"};
+  }
+  const plan = state.planeaciones.find(p=>p.pm===pm && p.semana===semana);
+  if(plan){
+    return {entreg:0, comprom:plan.totalComprometidos||0, has:false, src:"planeacion"};
+  }
+  return {entreg:0, comprom:0, has:false, src:"none"};
+}
+
+// Recursos comprometidos y entregados por PM+vertical en una semana
+function rfPorPMVertical(pm, semana, vertical){
+  const plan = state.planeaciones.find(p=>p.pm===pm && p.semana===semana);
+  let comprom=0;
+  if(plan && plan.proyectos){
+    plan.proyectos.forEach(pr=>{
+      (pr.bloques||[]).forEach(b=>{
+        const counts = b.counts||{};
+        Object.entries(counts).forEach(([tipo,n])=>{
+          if(TIPO_VERTICAL[tipo]===vertical) comprom += (+n||0);
+        });
+      });
+    });
+  }
+  // entregados: no hay desglose por tipo en seguimiento actual → se reparte proporcionalmente
+  const global = rfPorPM(pm, semana);
+  const entreg = global.comprom>0 ? Math.round(global.entreg * (comprom/global.comprom)) : 0;
+  return {comprom, entreg, has: global.has};
+}
+
+// h/h asignadas por PM en una semana (de planeación)
+function hhAsignadas(pm, semana){
+  const plan = state.planeaciones.find(p=>p.pm===pm && p.semana===semana);
+  if(!plan || !plan.proyectos) return {total:0, porVert:{video:0,multimedia:0,grafico:0,di:0,impl:0}};
+  let total=0; const porVert={video:0,multimedia:0,grafico:0,di:0,impl:0};
+  plan.proyectos.forEach(pr=>{
+    (pr.bloques||[]).forEach(b=>{
+      const counts = b.counts||{};
+      Object.entries(counts).forEach(([tipo,n])=>{
+        const hh = (+n||0) * (HH_STD[tipo]||0);
+        total += hh;
+        const v = TIPO_VERTICAL[tipo];
+        if(v && porVert[v]!==undefined) porVert[v] += hh;
+      });
+    });
+  });
+  return {total, porVert};
+}
+
+// h/h estándar entregadas (estimación desde entregados globales × promedio h/h tipo)
+function hhEstandarEntregadas(pm, semana){
+  const rf = rfPorPM(pm, semana);
+  if(!rf.has || rf.entreg<=0) return 0;
+  const hhAsig = hhAsignadas(pm, semana);
+  // h/h promedio por recurso asignado en la semana
+  const plan = state.planeaciones.find(p=>p.pm===pm && p.semana===semana);
+  let totRec = 0;
+  if(plan && plan.proyectos){
+    plan.proyectos.forEach(pr=>{ (pr.bloques||[]).forEach(b=>{ totRec += (b.total||0); }); });
+  }
+  const hhProm = totRec>0 ? hhAsig.total/totRec : 10;
+  return rf.entreg * hhProm;
+}
+
+// Equipo total por PM (para utilización)
+function equipoTotal(pm){
+  const t = state.teamConfig[pm]||{};
+  return (t.video||0)+(t.multimedia||0)+(t.grafico||0)+(t.di||0)+(t.impl||0)+(t.qa||0);
+}
+
+function getManual(pm, semana){
+  return state.kpisManual[pm+"||"+semana] || {};
+}
+
+/* -------- Cálculo completo por PM en una semana (KPIs Nivel 1) -------- */
+function kpisFabricaPM(pm, semana){
+  const rf = rfPorPM(pm, semana);
+  const hh = hhAsignadas(pm, semana);
+  const team = equipoTotal(pm);
+  const m = getManual(pm, semana);
+
+  // 1. Cumplimiento global de plazos (solo si hay seguimiento real, no solo planeación)
+  const cum_plazos = (rf.has && rf.comprom>0) ? (rf.entreg/rf.comprom*100) : null;
+
+  // 2. Proyectos en riesgo (de fichas del PM)
+  const misFichas = state.fichas.filter(f=>f.pm===pm);
+  const riesgo = misFichas.filter(f=>{
+    if(!f.semanas || !f.inicio || !f.avance) return false;
+    const ini = new Date(f.inicio);
+    const ahora = new Date();
+    const semConsumidas = Math.max(0, Math.round((ahora-ini)/(7*864e5)));
+    const pctSem = f.semanas>0 ? (semConsumidas/f.semanas*100) : 0;
+    return pctSem>80 && (f.avance||0)<80;
+  }).length;
+  const proj_riesgo = misFichas.length>0 ? (riesgo/misFichas.length*100) : null;
+
+  // 3. Utilización
+  const capDisp = team * H_PROD;
+  const util_cap = capDisp>0 ? (hh.total/capDisp*100) : null;
+
+  // 4. Eficiencia h/h global (manual)
+  let ef_hh = null;
+  if(m.f_hhReales){
+    const hhStd = m.f_hhEstandar || hhEstandarEntregadas(pm, semana);
+    if(hhStd>0) ef_hh = hhStd/m.f_hhReales*100;
+  }
+
+  // 5. Tasa de reprocesos global (manual, suma verticales)
+  const reprocTot = (m.v_reproc||0)+(m.m_reproc||0)+(m.g_reproc||0);
+  const entregTot = (m.v_entreg||0)+(m.m_entreg||0)+(m.g_entreg||0) || rf.entreg;
+  const tasa_reproc = entregTot>0 && (m.v_reproc!=null||m.m_reproc!=null||m.g_reproc!=null)
+    ? (reprocTot/entregTot*100) : null;
+
+  // 6. Costo oculto de no-calidad (calculado)
+  const hhAsigProm = (hh.total>0 && rf.comprom>0) ? (hh.total/rf.comprom) : 10;
+  const costo_nc = reprocTot>0 ? (reprocTot * hhAsigProm * R_MULT) : (tasa_reproc!=null?0:null);
+
+  // 7. Vertical con mayor tasa
+  const rv={
+    video: (m.v_entreg>0 && m.v_reproc!=null)? (m.v_reproc/m.v_entreg*100):null,
+    multimedia: (m.m_entreg>0 && m.m_reproc!=null)? (m.m_reproc/m.m_entreg*100):null,
+    grafico: (m.g_entreg>0 && m.g_reproc!=null)? (m.g_reproc/m.g_entreg*100):null
+  };
+  let worst_vertical=null, worstVal=null, worstName=null;
+  Object.entries(rv).forEach(([k,v])=>{ if(v!=null && (worstVal==null||v>worstVal)){worstVal=v;worstName=k;} });
+  if(worstVal!=null){ worst_vertical = worstVal; }
+
+  return {
+    cum_plazos, proj_riesgo, util_cap, ef_hh, tasa_reproc, costo_nc, worst_vertical,
+    worstName, rf, hh, team, capDisp
+  };
+}
+
+/* -------- Cálculo KPIs Nivel 3 Vertical por PM -------- */
+function kpisVerticalPM(pm, semana, vertical){
+  const m = getManual(pm, semana);
+  const prefix = vertical==="video"?"v_":(vertical==="multimedia"?"m_":"g_");
+  const rv = rfPorPMVertical(pm, semana, vertical);
+  const hh = hhAsignadas(pm, semana);
+  const hhV = hh.porVert[vertical]||0;
+  const tV = (state.teamConfig[pm]||{})[vertical]||0;
+  const capV = tV*H_PROD;
+
+  const cum_sem = (rv.has && rv.comprom>0) ? (rv.entreg/rv.comprom*100) : null;
+  const lead_t = m[prefix+"lead"] ?? null;
+
+  // Eficiencia h/h vertical
+  let ef_hh_v = null;
+  if(m[prefix+"hh"]){
+    // Estimar h/h estándar entregadas en la vertical: rv.entreg × h/h prom vertical
+    const plan = state.planeaciones.find(p=>p.pm===pm && p.semana===semana);
+    let recV=0;
+    if(plan && plan.proyectos){
+      plan.proyectos.forEach(pr=>{ (pr.bloques||[]).forEach(b=>{
+        const c=b.counts||{}; Object.entries(c).forEach(([t,n])=>{ if(TIPO_VERTICAL[t]===vertical) recV+=(+n||0); });
+      });});
+    }
+    const hhProm = recV>0 ? hhV/recV : 10;
+    const hhStdEntreg = rv.entreg*hhProm;
+    if(m[prefix+"hh"]>0) ef_hh_v = hhStdEntreg/m[prefix+"hh"]*100;
+  }
+
+  const util_v = capV>0 ? (hhV/capV*100) : null;
+
+  const reproc = m[prefix+"reproc"]!=null ? (+m[prefix+"reproc"]) : null;
+  const entreg = m[prefix+"entreg"]!=null && m[prefix+"entreg"]>0 ? (+m[prefix+"entreg"]) : rv.entreg;
+  const reproc_v = (reproc!=null && entreg>0) ? (reproc/entreg*100) : null;
+
+  const fpyOk = m[prefix+"fpy_ok"], fpyTot = m[prefix+"fpy_tot"];
+  const fpy = (fpyOk!=null && fpyTot>0) ? (fpyOk/fpyTot*100) : null;
+
+  const hhPromV = hhV>0 && rv.comprom>0 ? (hhV/rv.comprom) : 10;
+  const hh_perd = reproc!=null ? reproc*hhPromV*R_MULT : null;
+
+  return { cum_sem, lead_t, ef_hh_v, util_v, reproc_v, fpy, hh_perd };
+}
+
+/* ====================== SEMÁFORO ====================== */
+function semaforo(val, kpi){
+  if(val==null || isNaN(val)) return "gris";
+  const t = kpi.thresh||{};
+  if(t.raw){ // threshold absoluto (ej. horas)
+    if(t.inv){
+      if(val<=t.ok) return "verde";
+      if(val<=t.warn) return "amarillo";
+      return "rojo";
+    }
+    if(val>=t.ok) return "verde";
+    if(val>=t.warn) return "amarillo";
+    return "rojo";
+  }
+  if(t.okMax!=null){ // rango bueno
+    if(val>=t.ok && val<=t.okMax) return "verde";
+    if(val>=t.warn && val<=t.warnMax) return "amarillo";
+    return "rojo";
+  }
+  if(t.inv){
+    if(val<=t.ok) return "verde";
+    if(val<=t.warn) return "amarillo";
+    return "rojo";
+  }
+  if(val>=t.ok) return "verde";
+  if(val>=t.warn) return "amarillo";
+  return "rojo";
+}
+
+function fmtVal(val, kpi){
+  if(val==null||isNaN(val)) return "—";
+  if(kpi.fmt==="%") return val.toFixed(0)+"%";
+  if(kpi.fmt==="h") return val.toFixed(0)+" h";
+  if(kpi.fmt==="d") return val.toFixed(1)+" d";
+  if(kpi.fmt==="vert") return "—";
+  return val.toFixed(1);
+}
+
+/* ====================== RENDER ====================== */
+function rerender(){
+  state.semanaSel = document.getElementById("selSemana").value;
+  state.pmSel = document.getElementById("selPM").value;
+  document.getElementById("fechaBadge").textContent = "Semana: " + (state.semanaSel||"—");
+  renderBanner();
+  renderHeatFabrica();
+  renderRanking();
+  renderHeatVertical();
+  renderOKRs();
+}
+
+function renderBanner(){
+  const el = document.getElementById("bannerData");
+  const totPM = state.PMs.length;
+  const semana = state.semanaSel;
+  let conSeguimiento=0, conManual=0;
+  state.PMs.forEach(pm=>{
+    if(state.seguimientos.some(s=>s.pm===pm && s.semana===semana)) conSeguimiento++;
+    const m = getManual(pm, semana);
+    if(m && Object.keys(m).length>0) conManual++;
+  });
+  if(state.fichas.length===0 && state.planeaciones.length===0 && state.seguimientos.length===0 && conManual===0){
+    el.className="banner";
+    el.innerHTML=`⚠ Aún no hay data en <code>localStorage</code>. Captura al menos una ficha, planeación o un set de KPIs manuales para ver el dashboard con números reales.`;
+    return;
+  }
+  el.className="banner info";
+  el.innerHTML = `📊 Semana <strong>${semana}</strong> · ${conSeguimiento}/${totPM} equipos con seguimiento derivado · ${conManual}/${totPM} con KPIs manuales capturados.`;
+}
+
+/* ---- OKR CARDS ---- */
+function renderOKRs(){
+  const grid = document.getElementById("okrGrid");
+  // agregados sobre todos los PMs (o el filtrado)
+  const pmList = state.pmSel==="__all__" ? state.PMs : [state.pmSel];
+  const agg = aggKpis(pmList, state.semanaSel);
+
+  grid.innerHTML = OKRS.map(o=>{
+    const krs = o.krs.map(kr=>{
+      const {val, sem, display} = evalKR(kr, agg, pmList);
+      return `<div class="kr-row">
+        <div class="kr-num">${kr.id}</div>
+        <div class="kr-text">
+          <div class="kr-desc">${kr.desc}</div>
+          <div class="kr-meta">Meta Q2: ${kr.goal}</div>
+        </div>
+        <div class="kr-prog">
+          <div class="kr-val ${sem}">${display}</div>
+        </div>
+      </div>`;
+    }).join("");
+    return `<div class="okr-card">
+      <div class="okr-head"><div class="okr-badge">${o.id}</div><div class="okr-title">${o.title}</div></div>
+      <div class="okr-body">${krs}</div>
+    </div>`;
+  }).join("");
+}
+
+function aggKpis(pmList, semana){
+  const r = { f:{}, v:{video:{},multimedia:{},grafico:{}} };
+  const vals = { cum_plazos:[], proj_riesgo:[], util_cap:[], ef_hh:[], tasa_reproc:[], costo_nc:[], worst_vertical:[] };
+  const vVals = { video:{cum_sem:[],reproc_v:[],fpy:[],util_v:[],hh_perd:[],lead_t:[],ef_hh_v:[]},
+                  multimedia:{cum_sem:[],reproc_v:[],fpy:[],util_v:[],hh_perd:[],lead_t:[],ef_hh_v:[]},
+                  grafico:{cum_sem:[],reproc_v:[],fpy:[],util_v:[],hh_perd:[],lead_t:[],ef_hh_v:[]}};
+  pmList.forEach(pm=>{
+    const f = kpisFabricaPM(pm, semana);
+    Object.keys(vals).forEach(k=>{ if(f[k]!=null) vals[k].push(f[k]); });
+    ["video","multimedia","grafico"].forEach(vv=>{
+      const vk = kpisVerticalPM(pm, semana, vv);
+      Object.keys(vVals[vv]).forEach(k=>{ if(vk[k]!=null) vVals[vv][k].push(vk[k]); });
+    });
+  });
+  Object.keys(vals).forEach(k=>{
+    if(vals[k].length>0){
+      if(k==="worst_vertical" || k==="costo_nc" || k==="proj_riesgo"){
+        r.f[k] = vals[k].reduce((a,b)=>a+b,0) / vals[k].length; // avg (costo_nc se podría sumar también)
+        if(k==="costo_nc") r.f[k] = vals[k].reduce((a,b)=>a+b,0); // suma
+      } else {
+        r.f[k] = vals[k].reduce((a,b)=>a+b,0) / vals[k].length;
+      }
+    } else r.f[k]=null;
+  });
+  Object.keys(vVals).forEach(vv=>{
+    Object.keys(vVals[vv]).forEach(k=>{
+      if(vVals[vv][k].length>0) r.v[vv][k] = vVals[vv][k].reduce((a,b)=>a+b,0)/vVals[vv][k].length;
+      else r.v[vv][k]=null;
+    });
+  });
+  return r;
+}
+
+function evalKR(kr, agg, pmList){
+  // Mapea cada KR a un valor visible
+  const f = agg.f||{}, v=agg.v||{};
+  let val=null, sem="gris", display="—";
+  switch(kr.fromKpi){
+    case "costo_nc":
+      if(f.costo_nc!=null){ val=f.costo_nc; display=val.toFixed(0)+" h"; sem = val<=40 ? "verde" : (val<=80?"amarillo":"rojo"); }
+      break;
+    case "util_cap":
+      if(f.util_cap!=null){ val=f.util_cap; display=val.toFixed(0)+"%";
+        if(kr.direction==="range"){ sem = (val>=kr.range[0]&&val<=kr.range[1]) ? "verde" : (val>=50&&val<=90?"amarillo":"rojo"); }
+        else { sem = val<=100?"verde":"rojo"; }
+      }
+      break;
+    case "worst_vertical":
+      if(f.worst_vertical!=null){ val=f.worst_vertical; display=val.toFixed(0)+"%"; sem = val<=15?"verde":(val<=25?"amarillo":"rojo"); }
+      break;
+    case "di_cola":
+      { const semana = state.semanaSel;
+        const sum = pmList.reduce((a,pm)=>a + (getManual(pm,semana).di_cola||0),0);
+        val=sum; display=sum+" rec."; sem = sum<=3?"verde":(sum<=6?"amarillo":"rojo");
+      } break;
+    case "di_reproc_rate":
+      { const semana = state.semanaSel;
+        let rep=0, tot=0;
+        pmList.forEach(pm=>{ const mm=getManual(pm,semana);
+          rep+=(+mm.di_reproc||0);
+          tot+=((+mm.v_entreg||0)+(+mm.m_entreg||0)+(+mm.g_entreg||0));
+        });
+        if(tot>0){ val=rep/tot*100; display=val.toFixed(1)+"%"; sem=val<=5?"verde":(val<=10?"amarillo":"rojo"); }
+      } break;
+    case "lead_t":
+      { const lts=[]; ["video","multimedia","grafico"].forEach(vv=>{ if(v[vv].lead_t!=null) lts.push(v[vv].lead_t); });
+        if(lts.length){ val=lts.reduce((a,b)=>a+b,0)/lts.length; display=val.toFixed(1)+" d"; sem = val<=10?"verde":(val<=20?"amarillo":"rojo"); }
+      } break;
+    case "fpy":
+      { const vals=[]; ["video","multimedia","grafico"].forEach(vv=>{ if(v[vv].fpy!=null) vals.push(v[vv].fpy); });
+        if(vals.length){ val=Math.min(...vals); display=val.toFixed(0)+"% (min)"; sem = val>=80?"verde":(val>=70?"amarillo":"rojo"); }
+      } break;
+    case "monday_adopt":
+      display="sin medir"; sem="gris";
+      break;
+    case "reproc_v":
+      { const vals=[]; ["video","multimedia","grafico"].forEach(vv=>{ if(v[vv].reproc_v!=null) vals.push(v[vv].reproc_v); });
+        if(vals.length){ val=Math.max(...vals); display=val.toFixed(0)+"% (max)"; sem = val<=15?"verde":(val<=25?"amarillo":"rojo"); }
+      } break;
+    case "cum_plazos":
+      if(f.cum_plazos!=null){ val=f.cum_plazos; display=val.toFixed(0)+"%"; sem = val>=90?"verde":(val>=75?"amarillo":"rojo"); }
+      break;
+    case "riesgos_pct":
+      { const semana = state.semanaSel;
+        let ok=0, tot=0;
+        pmList.forEach(pm=>{ const mm=getManual(pm,semana);
+          ok+=(+mm.pm_riesgos_ok||0); tot+=(+mm.pm_riesgos_tot||0);
+        });
+        if(tot>0){ val=ok/tot*100; display=val.toFixed(0)+"%"; sem=val>=60?"verde":(val>=40?"amarillo":"rojo"); }
+      } break;
+  }
+  return {val, sem, display};
+}
+
+/* ---- HEATMAP FÁBRICA ---- */
+function renderHeatFabrica(){
+  const pms = state.PMs;
+  const wrap = document.getElementById("heatFabricaWrap");
+  if(pms.length===0){ wrap.innerHTML = '<div style="padding:20px;color:var(--gray);font-size:12px;">Sin equipos dedicados detectados.</div>'; return; }
+  const semana = state.semanaSel;
+  const rows = KPIS_FABRICA.map(kpi=>{
+    // Calc cada PM
+    const cells = pms.map(pm=>{
+      const r = kpisFabricaPM(pm, semana);
+      const val = r[kpi.id];
+      const sem = semaforo(val, kpi);
+      let disp;
+      if(kpi.id==="worst_vertical" && r.worstName){
+        disp = val!=null ? `${r.worstName[0].toUpperCase()+r.worstName.slice(1)} · ${val.toFixed(0)}%` : "—";
+      } else {
+        disp = fmtVal(val, kpi);
+      }
+      return {pm, val, sem, disp};
+    });
+    // best/worst
+    const numeric = cells.filter(c=>c.val!=null);
+    let bestPM=null, worstPM=null;
+    if(numeric.length>=2){
+      const inv = (kpi.thresh||{}).inv || kpi.id==="costo_nc" || kpi.id==="worst_vertical" || kpi.id==="proj_riesgo";
+      if(kpi.thresh.okMax){ // rango — mejor = más centrado
+        const target = (kpi.thresh.ok+kpi.thresh.okMax)/2;
+        numeric.sort((a,b)=>Math.abs(a.val-target)-Math.abs(b.val-target));
+        bestPM=numeric[0].pm; worstPM=numeric[numeric.length-1].pm;
+      } else {
+        numeric.sort((a,b)=>a.val-b.val);
+        if(inv){ bestPM=numeric[0].pm; worstPM=numeric[numeric.length-1].pm; }
+        else   { bestPM=numeric[numeric.length-1].pm; worstPM=numeric[0].pm; }
+      }
+    }
+    const srcLabel = kpi.src==="d"?"Derivado":kpi.src==="m"?"Manual":"Calculado";
+    const srcClass = "src-"+kpi.src;
+    return `<tr>
+      <td class="kpi-name">
+        <div class="kpi-title">${kpi.n}</div>
+        <div class="kpi-sub">${kpi.sub} · meta ${kpi.goal||'—'} · <em>${kpi.okr}</em></div>
+        <span class="kpi-src ${srcClass}">${srcLabel}</span>
+      </td>
+      ${cells.map(c=>{
+        const extra = c.pm===bestPM?' best':c.pm===worstPM?' worst':'';
+        return `<td class="cell-wrap${extra}"><div class="cell ${c.sem}"><div class="cell-val">${c.disp}</div></div></td>`;
+      }).join("")}
+    </tr>`;
+  }).join("");
+  wrap.innerHTML = `<table class="heatmap">
+    <thead><tr><th class="kpi-col">KPI</th>${pms.map(p=>`<th>${p}</th>`).join("")}</tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+/* ---- RANKING POR DIMENSIÓN ---- */
+function renderRanking(){
+  const pms = state.PMs;
+  const semana = state.semanaSel;
+  const dims = ["tiempo","costo","calidad"];
+  const scoresByPM = {}; pms.forEach(p=>scoresByPM[p]={tiempo:[],costo:[],calidad:[]});
+
+  pms.forEach(pm=>{
+    const f = kpisFabricaPM(pm, semana);
+    KPIS_FABRICA.forEach(kpi=>{
+      const val = f[kpi.id];
+      const s = scorize(val, kpi);
+      if(s!=null) scoresByPM[pm][kpi.dim].push(s);
+    });
+  });
+
+  const grid = document.getElementById("rankGrid");
+  grid.innerHTML = dims.map(d=>{
+    const rank = pms.map(pm=>{
+      const arr = scoresByPM[pm][d];
+      const avg = arr.length>0 ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+      return {pm, avg};
+    }).filter(r=>r.avg!=null).sort((a,b)=>b.avg-a.avg);
+    if(rank.length===0) return `<div class="rank-card">
+      <div class="rank-head ${d}">${d==='tiempo'?'Dimensión · Tiempo':d==='costo'?'Dimensión · Costo':'Dimensión · Calidad'}</div>
+      <div class="rank-body"><div style="color:var(--gray);font-size:12px;padding:10px;">Sin KPIs disponibles.</div></div>
+    </div>`;
+    return `<div class="rank-card">
+      <div class="rank-head ${d}">${d==='tiempo'?'Dimensión · Tiempo':d==='costo'?'Dimensión · Costo':'Dimensión · Calidad'}</div>
+      <div class="rank-body">${rank.map((r,i)=>{
+        const sem = r.avg>=80?'verde':r.avg>=60?'amarillo':'rojo';
+        return `<div class="rank-row">
+          <div class="rank-pos p${Math.min(i+1,4)}">${i+1}</div>
+          <div class="rank-name">${r.pm}</div>
+          <div class="rank-score ${sem}">${Math.round(r.avg)}</div>
+        </div>`;
+      }).join("")}</div></div>`;
+  }).join("");
+}
+
+// Convierte un valor de KPI a score 0-100
+function scorize(val, kpi){
+  if(val==null||isNaN(val)) return null;
+  const t = kpi.thresh||{};
+  if(t.okMax){
+    const mid = (t.ok+t.okMax)/2, range=(t.okMax-t.ok)/2;
+    const dist = Math.abs(val-mid);
+    if(dist<=range) return 100 - (dist/range)*20;
+    return Math.max(0, 80 - ((dist-range)/range)*40);
+  }
+  if(t.raw){
+    if(t.inv){
+      if(val<=t.ok) return 100; if(val<=t.warn) return 70; return Math.max(0, 40 - (val-t.warn));
+    }
+    if(val>=t.ok) return 100; if(val>=t.warn) return 70; return Math.max(0, val/t.warn*70);
+  }
+  if(t.inv){
+    if(val<=t.ok) return 100; if(val<=t.warn) return 70; return Math.max(0, 70 - (val-t.warn)*2);
+  }
+  if(val>=t.ok) return 100; if(val>=t.warn) return 70; return Math.max(0, val/t.warn*70);
+}
+
+/* ---- HEATMAP NIVEL 3 VERTICAL ---- */
+function renderHeatVertical(){
+  const pms = state.PMs;
+  const semana = state.semanaSel;
+  const vert = state.vertical;
+  const wrap = document.getElementById("heatVerticalWrap");
+  if(pms.length===0){ wrap.innerHTML = '<div style="padding:20px;color:var(--gray);font-size:12px;">Sin equipos.</div>'; return; }
+  const rows = KPIS_VERTICAL.map(kpi=>{
+    const cells = pms.map(pm=>{
+      const r = kpisVerticalPM(pm, semana, vert);
+      const val = r[kpi.id];
+      const sem = semaforo(val, kpi);
+      return {pm, val, sem, disp: fmtVal(val, kpi)};
+    });
+    const numeric = cells.filter(c=>c.val!=null);
+    let bestPM=null, worstPM=null;
+    if(numeric.length>=2){
+      const inv = (kpi.thresh||{}).inv;
+      if(kpi.thresh.okMax){
+        const target=(kpi.thresh.ok+kpi.thresh.okMax)/2;
+        numeric.sort((a,b)=>Math.abs(a.val-target)-Math.abs(b.val-target));
+        bestPM=numeric[0].pm; worstPM=numeric[numeric.length-1].pm;
+      } else {
+        numeric.sort((a,b)=>a.val-b.val);
+        if(inv){ bestPM=numeric[0].pm; worstPM=numeric[numeric.length-1].pm; }
+        else   { bestPM=numeric[numeric.length-1].pm; worstPM=numeric[0].pm; }
+      }
+    }
+    const srcLabel = kpi.src==="d"?"Derivado":kpi.src==="m"?"Manual":"Calculado";
+    const srcClass = "src-"+kpi.src;
+    return `<tr>
+      <td class="kpi-name">
+        <div class="kpi-title">${kpi.n}</div>
+        <div class="kpi-sub">${kpi.sub} · <em>${kpi.okr}</em></div>
+        <span class="kpi-src ${srcClass}">${srcLabel}</span>
+      </td>
+      ${cells.map(c=>{
+        const extra = c.pm===bestPM?' best':c.pm===worstPM?' worst':'';
+        return `<td class="cell-wrap${extra}"><div class="cell ${c.sem}"><div class="cell-val">${c.disp}</div></div></td>`;
+      }).join("")}
+    </tr>`;
+  }).join("");
+  wrap.innerHTML = `<table class="heatmap">
+    <thead><tr><th class="kpi-col">KPI (${vert})</th>${pms.map(p=>`<th>${p}</th>`).join("")}</tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+/* ====================== MODALES ====================== */
+function openCapture(){
+  const pm = state.pmSel!=="__all__" ? state.pmSel : (state.PMs[0]||"");
+  document.getElementById("capPM").value = pm;
+  document.getElementById("capSemana").value = state.semanaSel || semanaActualLabel();
+  document.getElementById("capFecha").value = new Date().toISOString().slice(0,10);
+
+  // Pre-llenar si hay datos previos
+  const m = getManual(pm, state.semanaSel);
+  const fields = ["f_hhReales","f_hhEstandar","v_reproc","v_entreg","v_fpy_ok","v_fpy_tot","v_lead","v_hh",
+    "m_reproc","m_entreg","m_fpy_ok","m_fpy_tot","m_lead","m_hh",
+    "g_reproc","g_entreg","g_fpy_ok","g_fpy_tot","g_lead","g_hh",
+    "di_cola","di_reproc","im_cola","pm_riesgos_ok","pm_riesgos_tot"];
+  fields.forEach(f=>{ const el=document.getElementById(f); if(el) el.value = m[f] ?? ""; });
+
+  document.getElementById("mCapture").classList.add("show");
+}
+function closeCapture(){ document.getElementById("mCapture").classList.remove("show"); }
+
+document.querySelectorAll(".form-tab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".form-tab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    const t = b.dataset.tab;
+    document.querySelectorAll(".form-pane").forEach(p=>p.style.display = p.dataset.pane===t?"block":"none");
+  });
+});
+document.querySelectorAll(".vtab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".vtab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    state.vertical = b.dataset.v;
+    renderHeatVertical();
+  });
+});
+
+function saveCapture(){
+  const pm = document.getElementById("capPM").value;
+  const semana = document.getElementById("capSemana").value.trim();
+  if(!pm || !semana){ alert("PM y semana requeridos."); return; }
+  const data={};
+  ["f_hhReales","f_hhEstandar","v_reproc","v_entreg","v_fpy_ok","v_fpy_tot","v_lead","v_hh",
+   "m_reproc","m_entreg","m_fpy_ok","m_fpy_tot","m_lead","m_hh",
+   "g_reproc","g_entreg","g_fpy_ok","g_fpy_tot","g_lead","g_hh",
+   "di_cola","di_reproc","im_cola","pm_riesgos_ok","pm_riesgos_tot"].forEach(f=>{
+    const el=document.getElementById(f); const v=el.value.trim();
+    if(v!=="") data[f]=+v;
+  });
+  data._fecha = document.getElementById("capFecha").value || new Date().toISOString().slice(0,10);
+  state.kpisManual[pm+"||"+semana] = data;
+  localStorage.setItem("griky_kpis_manual", JSON.stringify(state.kpisManual));
+  if(!state.semanas.includes(semana)){ state.semanas.unshift(semana); state.semanaSel=semana; fillSelectors(); }
+  closeCapture();
+  rerender();
+}
+
+function openConfigTeam(){
+  const tbl = document.getElementById("teamTbl");
+  tbl.innerHTML = `<thead><tr>
+    <th>PM</th><th>Video</th><th>Multimedia</th><th>Gráfico</th><th>DI</th><th>Impl.</th><th>QA</th><th>Total</th>
+  </tr></thead><tbody>${
+    state.PMs.map(pm=>{
+      const t=state.teamConfig[pm]||{};
+      const tot=equipoTotal(pm);
+      return `<tr data-pm="${pm}">
+        <td style="font-weight:500;">${pm}</td>
+        <td><input data-f="video" type="number" min="0" step="1" value="${t.video||0}"></td>
+        <td><input data-f="multimedia" type="number" min="0" step="1" value="${t.multimedia||0}"></td>
+        <td><input data-f="grafico" type="number" min="0" step="1" value="${t.grafico||0}"></td>
+        <td><input data-f="di" type="number" min="0" step="1" value="${t.di||0}"></td>
+        <td><input data-f="impl" type="number" min="0" step="1" value="${t.impl||0}"></td>
+        <td><input data-f="qa" type="number" min="0" step="1" value="${t.qa||0}"></td>
+        <td style="font-weight:700;">${tot}</td>
+      </tr>`;
+    }).join("")
+  }</tbody>`;
+  document.getElementById("mTeam").classList.add("show");
+}
+function closeConfigTeam(){ document.getElementById("mTeam").classList.remove("show"); }
+function saveConfigTeam(){
+  document.querySelectorAll("#teamTbl tbody tr").forEach(tr=>{
+    const pm = tr.dataset.pm; const t={};
+    tr.querySelectorAll("input").forEach(i=>{ t[i.dataset.f] = +i.value||0; });
+    state.teamConfig[pm]=t;
+  });
+  localStorage.setItem("griky_team_config", JSON.stringify(state.teamConfig));
+  closeConfigTeam();
+  rerender();
+}
+
+/* ====================== EXPORT ====================== */
+function exportSnapshot(){
+  const semana = state.semanaSel;
+  const rows = [["Nivel","KPI","PM","Valor","Semáforo","Semana"]];
+  state.PMs.forEach(pm=>{
+    const f = kpisFabricaPM(pm, semana);
+    KPIS_FABRICA.forEach(kpi=>{
+      const v = f[kpi.id];
+      rows.push(["Fábrica", kpi.n, pm, v==null?"":v.toFixed(2), semaforo(v,kpi), semana]);
+    });
+    ["video","multimedia","grafico"].forEach(vv=>{
+      const r = kpisVerticalPM(pm, semana, vv);
+      KPIS_VERTICAL.forEach(kpi=>{
+        const v = r[kpi.id];
+        rows.push([vv, kpi.n, pm, v==null?"":v.toFixed(2), semaforo(v,kpi), semana]);
+      });
+    });
+  });
+  const csv = rows.map(r=>r.map(c=>`"${(c??"").toString().replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `griky-okrs-${semana.replace(/[^0-9a-z]+/gi,'_')}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ====================== INIT ====================== */
+(function init(){
+  loadAll();
+  fillSelectors();
+  rerender();
+})();
+</script>
+</body>
+</html>
