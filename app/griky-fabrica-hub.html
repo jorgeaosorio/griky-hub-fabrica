@@ -826,7 +826,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
             <div class="prog-bar"><div class="prog-fill verde" style="width:100%"></div></div>
           </div>
           <div class="proj-meta">
-            <span class="meta-pill fecha">Sophia · Andrés · Margarita · Vilma</span>
+            <span class="meta-pill fecha">Sophia · Andrés · Margarita · Vilma · Jean</span>
           </div>
         </div>
       </div>
@@ -1096,6 +1096,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
         <option value="Andrés Briceño">ED Andrés Briceño</option>
         <option value="Margarita Rosales">ED Margarita Rosales</option>
         <option value="Vilma Perilla">ED Vilma Perilla</option>
+        <option value="Jean Villegas">ED Jean Villegas</option>
       </select>
     </div>
 
@@ -1351,7 +1352,7 @@ function generarConsolidado(){
   const segsWeek = segs.filter(s => s.semana === semanaActual);
 
   const fecha = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const PMsConocidos = ['Sophia Pacheco','Andrés Briceño','Margarita Rosales','Vilma Perilla'];
+  const PMsConocidos = ['Sophia Pacheco','Andrés Briceño','Margarita Rosales','Vilma Perilla','Jean Villegas'];
   const PMsReportando = segsWeek.map(s=>s.pm);
   const PMsPendientes = PMsConocidos.filter(p => !PMsReportando.includes(p));
 
