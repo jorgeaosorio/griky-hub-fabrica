@@ -325,9 +325,9 @@ let steps = [];
 
 function onPMSelect(){
   pmKey = document.getElementById('selPM').value;
-  const confirm = document.getElementById('pmConfirm');
+  const confirmEl = document.getElementById('pmConfirm');
   const banner = document.getElementById('projBanner');
-  if(!pmKey){ confirm.classList.add('hidden'); return; }
+  if(!pmKey){ confirmEl.classList.add('hidden'); return; }
 
   const NO_FICHA = {sophia:'Sophia Pacheco', jean:'Jean Villegas'};
   isSophia = !!NO_FICHA[pmKey];
@@ -338,7 +338,7 @@ function onPMSelect(){
   } else {
     banner.innerHTML = '<div><div class="name">'+ficha.proyecto+'</div><div class="meta">'+ficha.cliente+' · '+ficha.totalRec+' recursos · '+ficha.ritmo+' rec/sem</div></div>';
   }
-  confirm.classList.remove('hidden');
+  confirmEl.classList.remove('hidden');
 }
 
 function startInterview(){
