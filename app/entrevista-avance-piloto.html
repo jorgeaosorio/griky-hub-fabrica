@@ -297,8 +297,18 @@ var PM_PROYECTOS = {
   margarita: {
     nombre: 'Margarita Rosales',
     proyectos: [
-      {id:'apus_ingles', nombre:'Apus Inglés', cliente:'Apus'},
-      {id:'apus_espanol', nombre:'Apus Español', cliente:'Apus'},
+      {id:'apus_ingles', nombre:'Apus Inglés', cliente:'Apus',
+        ficha:{inicio:'2025-11-14',cierre:'2026-02-02',semanas:9,tipoUP:'Semana',
+          cursos:[{nombre:'Curso 1',ups:1},{nombre:'Curso 2',ups:1},{nombre:'Curso 3',ups:1},{nombre:'Curso 4',ups:1},{nombre:'Curso 5',ups:1},{nombre:'Curso 6',ups:1},{nombre:'Curso 7',ups:1},{nombre:'Curso 8',ups:1},{nombre:'Curso 9',ups:1}],
+          totalRec:81,ritmo:9,recVideo:33,recMulti:24,recGraf:24,
+          avance:{semaforo:'verde',sprint:9,cursosAprobados:0,hechos:{video:33,multi:24,graf:24},totalHechos:81,pct:100,
+            carga:'alta',riesgos:'Ninguno',comentario:'Wave A - 5 cursos ingles finalizada - Pendiente rta de cliente con su aprobación'}}},
+      {id:'apus_espanol', nombre:'Apus Español', cliente:'Apus',
+        ficha:{inicio:'2025-11-14',cierre:'2026-02-02',semanas:9,tipoUP:'Semana',
+          cursos:[{nombre:'Curso 1',ups:1},{nombre:'Curso 2',ups:1},{nombre:'Curso 3',ups:1},{nombre:'Curso 4',ups:1},{nombre:'Curso 5',ups:1},{nombre:'Curso 6',ups:1},{nombre:'Curso 7',ups:1},{nombre:'Curso 8',ups:1},{nombre:'Curso 9',ups:1}],
+          totalRec:81,ritmo:9,recVideo:33,recMulti:24,recGraf:24,
+          avance:{semaforo:'verde',sprint:9,cursosAprobados:0,hechos:{video:33,multi:24,graf:24},totalHechos:81,pct:100,
+            carga:'alta',riesgos:'Ninguno',comentario:'Wave A español entregada - 5 cursos - Pendiente rta final de aprobación cliente.'}}},
       {id:'apus_mba', nombre:'Apus MBA', cliente:'Apus'},
       {id:'uddi', nombre:'UDDI', cliente:'UDDI'},
       {id:'ibero_col', nombre:'Ibero Colombia', cliente:'Ibero Colombia'},
@@ -415,7 +425,15 @@ function onProjSelect(){
   }
 
   selectedProj = mp.proyectos.find(function(p){ return p.id === projId; });
-  banner.innerHTML = '<div><div class="name">'+selectedProj.nombre+'</div><div class="meta">Cliente: '+selectedProj.cliente+' · Sin ficha — llenarás los datos del proyecto</div></div>';
+  if(selectedProj.ficha){
+    isSophia = false;
+    var f = selectedProj.ficha;
+    var av = f.avance;
+    banner.innerHTML = '<div><div class="name">'+selectedProj.nombre+'</div><div class="meta">'+selectedProj.cliente+' · '+f.totalRec+' recursos · '+f.ritmo+' rec/sem'+(av?' · Avance: '+av.pct+'%':'')+'</div></div>';
+  } else {
+    isSophia = true;
+    banner.innerHTML = '<div><div class="name">'+selectedProj.nombre+'</div><div class="meta">Cliente: '+selectedProj.cliente+' · Sin ficha — llenarás los datos del proyecto</div></div>';
+  }
   enableBtn();
 }
 
@@ -437,10 +455,31 @@ function startInterview(){
   } else {
     steps = ['stepAvance','stepRecursos','stepRiesgos'];
     document.getElementById('stepTotal').textContent = '4';
-    // Pre-fill dates
-    document.getElementById('fechaInicio').value = ficha.inicio;
-    document.getElementById('fechaCierre').value = ficha.cierre;
-    // Build resource rows
+    // Pre-fill dates from ficha or selectedProj.ficha
+    var f = ficha || (selectedProj && selectedProj.ficha) || null;
+    if(f){
+      document.getElementById('fechaInicio').value = f.inicio;
+      document.getElementById('fechaCierre').value = f.cierre;
+      if(f.avance){
+        document.getElementById('sprint').value = f.avance.sprint;
+        document.getElementById('cursosAprobados').value = f.avance.cursosAprobados;
+        // Set semáforo
+        var semBtn = document.querySelector('.sem-btn[data-v="'+f.avance.semaforo+'"]');
+        if(semBtn){ semBtn.classList.add('selected'); semaforo = f.avance.semaforo; }
+      }
+      // Build ficha object for resource rows
+      if(!ficha && selectedProj && selectedProj.ficha){
+        ficha = {
+          nombre: PM_PROYECTOS[pmKey].nombre,
+          proyecto: selectedProj.nombre,
+          cliente: selectedProj.cliente,
+          inicio: f.inicio, cierre: f.cierre,
+          totalRec: f.totalRec, ritmo: f.ritmo,
+          recVideo: f.recVideo, recMulti: f.recMulti, recGraf: f.recGraf,
+          recursos: null
+        };
+      }
+    }
     buildRecRows();
   }
   showStep(0);
