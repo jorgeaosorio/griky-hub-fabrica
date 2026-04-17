@@ -6,6 +6,8 @@
 <title>Fábrica Hub · Griky</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
+/* ── iOS TAP FIX ─────────────────────────────────────────────────────────── */
+[onclick] { -webkit-tap-highlight-color: rgba(0,0,0,.1); }
 /* ── TOKENS ──────────────────────────────────────────────────────────────── */
 :root {
   --navy:    #22304C;
@@ -1102,6 +1104,13 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
 </div>
 
 <script>
+// ── iOS: force click events on all [onclick] elements ────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('[onclick]').forEach(function(el){
+    el.addEventListener('touchstart', function(){}, {passive:true});
+  });
+});
+
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 const profile = {
   nombre: localStorage.getItem('hub_nombre') || '',
