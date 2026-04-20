@@ -93,6 +93,17 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
     <label>PM</label>
     <select id="selPM" onchange="onPMChange()">
       <option value="">— Selecciona tu nombre —</option>
+      <option value="andres">Andrés Briceño</option>
+      <option value="margarita">Margarita Rosales</option>
+      <option value="vilma">Vilma Perilla</option>
+      <option value="sophia">Sophia Pacheco</option>
+      <option value="jean">Jean Villegas</option>
+    </select>
+  </div>
+  <div class="field hidden" id="projSelectField">
+    <label>Proyecto</label>
+    <select id="selProj" onchange="onProjChange()">
+      <option value="">— Selecciona proyecto —</option>
     </select>
   </div>
   <div class="field">
@@ -137,31 +148,70 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════════
-// DATOS DE FICHAS (piloto)
+// DATOS — Idénticos a entrevista-avance-piloto.html
 // ══════════════════════════════════════════════════════════════════════════════
-const FICHAS = {
-  'Vilma Perilla': {
+var PMS = {
+  vilma: {
+    nombre: 'Vilma Perilla',
     proyecto: 'ITALIANO',
     cliente: 'VERTICE',
     inicio: '2026-03-26',
     cierre: '2026-05-29',
     semanas: 9,
     tipoUP: 'Unidad',
-    cursos: [
-      { nombre:'Bienestar', ups:14 },
-      { nombre:'Psicología', ups:14 },
-      { nombre:'Mindfulness', ups:14 }
-    ],
-    totalUPs: 42,
+    cursos: [{nombre:'Bienestar',ups:14},{nombre:'Psicología',ups:14},{nombre:'Mindfulness',ups:14}],
     totalRec: 294,
-    ritmoRec: 32.7,
-    recursos: {
-      vid_std:28, vid_pod:28, vid_pix:56,
-      mul_ris:28, mul_pre:28, mul_act:28, mul_dis:28,
-      gra_pdf:42, gra_ban:28
-    }
+    ritmo: 32.7,
+    recVideo: 112, recMulti: 112, recGraf: 70,
+    recursos: {vid_std:28,vid_pod:28,vid_pix:56,mul_ris:28,mul_pre:28,mul_act:28,mul_dis:28,gra_pdf:42,gra_ban:28}
   }
 };
+
+var NO_FICHA = {sophia:'Sophia Pacheco'};
+
+var PM_PROYECTOS = {
+  margarita: {
+    nombre: 'Margarita Rosales',
+    proyectos: [
+      {id:'apus_ingles', nombre:'Apus Inglés', cliente:'Apus',
+        ficha:{inicio:'2025-11-14',cierre:'2026-02-02',semanas:9,tipoUP:'Semana',
+          cursos:[{nombre:'Curso 1',ups:1},{nombre:'Curso 2',ups:1},{nombre:'Curso 3',ups:1},{nombre:'Curso 4',ups:1},{nombre:'Curso 5',ups:1},{nombre:'Curso 6',ups:1},{nombre:'Curso 7',ups:1},{nombre:'Curso 8',ups:1},{nombre:'Curso 9',ups:1}],
+          totalRec:81,ritmo:9,recVideo:33,recMulti:24,recGraf:24,
+          recursos:{}}},
+      {id:'apus_espanol', nombre:'Apus Español', cliente:'Apus',
+        ficha:{inicio:'2025-11-14',cierre:'2026-02-02',semanas:9,tipoUP:'Semana',
+          cursos:[{nombre:'Curso 1',ups:1},{nombre:'Curso 2',ups:1},{nombre:'Curso 3',ups:1},{nombre:'Curso 4',ups:1},{nombre:'Curso 5',ups:1},{nombre:'Curso 6',ups:1},{nombre:'Curso 7',ups:1},{nombre:'Curso 8',ups:1},{nombre:'Curso 9',ups:1}],
+          totalRec:81,ritmo:9,recVideo:33,recMulti:24,recGraf:24,
+          recursos:{}}},
+      {id:'apus_mba_esp', nombre:'Apus MBA Español', cliente:'Apus'},
+      {id:'apus_mba_ing', nombre:'Apus MBA Inglés', cliente:'Apus'},
+      {id:'uddi', nombre:'UDDI', cliente:'UDDI'},
+      {id:'ibero_col', nombre:'Ibero Colombia', cliente:'Ibero Colombia'},
+      {id:'buen_cafe', nombre:'Buen Café cursos sueltos', cliente:'Buen Café'}
+    ]
+  },
+  jean: {
+    nombre: 'Jean Villegas',
+    proyectos: [
+      {id:'griky_academy', nombre:'Griky Academy', cliente:'Griky Academy'},
+      {id:'utesa', nombre:'Utesa', cliente:'Utesa'},
+      {id:'uax_diap', nombre:'UAX Diapositivas', cliente:'UAX'}
+    ]
+  },
+  andres: {
+    nombre: 'Andrés Briceño',
+    proyectos: [
+      {id:'banco_popular', nombre:'Banco Popular', cliente:'Banco Popular'},
+      {id:'fund_orenda', nombre:'Fundación Orenda', cliente:'Fundación Orenda'},
+      {id:'la_fontana', nombre:'La Fontana', cliente:'La Fontana'},
+      {id:'tec_argos', nombre:'Tecnológico ARGOS', cliente:'Tecnológico ARGOS'},
+      {id:'vigo_coruna', nombre:'Vigo & Coruña', cliente:'Vigo & Coruña'},
+      {id:'externado', nombre:'Externado', cliente:'Externado'},
+      {id:'udla', nombre:'UDLA', cliente:'UDLA'}
+    ]
+  }
+};
+var selectedProj = null;
 
 const REC_LABEL = {
   vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',
@@ -186,62 +236,131 @@ const AREA_NAME = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico'};
 // ══════════════════════════════════════════════════════════════════════════════
 // ESTADO
 // ══════════════════════════════════════════════════════════════════════════════
-let pm = '';
-let ficha = null;
-let semanaStr = '';
-let bloqueCount = 0;
-let recIds = []; // resource IDs for the selected PM
+var pmKey = '';
+var pm = '';
+var ficha = null;
+var isMultiProj = false;
+var semanaStr = '';
+var bloqueCount = 0;
+var recIds = [];
 
 // ══════════════════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════════════════
-// PMs sin ficha (se agregarán al selector con aviso)
-const PM_SIN_FICHA = ['Andrés Briceño', 'Margarita Rosales', 'Jean Villegas'];
-
 (function init(){
-  const sel = document.getElementById('selPM');
-  Object.keys(FICHAS).forEach(name => {
-    const o = document.createElement('option');
-    o.value = name; o.textContent = name;
-    sel.appendChild(o);
-  });
-  PM_SIN_FICHA.forEach(name => {
-    const o = document.createElement('option');
-    o.value = name; o.textContent = name + ' (sin ficha)';
-    sel.appendChild(o);
-  });
   // Default to this Monday
-  const today = new Date();
-  const diff = today.getDay()===0 ? -6 : 1 - today.getDay();
-  const lunes = new Date(today); lunes.setDate(today.getDate()+diff);
+  var today = new Date();
+  var diff = today.getDay()===0 ? -6 : 1 - today.getDay();
+  var lunes = new Date(today); lunes.setDate(today.getDate()+diff);
   document.getElementById('selFecha').value = lunes.toISOString().split('T')[0];
   onFechaChange();
 })();
 
+function enableBtn(){
+  var btn = document.getElementById('btnStart');
+  btn.disabled = false;
+}
+function disableBtn(){
+  var btn = document.getElementById('btnStart');
+  btn.disabled = true;
+}
+
 function onPMChange(){
-  pm = document.getElementById('selPM').value;
-  ficha = FICHAS[pm] || null;
-  const info = document.getElementById('proyInfo');
-  const btn = document.getElementById('btnStart');
-  if(ficha){
-    info.classList.remove('hidden');
-    document.getElementById('proyNombre').textContent = ficha.proyecto + ' — ' + ficha.cliente;
-    document.getElementById('proyMeta').textContent =
-      ficha.totalRec + ' recursos · ' + ficha.cursos.length + ' cursos · ' +
-      ficha.totalUPs + ' ' + ficha.tipoUP.toLowerCase() + 's · Ritmo: ' +
-      ficha.ritmoRec + ' rec/sem';
-    btn.disabled = false;
-    // Build recIds from ficha recursos
-    recIds = Object.keys(ficha.recursos).filter(id => ficha.recursos[id] > 0);
-  } else if(pm && PM_SIN_FICHA.includes(pm)){
+  pmKey = document.getElementById('selPM').value;
+  var projField = document.getElementById('projSelectField');
+  var info = document.getElementById('proyInfo');
+  selectedProj = null;
+  isMultiProj = false;
+  ficha = null;
+
+  if(!pmKey){
+    projField.classList.add('hidden');
+    info.classList.add('hidden');
+    disableBtn();
+    return;
+  }
+
+  // Caso 1: PM con múltiples proyectos
+  if(PM_PROYECTOS[pmKey]){
+    isMultiProj = true;
+    pm = PM_PROYECTOS[pmKey].nombre;
+    var sel = document.getElementById('selProj');
+    sel.innerHTML = '<option value="">— Selecciona proyecto —</option>';
+    PM_PROYECTOS[pmKey].proyectos.forEach(function(p,i){
+      var o = document.createElement('option');
+      o.value = i; o.textContent = p.nombre;
+      sel.appendChild(o);
+    });
+    projField.classList.remove('hidden');
+    info.classList.add('hidden');
+    disableBtn();
+    return;
+  }
+
+  projField.classList.add('hidden');
+
+  // Caso 2: PM sin ficha (Sophia)
+  if(NO_FICHA[pmKey]){
+    pm = NO_FICHA[pmKey];
     info.classList.remove('hidden');
     document.getElementById('proyNombre').textContent = pm;
     document.getElementById('proyMeta').textContent =
       '⚠️ Sin ficha registrada — completa primero la Entrevista de Avance para habilitar la planeación.';
-    btn.disabled = true;
-  } else {
+    disableBtn();
+    return;
+  }
+
+  // Caso 3: PM con ficha única (Vilma)
+  if(PMS[pmKey]){
+    ficha = PMS[pmKey];
+    pm = ficha.nombre;
+    info.classList.remove('hidden');
+    document.getElementById('proyNombre').textContent = ficha.proyecto + ' — ' + ficha.cliente;
+    document.getElementById('proyMeta').textContent =
+      ficha.totalRec + ' recursos · ' + ficha.cursos.length + ' cursos · Ritmo: ' + ficha.ritmo + ' rec/sem';
+    recIds = Object.keys(ficha.recursos).filter(function(id){return ficha.recursos[id]>0;});
+    enableBtn();
+    return;
+  }
+}
+
+function onProjChange(){
+  var idx = document.getElementById('selProj').value;
+  var info = document.getElementById('proyInfo');
+  if(idx === ''){
+    selectedProj = null;
     info.classList.add('hidden');
-    btn.disabled = true;
+    disableBtn();
+    return;
+  }
+  selectedProj = PM_PROYECTOS[pmKey].proyectos[parseInt(idx)];
+  info.classList.remove('hidden');
+  document.getElementById('proyNombre').textContent = selectedProj.nombre + ' — ' + selectedProj.cliente;
+
+  if(selectedProj.ficha){
+    ficha = {
+      proyecto: selectedProj.nombre,
+      cliente: selectedProj.cliente,
+      inicio: selectedProj.ficha.inicio,
+      cierre: selectedProj.ficha.cierre,
+      semanas: selectedProj.ficha.semanas,
+      tipoUP: selectedProj.ficha.tipoUP,
+      cursos: selectedProj.ficha.cursos,
+      totalRec: selectedProj.ficha.totalRec,
+      ritmoRec: selectedProj.ficha.ritmo,
+      recursos: selectedProj.ficha.recursos || {}
+    };
+    recIds = Object.keys(ficha.recursos).filter(function(id){return ficha.recursos[id]>0;});
+    var totalUPs = ficha.cursos.reduce(function(s,c){return s+c.ups;},0);
+    document.getElementById('proyMeta').textContent =
+      ficha.totalRec + ' recursos · ' + ficha.cursos.length + ' cursos · ' +
+      totalUPs + ' ' + ficha.tipoUP.toLowerCase() + 's · Ritmo: ' + ficha.ritmoRec + ' rec/sem';
+    enableBtn();
+  } else {
+    ficha = null;
+    document.getElementById('proyMeta').textContent =
+      '⚠️ Sin ficha registrada — completa primero la Entrevista de Avance para habilitar la planeación.';
+    disableBtn();
   }
 }
 
@@ -259,19 +378,19 @@ function startPlaneacion(){
   document.getElementById('panelWork').classList.remove('hidden');
   document.getElementById('resumenBar').classList.remove('hidden');
   // Chips
-  const bar = document.getElementById('chipBar');
+  var bar = document.getElementById('chipBar');
   bar.innerHTML = '';
-  const chips = [
+  var chips = [
     ['PM', pm],
     ['Proyecto', ficha.proyecto],
     ['Cliente', ficha.cliente],
-    ['Ritmo', ficha.ritmoRec + ' rec/sem'],
+    ['Ritmo', (ficha.ritmoRec || ficha.ritmo || '—') + ' rec/sem'],
     ['Cierre', ficha.cierre]
   ];
-  chips.forEach(([l,v]) => {
-    const d = document.createElement('div');
+  chips.forEach(function(pair){
+    var d = document.createElement('div');
     d.className = 'chip';
-    d.innerHTML = l + ': <span class="val">' + v + '</span>';
+    d.innerHTML = pair[0] + ': <span class="val">' + pair[1] + '</span>';
     bar.appendChild(d);
   });
   addBloque();
@@ -363,7 +482,8 @@ function updateStats(){
   document.getElementById('statHH').textContent = totalHH.toFixed(1) + 'h';
   // vs ritmo
   if(ficha){
-    const pct = ficha.ritmoRec > 0 ? Math.round((totalRec / ficha.ritmoRec) * 100) : 0;
+    var ritmo = ficha.ritmoRec || ficha.ritmo || 0;
+    var pct = ritmo > 0 ? Math.round((totalRec / ritmo) * 100) : 0;
     const el = document.getElementById('statRitmo');
     el.textContent = pct + '% del ritmo';
     el.style.color = pct >= 90 ? '#2BC168' : pct >= 60 ? '#F5A623' : '#FF2D55';
@@ -427,8 +547,9 @@ function exportMD(){
   md += '| Métrica | Valor |\n|---|---|\n';
   md += '| Total recursos comprometidos | ' + grandTotal + ' |\n';
   md += '| Total h/h comprometidas | ' + grandHH.toFixed(1) + 'h |\n';
-  md += '| Ritmo requerido | ' + ficha.ritmoRec + ' rec/sem |\n';
-  const pct = ficha.ritmoRec > 0 ? Math.round((grandTotal / ficha.ritmoRec)*100) : 0;
+  var ritmoVal = ficha.ritmoRec || ficha.ritmo || 0;
+  md += '| Ritmo requerido | ' + ritmoVal + ' rec/sem |\n';
+  var pct = ritmoVal > 0 ? Math.round((grandTotal / ritmoVal)*100) : 0;
   md += '| Cobertura del ritmo | ' + pct + '% |\n\n';
   md += '---\n_Planeación generada · Griky Fábrica · ' + semanaStr + '_\n';
 
