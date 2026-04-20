@@ -255,24 +255,6 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
 // ══════════════════════════════════════════════════════════════════════════════
 // Fichas con datos completos (un proyecto por entrada)
 var PMS = {
-  andres: {
-    nombre: 'Andrés Briceño',
-    proyecto: 'Diplomados pruebas',
-    cliente: 'Universidad prueba',
-    inicio: '2026-04-07',
-    cierre: '2026-05-05',
-    semanas: 4,
-    tipoUP: 'Módulo',
-    cursos: [{nombre:'C1',ups:4},{nombre:'C2',ups:4},{nombre:'C3',ups:4}],
-    totalRec: 600,
-    ritmo: 150,
-    recVideo: 228, recMulti: 204, recGraf: 168,
-    recursos: {
-      vid_web:24,vid_std:12,vid_ava:36,vid_pod:24,vid_aud:36,vid_pix:48,vid_bas:24,vid_int:24,
-      mul_sto:24,mul_ris:12,mul_pre:24,mul_inf:48,mul_act:48,mul_vst:12,mul_gen:24,mul_dis:12,
-      gra_inf:120,gra_pdf:12,gra_ebo:12,gra_ban:12,gra_pre:12
-    }
-  },
   vilma: {
     nombre: 'Vilma Perilla',
     proyecto: 'ITALIANO',
@@ -321,6 +303,18 @@ var PM_PROYECTOS = {
       {id:'griky_academy', nombre:'Griky Academy', cliente:'Griky Academy'},
       {id:'utesa', nombre:'Utesa', cliente:'Utesa'},
       {id:'uax_diap', nombre:'UAX Diapositivas', cliente:'UAX'}
+    ]
+  },
+  andres: {
+    nombre: 'Andrés Briceño',
+    proyectos: [
+      {id:'banco_popular', nombre:'Banco Popular', cliente:'Banco Popular'},
+      {id:'fund_orenda', nombre:'Fundación Orenda', cliente:'Fundación Orenda'},
+      {id:'la_fontana', nombre:'La Fontana', cliente:'La Fontana'},
+      {id:'tec_argos', nombre:'Tecnológico ARGOS', cliente:'Tecnológico ARGOS'},
+      {id:'vigo_coruna', nombre:'Vigo & Coruña', cliente:'Vigo & Coruña'},
+      {id:'externado', nombre:'Externado', cliente:'Externado'},
+      {id:'udla', nombre:'UDLA', cliente:'UDLA'}
     ]
   }
 };

@@ -140,27 +140,6 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
 // DATOS DE FICHAS (piloto)
 // ══════════════════════════════════════════════════════════════════════════════
 const FICHAS = {
-  'Andrés Briceño': {
-    proyecto: 'Diplomados pruebas',
-    cliente: 'Universidad prueba',
-    inicio: '2026-04-07',
-    cierre: '2026-05-05',
-    semanas: 4,
-    tipoUP: 'Módulo',
-    cursos: [
-      { nombre:'C1', ups:4 },
-      { nombre:'C2', ups:4 },
-      { nombre:'C3', ups:4 }
-    ],
-    totalUPs: 12,
-    totalRec: 600,
-    ritmoRec: 150,
-    recursos: {
-      vid_web:24, vid_std:12, vid_ava:36, vid_pod:24, vid_aud:36, vid_pix:48, vid_bas:24, vid_int:24,
-      mul_sto:24, mul_ris:12, mul_pre:24, mul_inf:48, mul_act:48, mul_vst:12, mul_gen:24, mul_dis:12,
-      gra_inf:120, gra_pdf:12, gra_ebo:12, gra_ban:12, gra_pre:12
-    }
-  },
   'Vilma Perilla': {
     proyecto: 'ITALIANO',
     cliente: 'VERTICE',
@@ -217,7 +196,7 @@ let recIds = []; // resource IDs for the selected PM
 // INIT
 // ══════════════════════════════════════════════════════════════════════════════
 // PMs sin ficha (se agregarán al selector con aviso)
-const PM_SIN_FICHA = ['Margarita Rosales', 'Jean Villegas'];
+const PM_SIN_FICHA = ['Andrés Briceño', 'Margarita Rosales', 'Jean Villegas'];
 
 (function init(){
   const sel = document.getElementById('selPM');
