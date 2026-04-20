@@ -242,13 +242,12 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 // Los PMs llenarán: sem, avance, sprint, ritmoAct, recHechos, alert
 const DATA = {
   'Sophia Pacheco': [
-    { id:'s1', nombre:'América',      cliente:'U. América',  sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'s2', nombre:'Ibero México', cliente:'U. Ibero MX', sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'s3', nombre:'UDLA',         cliente:'UDLA',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'s4', nombre:'UMB',          cliente:'UMB',         sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'s5', nombre:'USS',          cliente:'USS',         sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'s6', nombre:'UPEU',         cliente:'UPEU',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'s7', nombre:'ESAM',         cliente:'ESAM',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s1', nombre:'USS',             cliente:'USS',          sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s2', nombre:'Ibero México',    cliente:'Ibero México', sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s3', nombre:'U América',       cliente:'U América',    sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s4', nombre:'ESAM',            cliente:'ESAM',         sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s5', nombre:'Cinemark',        cliente:'Cinemark',     sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'s6', nombre:'Curso Finanzas',  cliente:'ICami',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
   ],
   'Andrés Briceño': [
     { id:'a1', nombre:'Banco Popular',      cliente:'Banco Popular',      sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
@@ -274,14 +273,15 @@ const DATA = {
     { id:'j3', nombre:'UAX Diapositivas',cliente:'UAX',           sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
   ],
   'Vilma Perilla': [
-    { id:'v1', nombre:'CESUN',                    cliente:'CESUN',      sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v2', nombre:'EIA - Líderes',            cliente:'EIA',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v3', nombre:'ESIC - Pregrado Marketing',cliente:'ESIC',       sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v4', nombre:'Indoamérica',              cliente:'Indoamérica',sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v5', nombre:'Politécnica',              cliente:'Politécnica',sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v6', nombre:'USAP',                     cliente:'USAP',       sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v7', nombre:'Vértice - Especialidades', cliente:'Vértice',    sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
-    { id:'v8', nombre:'Vértice - Italiano',       cliente:'Vértice',    sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v1', nombre:'Cesún',                   cliente:'Cesún',       sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v2', nombre:'Indoamérica',             cliente:'Indoamérica', sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v3', nombre:'USAP',                    cliente:'USAP',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v4', nombre:'EIA Líderes',             cliente:'EIA',         sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v5', nombre:'EIA Power Skills',        cliente:'EIA',         sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v6', nombre:'EIA (sin especificar)',   cliente:'EIA',         sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v7', nombre:'ESIC Pregrado Marketing', cliente:'ESIC',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v8', nombre:'ESIC Directivo Ventas',   cliente:'ESIC',        sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
+    { id:'v9', nombre:'Mondragón',               cliente:'Mondragón',   sem:'verde', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaCierre:'', alert:null },
   ],
 };
 

@@ -254,25 +254,10 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
 // DATOS DE FICHAS
 // ══════════════════════════════════════════════════════════════════════════════
 // Fichas con datos completos (un proyecto por entrada)
-var PMS = {
-  vilma: {
-    nombre: 'Vilma Perilla',
-    proyecto: 'ITALIANO',
-    cliente: 'VERTICE',
-    inicio: '2026-03-26',
-    cierre: '2026-05-29',
-    semanas: 9,
-    tipoUP: 'Unidad',
-    cursos: [{nombre:'Bienestar',ups:14},{nombre:'Psicología',ups:14},{nombre:'Mindfulness',ups:14}],
-    totalRec: 294,
-    ritmo: 32.7,
-    recVideo: 112, recMulti: 112, recGraf: 70,
-    recursos: {vid_std:28,vid_pod:28,vid_pix:56,mul_ris:28,mul_pre:28,mul_act:28,mul_dis:28,gra_pdf:42,gra_ban:28}
-  }
-};
+var PMS = {};
 
 // PMs sin ficha (modo registro completo)
-var NO_FICHA = {sophia:'Sophia Pacheco'};
+var NO_FICHA = {};
 
 // PMs con múltiples proyectos (sin datos aún — cada uno entra en modo registro)
 var PM_PROYECTOS = {
@@ -316,6 +301,31 @@ var PM_PROYECTOS = {
       {id:'vigo_coruna', nombre:'Vigo & Coruña', cliente:'Vigo & Coruña'},
       {id:'externado', nombre:'Externado', cliente:'Externado'},
       {id:'udla', nombre:'UDLA', cliente:'UDLA'}
+    ]
+  },
+  vilma: {
+    nombre: 'Vilma Perilla',
+    proyectos: [
+      {id:'cesun', nombre:'Cesún', cliente:'Cesún'},
+      {id:'indoamerica', nombre:'Indoamérica', cliente:'Indoamérica'},
+      {id:'usap', nombre:'USAP', cliente:'USAP'},
+      {id:'eia_lideres', nombre:'EIA Líderes', cliente:'EIA'},
+      {id:'eia_power', nombre:'EIA Power Skills', cliente:'EIA'},
+      {id:'eia_otro', nombre:'EIA (sin especificar)', cliente:'EIA'},
+      {id:'esic_marketing', nombre:'ESIC Pregrado Marketing', cliente:'ESIC'},
+      {id:'esic_ventas', nombre:'ESIC Directivo Ventas', cliente:'ESIC'},
+      {id:'mondragon', nombre:'Mondragón', cliente:'Mondragón'}
+    ]
+  },
+  sophia: {
+    nombre: 'Sophia Pacheco',
+    proyectos: [
+      {id:'uss', nombre:'USS', cliente:'USS'},
+      {id:'ibero_mx', nombre:'Ibero México', cliente:'Ibero México'},
+      {id:'u_america', nombre:'U América', cliente:'U América'},
+      {id:'esam', nombre:'ESAM', cliente:'ESAM'},
+      {id:'cinemark', nombre:'Cinemark', cliente:'Cinemark'},
+      {id:'curso_finanzas', nombre:'Curso Finanzas', cliente:'ICami'}
     ]
   }
 };
