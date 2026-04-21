@@ -777,6 +777,27 @@ var HH = {
 };
 var HORAS_SEMANA = 34.5; // 46h × 75% eficiencia
 
+// ── PLANEACIÓN PRECARGADA ─────────────────────────────────────────────────────
+// Clave: "pmKey|YYYY-MM-DD" (fecha = lunes de la semana)
+var PLAN_PRECARGADO = {
+  'margarita|2026-04-20': [
+    {id:'pre_1',proyId:'uddi',proyNombre:'UDDI',color:'verde',curso:'',up:'',nota:'Recursos Sueltos de 14 Cursos UDDI',
+      counts:{di_guia:61,vid_std:15,vid_ava:60,vid_int:45,gra_inf:48,gra_ebo:80},total:309},
+    {id:'pre_2',proyId:'ibero_col',proyNombre:'Ibero Colombia',color:'verde',curso:'',up:'',nota:'7 cursos Prioridad 1',
+      counts:{impl_lms:8},total:8},
+    {id:'pre_3',proyId:'ibero_col',proyNombre:'Ibero Colombia',color:'verde',curso:'',up:'',nota:'17 Cursos prioridad 2',
+      counts:{impl_lms:17},total:17},
+    {id:'pre_4',proyId:'buen_cafe',proyNombre:'Buen Café cursos sueltos',color:'verde',curso:'',up:'',nota:'6 cursos Pendientes de cierre final cliente',
+      counts:{impl_lms:6},total:6},
+    {id:'pre_5',proyId:'apus_ingles',proyNombre:'Apus Inglés',color:'verde',curso:'',up:'',nota:'B2',
+      counts:{impl_lms:1},total:1},
+    {id:'pre_6',proyId:'apus_ingles',proyNombre:'Apus Inglés',color:'verde',curso:'',up:'',nota:'C2',
+      counts:{impl_lms:2},total:2},
+    {id:'pre_7',proyId:'apus_ingles',proyNombre:'Apus Inglés',color:'verde',curso:'',up:'',nota:'C3',
+      counts:{vid_pod:32,mul_pre:32,mul_inf:32,mul_dis:4,impl_lms:5},total:105}
+  ]
+};
+
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 var bloques = [];
 var proyectos = [];
@@ -816,9 +837,18 @@ function onPMChange(){
   proyectos = pmData.proyectos.map(function(p){ return {id:p.id, nombre:p.nombre, cliente:p.cliente, color:'verde', ritmo:(p.ficha?p.ficha.ritmo:0)||0, ficha:p.ficha||null}; });
 
   bloques = [];
+
+  // Cargar planeación precargada si existe para este PM y semana
+  var fechaSel = document.getElementById('selFecha').value;
+  var planKey = pmKey + '|' + fechaSel;
+  if(PLAN_PRECARGADO[planKey]){
+    bloques = JSON.parse(JSON.stringify(PLAN_PRECARGADO[planKey]));
+  }
+
   renderBlocksList();
   updateRitmoChips();
-  showPane('welcome');
+  showPane(bloques.length > 0 ? 'resumen' : 'welcome');
+  if(bloques.length > 0) renderResumen();
 
   // Llenar select de proyectos en el form
   var sel = document.getElementById('f_proyecto');
@@ -837,6 +867,18 @@ function onFechaChange(){
   var fmt = function(dt){ return dt.toLocaleDateString('es-CO',{day:'numeric',month:'short'}); };
   semanaStr = fmt(d)+' – '+fmt(vie);
   document.querySelector('.logo-sub').textContent = semanaStr;
+
+  // Recargar planeación precargada si cambia la fecha y hay PM seleccionado
+  if(pmKey){
+    bloques = [];
+    var planKey = pmKey + '|' + val;
+    if(PLAN_PRECARGADO[planKey]){
+      bloques = JSON.parse(JSON.stringify(PLAN_PRECARGADO[planKey]));
+    }
+    renderBlocksList();
+    updateRitmoChips();
+    if(bloques.length > 0){ renderResumen(); showPane('resumen'); }
+  }
 }
 
 // ── FORM ──────────────────────────────────────────────────────────────────────
