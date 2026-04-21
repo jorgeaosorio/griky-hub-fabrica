@@ -652,12 +652,22 @@ var PM_PROYECTOS = {
     nombre: 'Andrés Briceño',
     proyectos: [
       {id:'banco_popular', nombre:'Banco Popular', cliente:'Banco Popular'},
-      {id:'fund_orenda', nombre:'Fundación Orenda', cliente:'Fundación Orenda'},
+      {id:'fund_orenda', nombre:'Fundación Orenda', cliente:'Fundación Orenda',
+        ficha:{inicio:'2025-11-01',cierre:'2026-02-22',semanas:0,tipoUP:'Módulo',totalRec:67,ritmo:0,recVideo:67,recMulti:0,recGraf:0,
+          cursos:[{nombre:'Ciencias',ups:16},{nombre:'Matemáticas',ups:16},{nombre:'Inglés',ups:12},{nombre:'Lenguaje',ups:9},{nombre:'Análisis de la imagen',ups:9}]}},
       {id:'la_fontana', nombre:'La Fontana', cliente:'La Fontana'},
-      {id:'tec_argos', nombre:'Tecnológico ARGOS', cliente:'Tecnológico ARGOS'},
-      {id:'vigo_coruna', nombre:'Vigo & Coruña', cliente:'Vigo & Coruña'},
-      {id:'externado', nombre:'Externado', cliente:'Externado'},
-      {id:'udla', nombre:'UDLA', cliente:'UDLA'}
+      {id:'tec_argos', nombre:'Tecnológico ARGOS', cliente:'Tecnológico ARGOS',
+        ficha:{inicio:'2026-06-16',cierre:'2026-06-15',semanas:24,tipoUP:'Módulo',totalRec:28,ritmo:0,recVideo:0,recMulti:9,recGraf:19,
+          cursos:[{nombre:'Inglés III',ups:4},{nombre:'Inglés IV',ups:4}]}},
+      {id:'vigo_coruna', nombre:'Vigo & Coruña', cliente:'Vigo & Coruña',
+        ficha:{inicio:'2026-02-02',cierre:'2026-05-15',semanas:0,tipoUP:'Módulo',totalRec:82,ritmo:0,recVideo:63,recMulti:8,recGraf:11,
+          cursos:[{nombre:'Competencia Digital Docente e IA Aplicada',ups:4},{nombre:'Competencia Digital, IA y Ética Profesional',ups:4}]}},
+      {id:'externado', nombre:'Externado', cliente:'Externado',
+        ficha:{inicio:'2026-02-20',cierre:'2026-06-15',semanas:11,tipoUP:'Módulo',totalRec:23,ritmo:0,recVideo:23,recMulti:0,recGraf:0,
+          cursos:[{nombre:'Video 1',ups:1},{nombre:'Video 2',ups:1},{nombre:'Video 3',ups:1},{nombre:'Video 4',ups:1},{nombre:'Video 5',ups:1},{nombre:'Video 6',ups:1},{nombre:'Video 7',ups:1},{nombre:'Video 8',ups:1},{nombre:'Video 9',ups:1},{nombre:'Video 10',ups:1},{nombre:'Video 11',ups:1},{nombre:'Video 12',ups:1},{nombre:'Video 13',ups:1},{nombre:'Video 14',ups:1},{nombre:'Video 15',ups:1},{nombre:'Video 16',ups:1},{nombre:'Video 17',ups:1},{nombre:'Video 18',ups:1},{nombre:'Video 19',ups:1},{nombre:'Video 20',ups:1},{nombre:'Video 21',ups:1},{nombre:'Video 22',ups:1},{nombre:'Video 23',ups:1}]}},
+      {id:'udla', nombre:'UDLA', cliente:'UDLA',
+        ficha:{inicio:'2024-11-22',cierre:'2026-05-15',semanas:72,tipoUP:'Unidad',totalRec:1134,ritmo:0,recVideo:277,recMulti:730,recGraf:127,
+          cursos:[{nombre:'Análisis político contemporáneo',ups:3},{nombre:'Fund. Estética y Tratamientos',ups:1},{nombre:'Gestión de procesos',ups:3},{nombre:'Salud Pública y Políticas Públicas',ups:3},{nombre:'Salud Pública y Salud Comunitaria',ups:2},{nombre:'Programación en R',ups:8},{nombre:'Control de Gestión y Auditoría',ups:4},{nombre:'Dirección empresarial y transformación digital',ups:5},{nombre:'Entorno económico y microeconomía',ups:5},{nombre:'Análisis Estadístico',ups:8},{nombre:'Políticas Públicas',ups:5},{nombre:'Modelos de negocios y estrategias digitales',ups:6},{nombre:'Taller de Desarrollo Personal I',ups:4},{nombre:'Formulación y evaluación social de proyecto',ups:3},{nombre:'Mercados financieros e inversiones',ups:3},{nombre:'Intro y Evaluación Bienestar Animal',ups:2},{nombre:'Diseño de Trabajo de Grado I',ups:3},{nombre:'Ética y Legislación Bienestar Animal',ups:2},{nombre:'Taller de desarrollo personal III',ups:3},{nombre:'Derecho Administrativo',ups:5},{nombre:'Fund. del Actuar Comunitario',ups:3},{nombre:'Gestión de la transformación digital',ups:5},{nombre:'Finanzas y contabilidad',ups:1},{nombre:'Gestión logística y de operaciones',ups:5},{nombre:'Taller de desarrollo personal II',ups:3},{nombre:'Derecho Regulatorio',ups:4},{nombre:'Evaluación y Diagnóstico estético',ups:1},{nombre:'Innovación y emprendimiento tecnológico',ups:5},{nombre:'Taller de proyectos empresariales I',ups:3},{nombre:'Neurociencias y psicología comparativa',ups:2},{nombre:'Intro a las ciencias sociales',ups:4},{nombre:'Taller de proyectos empresariales II',ups:2},{nombre:'Proyecto final',ups:4},{nombre:'Marketing y ecosistemas digitales',ups:8},{nombre:'Gestión de talento y transformación digital',ups:5},{nombre:'Taller de proyectos empresariales III',ups:3},{nombre:'Riesgo de negocio, ética y compliance',ups:4},{nombre:'Analítica empresarial',ups:6}]}}
     ]
   },
   margarita: {
@@ -700,14 +710,18 @@ var PM_PROYECTOS = {
       {id:'u_america', nombre:'U América', cliente:'U América'},
       {id:'esam', nombre:'ESAM', cliente:'ESAM'},
       {id:'cinemark', nombre:'Cinemark', cliente:'Cinemark'},
-      {id:'curso_finanzas', nombre:'Curso Finanzas', cliente:'ICami'}
+      {id:'ICami curso_finanzas', nombre:'ICami Curso Finanzas', cliente:'ICami'}
     ]
   },
   jean: {
     nombre: 'Jean Villegas',
     proyectos: [
-      {id:'griky_academy', nombre:'Griky Academy', cliente:'Griky Academy'},
-      {id:'utesa', nombre:'Utesa', cliente:'Utesa'},
+      {id:'griky_academy', nombre:'Griky Academy', cliente:'Griky Academy',
+        ficha:{inicio:'',cierre:'',semanas:0,tipoUP:'Unidad',totalRec:0,ritmo:0,recVideo:0,recMulti:0,recGraf:0,
+          cursos:[{nombre:'64 Diplomados (240 cursos)',ups:0}]}},
+      {id:'utesa', nombre:'Utesa', cliente:'Utesa',
+        ficha:{inicio:'',cierre:'',semanas:0,tipoUP:'Módulo',totalRec:0,ritmo:0,recVideo:0,recMulti:0,recGraf:0,
+          cursos:[{nombre:'525 PPT remaquetación',ups:0},{nombre:'15 cursos digitalización',ups:0}]}},
       {id:'uax_diap', nombre:'UAX Diapositivas', cliente:'UAX'}
     ]
   }
