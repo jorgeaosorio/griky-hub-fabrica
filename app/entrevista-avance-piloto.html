@@ -160,12 +160,11 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
     <p class="sub">¿Cómo va tu proyecto a hoy?</p>
 
     <div class="field">
-      <label>Semáforo del proyecto</label>
-      <div class="sem-options">
-        <div class="sem-btn" data-v="verde" onclick="setSem(this)">🟢 Verde</div>
-        <div class="sem-btn" data-v="amarillo" onclick="setSem(this)">🟡 Amarillo</div>
-        <div class="sem-btn" data-v="rojo" onclick="setSem(this)">🔴 Rojo</div>
+      <label>Semáforo del proyecto <span style="font-weight:400;color:#888;font-size:12px;">(automático: avance vs. tiempo)</span></label>
+      <div id="semAutoDisplay" class="sem-auto-display" style="padding:10px 16px;border-radius:10px;font-weight:700;font-size:15px;text-align:center;background:#e8e8e8;color:#888;">
+        ⚪ Completa fechas y recursos para calcular
       </div>
+      <div class="hint">Se calcula automáticamente: brecha = %tiempo transcurrido − %avance. Verde ≤10% | Amarillo 10–25% | Rojo &gt;25%</div>
     </div>
 
     <div class="field">
@@ -175,8 +174,8 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
     </div>
 
     <div class="field-row">
-      <div class="field"><label>Fecha real de inicio</label><input type="date" id="fechaInicio"></div>
-      <div class="field"><label>Fecha original de cierre</label><input type="date" id="fechaCierre"></div>
+      <div class="field"><label>Fecha real de inicio</label><input type="date" id="fechaInicio" onchange="calcSemAuto()"></div>
+      <div class="field"><label>Fecha original de cierre</label><input type="date" id="fechaCierre" onchange="calcSemAuto()"></div>
     </div>
 
     <div class="field">
@@ -505,9 +504,7 @@ function startInterview(){
       if(f.avance){
         document.getElementById('sprint').value = f.avance.sprint;
         document.getElementById('cursosAprobados').value = f.avance.cursosAprobados;
-        // Set semáforo
-        var semBtn = document.querySelector('.sem-btn[data-v="'+f.avance.semaforo+'"]');
-        if(semBtn){ semBtn.classList.add('selected'); semaforo = f.avance.semaforo; }
+        // Semáforo se calcula automáticamente después de buildRecRows
       }
       // Build ficha object for resource rows
       if(!ficha && selectedProj && selectedProj.ficha){
@@ -523,6 +520,18 @@ function startInterview(){
       }
     }
     buildRecRows();
+    // Precargar hechos del avance en los inputs de recursos
+    if(f && f.avance && f.avance.hechos){
+      var h = f.avance.hechos;
+      var vInp = document.querySelector('#recContainer input[data-rec="vertical_video"]');
+      var mInp = document.querySelector('#recContainer input[data-rec="vertical_multi"]');
+      var gInp = document.querySelector('#recContainer input[data-rec="vertical_graf"]');
+      if(vInp) vInp.value = h.video||0;
+      if(mInp) mInp.value = h.multi||0;
+      if(gInp) gInp.value = h.graf||0;
+    }
+    // Calcular semáforo automático con datos precargados
+    calcSemAuto();
   }
   showStep(0);
 }
@@ -615,12 +624,58 @@ function buildRecRows(){
 
     container.innerHTML = html;
   }
+  // Vincular inputs de recursos al semáforo automático
+  container.querySelectorAll('input[type="number"]').forEach(function(inp){
+    inp.addEventListener('input', calcSemAuto);
+  });
+  // Calcular semáforo con los datos precargados
+  setTimeout(calcSemAuto, 50);
 }
 
-function setSem(el){
-  document.querySelectorAll('.sem-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  semaforo = el.dataset.v;
+// Semáforo automático — se recalcula al cambiar fechas, recursos hechos o totales
+function calcSemAuto(){
+  var inicio = document.getElementById('fechaInicio').value;
+  var cierre = document.getElementById('fechaCierre').value;
+  // totalRec viene de la ficha del proyecto cargado
+  var totalRec = ficha ? ficha.totalRec : 0;
+  // Sumar recursos hechos desde los inputs dinámicos del contenedor
+  var totalHechos = 0;
+  document.querySelectorAll('#recContainer input[type="number"]').forEach(function(inp){
+    totalHechos += parseInt(inp.value)||0;
+  });
+  var el = document.getElementById('semAutoDisplay');
+
+  // Proyecto completo
+  if(totalRec > 0 && totalHechos >= totalRec){
+    semaforo = 'verde'; el.textContent = '🟢 Verde — Proyecto completado';
+    el.style.background = '#d4f5e2'; el.style.color = '#1e9a56'; return;
+  }
+  // Sin datos suficientes
+  if(!inicio || !cierre || totalRec <= 0){
+    semaforo = 'gris'; el.textContent = '⚪ Completa fechas y recursos para calcular';
+    el.style.background = '#e8e8e8'; el.style.color = '#888'; return;
+  }
+  var dInicio = new Date(inicio), dCierre = new Date(cierre), hoy = new Date();
+  var duracion = dCierre - dInicio;
+  if(duracion <= 0){
+    semaforo = 'gris'; el.textContent = '⚪ Fechas inválidas (cierre ≤ inicio)';
+    el.style.background = '#e8e8e8'; el.style.color = '#888'; return;
+  }
+  var pctTiempo = Math.min(100, Math.max(0, (hoy - dInicio) / duracion * 100));
+  var pctAvance = totalHechos / totalRec * 100;
+  var brecha = pctTiempo - pctAvance;
+  var brechaStr = Math.round(brecha)+'%';
+
+  if(brecha <= 10){
+    semaforo = 'verde'; el.textContent = '🟢 Verde — Brecha: '+brechaStr;
+    el.style.background = '#d4f5e2'; el.style.color = '#1e9a56';
+  } else if(brecha <= 25){
+    semaforo = 'amarillo'; el.textContent = '🟡 Amarillo — Brecha: '+brechaStr;
+    el.style.background = '#fff3cd'; el.style.color = '#c47d00';
+  } else {
+    semaforo = 'rojo'; el.textContent = '🔴 Rojo — Brecha: '+brechaStr;
+    el.style.background = '#fde8e8'; el.style.color = '#d32f2f';
+  }
 }
 
 function toggleNewDate(){
