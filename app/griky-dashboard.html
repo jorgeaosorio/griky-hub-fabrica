@@ -309,26 +309,8 @@ let vista = 'cards';
       existing.totalRec = f.totalRec||existing.totalRec;
       existing.ritmoReq = Math.round(f.ritmoRec)||existing.ritmoReq;
       if(f.cierre) existing.fechaCierre = f.cierre;
-    } else {
-      // Agregar como nuevo proyecto
-      DATA[f.pm].push({
-        id: f.id,
-        nombre: f.proyecto,
-        cliente: f.cliente||'—',
-        sem: f.sem||'verde',
-        avance: f.avance||0,
-        cursos: f.nCursos||1,
-        upLabel: f.tipoUP||'Módulo',
-        totalRec: f.totalRec||0,
-        recHechos: f.recHechos||0,
-        sprint: f.sprint||0,
-        ritmoReq: Math.round(f.ritmoRec)||0,
-        ritmoAct: f.ritmoAct||0,
-        fechaCierre: f.cierre||'',
-        alert: null,
-        desdeFicha: true
-      });
     }
+    // No se agregan proyectos nuevos desde localStorage — solo se actualizan los existentes en DATA
   });
 })();
 
