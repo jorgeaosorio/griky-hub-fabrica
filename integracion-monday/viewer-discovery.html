@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discovery Monday — Griky Hub Fábrica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #22304C;
+      --coral: #FF2D55;
+      --green: #2BC168;
+      --yellow: #F5A623;
+      --bg: #F5F7FA;
+      --card: #FFFFFF;
+      --border: #E2E6EE;
+      --text: #1F2937;
+      --muted: #6B7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 24px 32px;
+    }
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    header p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 32px;
+    }
+    .config-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .config-card label {
+      display: block;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    button {
+      background: var(--navy);
+      color: white;
+      border: 0;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    button:hover { opacity: 0.92; }
+    button.secondary {
+      background: white;
+      color: var(--navy);
+      border: 1px solid var(--navy);
+    }
+    button.coral {
+      background: var(--coral);
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .summary {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 18px;
+      min-width: 140px;
+    }
+    .stat .label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar input[type="text"] { max-width: 320px; }
+    table {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      font-size: 13px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th {
+      background: #F8FAFC;
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #FAFBFD; }
+    .board-name {
+      font-weight: 500;
+      color: var(--navy);
+    }
+    .board-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      background: #EEF2F7;
+      color: var(--navy);
+      margin: 2px 2px 2px 0;
+    }
+    .pill.green { background: #E7F8EE; color: #1B7C44; }
+    .pill.yellow { background: #FFF4DD; color: #946000; }
+    .pill.coral { background: #FFE5EB; color: #B30025; }
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+    .error {
+      background: #FFE5EB;
+      color: #B30025;
+      padding: 14px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    .footer-actions {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .selected-info {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .selected-info strong { color: var(--navy); }
+    a { color: var(--navy); }
+    code {
+      background: #EEF2F7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Discovery Monday — Griky Hub Fábrica</h1>
+    <p>Pega la URL de tu Cloudflare Worker, descubre tus boards y exporta la selección que entra al Hub.</p>
+  </header>
+
+  <main>
+    <div class="config-card">
+      <label for="workerUrl">URL del Discovery Worker</label>
+      <div class="row">
+        <input type="text" id="workerUrl" placeholder="https://griky-monday-discovery.tu-subdominio.workers.dev" />
+        <button id="loadBtn">Descubrir boards</button>
+      </div>
+      <div id="errorBox" class="error" style="display:none;"></div>
+    </div>
+
+    <div id="resultsArea" style="display:none;">
+      <div class="summary">
+        <div class="stat">
+          <div class="label">Total boards</div>
+          <div class="value" id="statTotal">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Workspaces</div>
+          <div class="value" id="statWorkspaces">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Seleccionados</div>
+          <div class="value" id="statSelected">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Generado</div>
+          <div class="value" id="statGenerated" style="font-size:14px;">—</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="filterInput" placeholder="Filtrar por nombre, workspace o PM…" />
+        <button class="secondary" id="selectAllBtn">Seleccionar todo</button>
+        <button class="secondary" id="clearAllBtn">Limpiar selección</button>
+      </div>
+
+      <table id="boardsTable">
+        <thead>
+          <tr>
+            <th style="width:40px;"></th>
+            <th>Board</th>
+            <th>Workspace</th>
+            <th>Ítems</th>
+            <th>Dueños</th>
+            <th>Columnas de estado</th>
+            <th>Columnas de fecha</th>
+          </tr>
+        </thead>
+        <tbody id="boardsBody"></tbody>
+      </table>
+
+      <div class="footer-actions">
+        <div class="selected-info">
+          <span id="selectedCount">0</span> board(s) seleccionado(s).
+          La exportación incluye <strong>id, nombre, columnas de estado, columnas de fecha y dueños</strong>.
+        </div>
+        <button class="coral" id="exportBtn">Exportar selección (JSON)</button>
+      </div>
+    </div>
+
+    <div id="emptyState" class="empty">
+      Pega la URL de tu Worker arriba y dale a <strong>Descubrir boards</strong>.
+    </div>
+  </main>
+
+  <script>
+    const els = {
+      workerUrl: document.getElementById('workerUrl'),
+      loadBtn: document.getElementById('loadBtn'),
+      errorBox: document.getElementById('errorBox'),
+      resultsArea: document.getElementById('resultsArea'),
+      emptyState: document.getElementById('emptyState'),
+      statTotal: document.getElementById('statTotal'),
+      statWorkspaces: document.getElementById('statWorkspaces'),
+      statSelected: document.getElementById('statSelected'),
+      statGenerated: document.getElementById('statGenerated'),
+      filterInput: document.getElementById('filterInput'),
+      selectAllBtn: document.getElementById('selectAllBtn'),
+      clearAllBtn: document.getElementById('clearAllBtn'),
+      boardsBody: document.getElementById('boardsBody'),
+      selectedCount: document.getElementById('selectedCount'),
+      exportBtn: document.getElementById('exportBtn'),
+    };
+
+    let allBoards = [];
+    const selected = new Set();
+
+    // Persistir URL del Worker en memoria de la sesión actual (no localStorage)
+    const sessionUrl = window.__GRIKY_WORKER_URL || '';
+    if (sessionUrl) els.workerUrl.value = sessionUrl;
+
+    els.loadBtn.addEventListener('click', loadBoards);
+    els.workerUrl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') loadBoards();
+    });
+    els.filterInput.addEventListener('input', renderTable);
+    els.selectAllBtn.addEventListener('click', () => {
+      filteredBoards().forEach(b => selected.add(b.id));
+      renderTable();
+    });
+    els.clearAllBtn.addEventListener('click', () => {
+      selected.clear();
+      renderTable();
+    });
+    els.exportBtn.addEventListener('click', exportSelection);
+
+    async function loadBoards() {
+      const url = els.workerUrl.value.trim().replace(/\/$/, '');
+      if (!url) {
+        showError('Pega primero la URL pública de tu Worker.');
+        return;
+      }
+      if (!/^https:\/\//.test(url)) {
+        showError('La URL debe empezar con https://');
+        return;
+      }
+      window.__GRIKY_WORKER_URL = url;
+      els.errorBox.style.display = 'none';
+      els.loadBtn.disabled = true;
+      els.loadBtn.textContent = 'Cargando…';
+
+      try {
+        const res = await fetch(url + '/');
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Respuesta inválida del Worker');
+
+        allBoards = json.boards || [];
+        selected.clear();
+        els.statTotal.textContent = json.total_boards;
+        const workspaces = new Set(allBoards.map(b => b.workspace || 'sin workspace'));
+        els.statWorkspaces.textContent = workspaces.size;
+        els.statGenerated.textContent = new Date(json.generated_at).toLocaleString();
+        els.resultsArea.style.display = 'block';
+        els.emptyState.style.display = 'none';
+        renderTable();
+      } catch (err) {
+        showError('No se pudo consultar el Worker: ' + err.message);
+      } finally {
+        els.loadBtn.disabled = false;
+        els.loadBtn.textContent = 'Descubrir boards';
+      }
+    }
+
+    function filteredBoards() {
+      const q = els.filterInput.value.trim().toLowerCase();
+      if (!q) return allBoards;
+      return allBoards.filter(b => {
+        const haystack = [
+          b.name,
+          b.workspace,
+          ...(b.owners || []).map(o => o.name + ' ' + (o.email || ''))
+        ].join(' ').toLowerCase();
+        return haystack.includes(q);
+      });
+    }
+
+    function renderTable() {
+      const rows = filteredBoards();
+      els.boardsBody.innerHTML = rows.map(b => {
+        const isSelected = selected.has(b.id);
+        const ownersHtml = (b.owners || [])
+          .slice(0, 3)
+          .map(o => `<span class="pill">${escapeHtml(o.name)}</span>`)
+          .join('');
+        const moreOwners = (b.owners || []).length > 3
+          ? `<span class="pill">+${b.owners.length - 3}</span>` : '';
+        const statusHtml = (b.status_columns || [])
+          .map(c => `<span class="pill green">${escapeHtml(c.title)} (${c.labels.length})</span>`)
+          .join('');
+        const dateHtml = (b.date_columns || [])
+          .map(c => `<span class="pill yellow">${escapeHtml(c.title)}</span>`)
+          .join('');
+        return `
+          <tr>
+            <td><input type="checkbox" data-id="${b.id}" ${isSelected ? 'checked' : ''} /></td>
+            <td>
+              <div class="board-name">${escapeHtml(b.name)}</div>
+              <div class="board-meta">id ${b.id} · <a href="${b.url}" target="_blank">abrir en Monday ↗</a></div>
+            </td>
+            <td>${escapeHtml(b.workspace || '—')}</td>
+            <td>${b.items_count ?? '—'}</td>
+            <td>${ownersHtml}${moreOwners || '<span class="pill">sin dueños</span>'}</td>
+            <td>${statusHtml || '<span class="pill coral">ninguna</span>'}</td>
+            <td>${dateHtml || '<span class="pill">—</span>'}</td>
+          </tr>
+        `;
+      }).join('');
+
+      els.boardsBody.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+        chk.addEventListener('change', (e) => {
+          const id = e.target.dataset.id;
+          if (e.target.checked) selected.add(id);
+          else selected.delete(id);
+          updateSelectedCounters();
+        });
+      });
+      updateSelectedCounters();
+    }
+
+    function updateSelectedCounters() {
+      els.statSelected.textContent = selected.size;
+      els.selectedCount.textContent = selected.size;
+    }
+
+    function exportSelection() {
+      if (selected.size === 0) {
+        showError('Marca al menos un board antes de exportar.');
+        return;
+      }
+      const payload = {
+        exported_at: new Date().toISOString(),
+        worker_url: window.__GRIKY_WORKER_URL,
+        selected_count: selected.size,
+        boards: allBoards
+          .filter(b => selected.has(b.id))
+          .map(b => ({
+            id: b.id,
+            name: b.name,
+            workspace: b.workspace,
+            url: b.url,
+            owners: b.owners,
+            status_columns: b.status_columns,
+            date_columns: b.date_columns,
+            people_columns: b.people_columns
+          }))
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'griky-hub-boards-seleccion.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function showError(msg) {
+      els.errorBox.textContent = msg;
+      els.errorBox.style.display = 'block';
+    }
+
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
