@@ -794,7 +794,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
           <div class="proj-top">
             <div>
               <div class="proj-name">Argos</div>
-              <div class="proj-client">ED Andrés Briceño</div>
+              <div class="proj-client">ED Juan Ochoa</div>
             </div>
             <div class="sem-dot verde"></div>
           </div>
@@ -1093,7 +1093,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
         <option value="">— Seleccionar —</option>
         <option value="Jorge Osorio">Director de Fábrica (Jorge Osorio)</option>
         <option value="Sophia Pacheco">ED Sophia Pacheco</option>
-        <option value="Andrés Briceño">ED Andrés Briceño</option>
+        <option value="Juan Ochoa">ED Juan Ochoa</option>
         <option value="Margarita Rosales">ED Margarita Rosales</option>
         <option value="Marcela Osorio">ED Marcela Osorio</option>
         <option value="Jean Villegas">ED Jean Villegas</option>
@@ -1352,7 +1352,7 @@ function generarConsolidado(){
   const segsWeek = segs.filter(s => s.semana === semanaActual);
 
   const fecha = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const PMsConocidos = ['Sophia Pacheco','Andrés Briceño','Margarita Rosales','Marcela Osorio','Jean Villegas'];
+  const PMsConocidos = ['Sophia Pacheco','Juan Ochoa','Margarita Rosales','Marcela Osorio','Jean Villegas','Jorge Osorio'];
   const PMsReportando = segsWeek.map(s=>s.pm);
   const PMsPendientes = PMsConocidos.filter(p => !PMsReportando.includes(p));
 

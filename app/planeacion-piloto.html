@@ -93,11 +93,12 @@ body{font-family:var(--font);background:var(--light);color:var(--navy);min-heigh
     <label>PM</label>
     <select id="selPM" onchange="onPMChange()">
       <option value="">— Selecciona tu nombre —</option>
-      <option value="andres">Andrés Briceño</option>
+      <option value="andres">Juan Ochoa</option>
       <option value="margarita">Margarita Rosales</option>
       <option value="vilma">Marcela Osorio</option>
       <option value="sophia">Sophia Pacheco</option>
       <option value="jean">Jean Villegas</option>
+      <option value="jorge">Jorge Osorio</option>
     </select>
   </div>
   <div class="field hidden" id="projSelectField">
@@ -203,7 +204,7 @@ var PM_PROYECTOS = {
     ]
   },
   andres: {
-    nombre: 'Andrés Briceño',
+    nombre: 'Juan Ochoa',
     proyectos: [
       {id:'banco_popular', nombre:'Banco Popular', cliente:'Banco Popular'},
       {id:'fund_orenda', nombre:'Fundación Orenda', cliente:'Fundación Orenda',
@@ -248,12 +249,17 @@ var PM_PROYECTOS = {
       {id:'curso_finanzas', nombre:'Curso Finanzas', cliente:'ICami'},
       {id:'politecnica', nombre:'Politécnica', cliente:'Politécnica'},
       {id:'indoamerica', nombre:'Indoamérica', cliente:'Indoamérica'},
-      {id:'eia_lideres', nombre:'EIA Líderes', cliente:'EIA'},
-      {id:'eia_power', nombre:'EIA Power Skills', cliente:'EIA'},
-      {id:'eia_otro', nombre:'EIA (sin especificar)', cliente:'EIA'},
       {id:'udla', nombre:'UDLA', cliente:'UDLA',
         ficha:{inicio:'2024-11-22',cierre:'2026-05-15',semanas:72,tipoUP:'Unidad',totalRec:1134,ritmoRec:0,recVideo:277,recMulti:730,recGraf:127,
           cursos:[{nombre:'Análisis político contemporáneo',ups:3},{nombre:'Fund. Estética y Tratamientos',ups:1},{nombre:'Gestión de procesos',ups:3},{nombre:'Salud Pública y Políticas Públicas',ups:3},{nombre:'Salud Pública y Salud Comunitaria',ups:2},{nombre:'Programación en R',ups:8},{nombre:'Control de Gestión y Auditoría',ups:4},{nombre:'Dirección empresarial y transformación digital',ups:5},{nombre:'Entorno económico y microeconomía',ups:5},{nombre:'Análisis Estadístico',ups:8},{nombre:'Políticas Públicas',ups:5},{nombre:'Modelos de negocios y estrategias digitales',ups:6},{nombre:'Taller de Desarrollo Personal I',ups:4},{nombre:'Formulación y evaluación social de proyecto',ups:3},{nombre:'Mercados financieros e inversiones',ups:3},{nombre:'Intro y Evaluación Bienestar Animal',ups:2},{nombre:'Diseño de Trabajo de Grado I',ups:3},{nombre:'Ética y Legislación Bienestar Animal',ups:2},{nombre:'Taller de desarrollo personal III',ups:3},{nombre:'Derecho Administrativo',ups:5},{nombre:'Fund. del Actuar Comunitario',ups:3},{nombre:'Gestión de la transformación digital',ups:5},{nombre:'Finanzas y contabilidad',ups:1},{nombre:'Gestión logística y de operaciones',ups:5},{nombre:'Taller de desarrollo personal II',ups:3},{nombre:'Derecho Regulatorio',ups:4},{nombre:'Evaluación y Diagnóstico estético',ups:1},{nombre:'Innovación y emprendimiento tecnológico',ups:5},{nombre:'Taller de proyectos empresariales I',ups:3},{nombre:'Neurociencias y psicología comparativa',ups:2},{nombre:'Intro a las ciencias sociales',ups:4},{nombre:'Taller de proyectos empresariales II',ups:2},{nombre:'Proyecto final',ups:4},{nombre:'Marketing y ecosistemas digitales',ups:8},{nombre:'Gestión de talento y transformación digital',ups:5},{nombre:'Taller de proyectos empresariales III',ups:3},{nombre:'Riesgo de negocio, ética y compliance',ups:4},{nombre:'Analítica empresarial',ups:6}]}}
+    ]
+  },
+  jorge: {
+    nombre: 'Jorge Osorio',
+    proyectos: [
+      {id:'eia_lideres', nombre:'EIA Líderes', cliente:'EIA'},
+      {id:'eia_power', nombre:'EIA Power Skills', cliente:'EIA'},
+      {id:'eia_otro', nombre:'EIA (sin especificar)', cliente:'EIA'}
     ]
   }
 };
