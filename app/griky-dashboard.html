@@ -64,6 +64,7 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .gstat.verde::before{background:var(--green);}
 .gstat.amarillo::before{background:var(--yellow);}
 .gstat.rojo::before{background:var(--red);}
+.gstat.gris::before{background:#888;}
 .gstat.sprint::before{background:#7EC8E3;}
 .gstat.ritmo::before{background:#B19CD9;}
 .gstat-val{font-family:'Roboto',sans-serif;font-size:28px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:4px;}
@@ -173,6 +174,64 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .sec-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
 .sec-toggle-chevron{font-size:12px;color:var(--gray);transition:transform .2s;}
 .sec-toggle.open .sec-toggle-chevron{transform:rotate(90deg);}
+
+/* === FICHA REDESIGN (2026-05-04) ============================================ */
+.ficha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px;}
+.pcard.ficha{display:flex;flex-direction:column;}
+.ficha .pcard-head{padding:18px 20px 12px;}
+.ficha .pcard-cliente-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
+.ficha .pcard-cliente{font-family:'Roboto',sans-serif;font-size:20px;font-weight:800;color:var(--navy);line-height:1.15;letter-spacing:-0.3px;margin-bottom:4px;}
+.ficha .pcard-proyecto{font-size:12px;font-weight:500;color:var(--gray);line-height:1.3;}
+.ficha .pcard-entrega{font-size:11px;color:var(--gray);margin-top:4px;font-weight:400;}
+.ficha .pcard-badges{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;}
+.ficha .pm-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:var(--na);color:var(--navy);border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap;}
+.ficha .pm-pill::before{content:"";width:5px;height:5px;background:var(--navy);border-radius:50%;}
+.ficha .status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.ficha .status-pill::before{content:"";width:5px;height:5px;border-radius:50%;}
+.ficha .status-ok{background:var(--ga);color:#1e9a56;}
+.ficha .status-ok::before{background:var(--green);}
+.ficha .status-warn{background:var(--ya);color:#c47d00;}
+.ficha .status-warn::before{background:var(--yellow);}
+.ficha .status-overdue{background:var(--ra);color:var(--red);}
+.ficha .status-overdue::before{background:var(--red);}
+.ficha .status-closed{background:#e8e8e8;color:#888;}
+.ficha .status-closed::before{background:#888;}
+.ficha .progress-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 12px;}
+.ficha .progress{background:var(--light);border-radius:8px;padding:10px 12px;}
+.ficha .progress-label{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;line-height:1.2;}
+.ficha .progress-value{font-size:18px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:6px;}
+.ficha .progress-value.pendiente-val{font-size:11px;color:#aaa;font-weight:500;font-style:italic;}
+.ficha .progress-bar{width:100%;height:5px;background:var(--mid);border-radius:999px;overflow:hidden;}
+.ficha .progress-fill{height:100%;border-radius:999px;transition:width .4s ease;}
+.ficha .progress-fill.verde{background:var(--green);}
+.ficha .progress-fill.amarillo{background:var(--yellow);}
+.ficha .progress-fill.rojo{background:var(--red);}
+.ficha .progress-fill.gris{background:#bbb;}
+.ficha .counts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--mid);border-top:1px solid var(--mid);border-bottom:1px solid var(--mid);}
+.ficha .count-cell{background:var(--white);padding:10px 12px;}
+.ficha .count-label{font-size:10px;color:var(--gray);margin-bottom:3px;line-height:1.2;}
+.ficha .count-value{font-size:15px;font-weight:700;color:var(--navy);line-height:1.1;}
+.ficha .count-value .total{font-size:11px;color:var(--gray);font-weight:500;}
+.ficha .finance{padding:14px 18px 16px;display:flex;flex-direction:column;gap:10px;}
+.ficha .finance-title{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray);}
+.ficha .money-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.ficha .money{background:var(--light);border-radius:6px;padding:8px 10px;}
+.ficha .money-label{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;line-height:1.2;}
+.ficha .money-value{font-size:13px;font-weight:700;color:var(--navy);line-height:1.1;}
+.ficha .margin-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ficha .margin-box{border-radius:8px;padding:10px 12px;border:1px solid var(--mid);}
+.ficha .margin-box.planned{background:var(--light);}
+.ficha .margin-box.actual{border-width:1.5px;}
+.ficha .margin-box.actual.good{background:var(--ga);border-color:var(--green);}
+.ficha .margin-box.actual.warn{background:var(--ya);border-color:var(--yellow);}
+.ficha .margin-box.actual.bad{background:var(--ra);border-color:var(--red);}
+.ficha .margin-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-bottom:4px;}
+.ficha .margin-value{font-size:18px;font-weight:800;color:var(--navy);line-height:1;}
+.ficha .margin-delta{font-size:10px;font-weight:600;margin-top:3px;}
+.ficha .delta-up{color:var(--green);}
+.ficha .delta-down{color:var(--red);}
+.ficha .delta-flat{color:var(--gray);}
+.pendiente{display:inline-block;padding:1px 7px;background:#f0f0f0;color:#888;border-radius:4px;font-size:10px;font-weight:600;font-style:italic;letter-spacing:.3px;}
 </style>
 </head>
 <body>
@@ -229,6 +288,17 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
     </select>
   </div>
 
+  <div class="ctrl-sep"></div>
+  <div class="ctrl-field">
+    <label class="ctrl-label" for="selSort">Ordenar por</label>
+    <select class="ctrl-select" id="selSort" onchange="render()">
+      <option value="default">Por defecto (semáforo)</option>
+      <option value="overdue">Vencidos primero</option>
+      <option value="dueSoon">Próximos a vencer</option>
+      <option value="marginDesc">Mayor margen actual</option>
+    </select>
+  </div>
+
   <div class="view-tabs">
     <div class="view-tab active" id="vt-cards" onclick="setVista('cards')">⊞ Tarjetas</div>
     <div class="view-tab" id="vt-tabla" onclick="setVista('tabla')">☰ Tabla</div>
@@ -251,7 +321,7 @@ const DATA = {
     { id:'s1', nombre:'USS',             cliente:'USS',          avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'s2', nombre:'Ibero México',    cliente:'Ibero México', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'s3', nombre:'U América',       cliente:'U América',    avance:38, cursos:35, upLabel:'Curso', totalRec:1496, recHechos:576, sprint:2, ritmoReq:29, ritmoAct:0, fechaInicio:'2025-07-21', fechaCierre:'2026-07-21', alert:'Alcance consolidado (35 cursos · 1.496 rec) desde ficha 2026-04-23. ~13 sem para cierre: ritmo req. 29 rec/sem. Validar recHechos con Monday.' },
-    { id:'s4', nombre:'ESAM',            cliente:'ESAM',         avance:17, cursos:14, upLabel:'Curso', totalRec:2340, recHechos:390, sprint:3, ritmoReq:40, ritmoAct:0, fechaInicio:'2025-03-12', fechaCierre:'2026-07-31', alert:'Nueva fecha cierre julio 2026. Avance bajo respecto al calendario.' },
+    { id:'s4', nombre:'ESAM',            cliente:'ESAM',         avance:73, cursos:19, upLabel:'Módulo', totalRec:860, recHechos:629, sprint:3, ritmoReq:18, ritmoAct:0, fechaInicio:'2025-03-12', fechaCierre:'2026-07-31', alert:'Alcance actualizado desde ficha 2026-05-04 (Master Contenido lote 50102-0123): 19 cursos · 95 módulos · 860 recursos. Avance ponderado 73% (5 cursos al 100%, 7 al 55%, 1 cancelado al 90%, 1 al 45%, 1 al 5%). ~12.6 sem para cierre: ritmo req. 18 rec/sem. Validar recHechos con Monday.' },
     { id:'s5', nombre:'Cinemark',        cliente:'Cinemark',     avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'s6', nombre:'Curso Finanzas',  cliente:'ICami',        avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'s7', nombre:'Politécnica',    cliente:'Politécnica',  avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
@@ -295,6 +365,77 @@ const DATA = {
 };
 
 let vista = 'cards';
+
+// ── NORMALIZACIÓN FICHA (2026-05-04) ─────────────────────────────────────────
+// Asegura que todos los proyectos tengan los campos del nuevo contrato de ficha.
+// null = "Pendiente" en pantalla. Jorge llenará después.
+Object.values(DATA).forEach(proyectos => {
+  proyectos.forEach(p => {
+    if (p.cursosAprobados === undefined) p.cursosAprobados = null;
+    if (p.valorContrato   === undefined) p.valorContrato   = null;
+    if (p.presupuesto     === undefined) p.presupuesto     = null;
+    if (p.costosEjec      === undefined) p.costosEjec      = null;
+  });
+});
+
+// ── HELPERS FICHA ────────────────────────────────────────────────────────────
+function diasACierre(p){
+  if(!p.fechaCierre) return null;
+  const d = new Date(p.fechaCierre + 'T12:00:00');
+  if(isNaN(d.getTime())) return null;
+  const today = new Date();
+  return Math.round((d - today) / (1000*60*60*24));
+}
+function entregaStatus(p){
+  // Cerrado: avance global ≥ 100% o todos los recursos ejecutados
+  const recOk = p.totalRec > 0 && p.recHechos >= p.totalRec;
+  const cursosOk = p.cursos > 0 && p.cursosAprobados !== null && p.cursosAprobados >= p.cursos;
+  if((recOk && cursosOk) || p.avance >= 100) return 'closed';
+  const dias = diasACierre(p);
+  if(dias === null) return 'none';
+  if(dias < 0) return 'overdue';
+  if(dias <= 30) return 'warn';
+  return 'ok';
+}
+function marginPlanCalc(p){
+  if(p.valorContrato == null || p.presupuesto == null || p.valorContrato === 0) return null;
+  return (p.valorContrato - p.presupuesto) / p.valorContrato;
+}
+function marginActCalc(p){
+  if(p.valorContrato == null || p.costosEjec == null || p.valorContrato === 0) return null;
+  return (p.valorContrato - p.costosEjec) / p.valorContrato;
+}
+function fmtMoney(v){
+  if(v == null) return '—';
+  const sign = v < 0 ? '-' : '';
+  return sign + '$' + (Math.abs(v) / 1_000_000).toFixed(1).replace('.', ',') + 'M';
+}
+function fmtMargin(v){
+  if(v == null) return '—';
+  return (v * 100).toFixed(1).replace('.', ',') + '%';
+}
+function fmtFechaCorta(iso){
+  const d = new Date(iso + 'T12:00:00');
+  if(isNaN(d.getTime())) return iso;
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+}
+function marginClassFn(act, plan){
+  if(act == null || plan == null) return '';
+  if(act >= plan) return 'good';
+  if(act >= 0)    return 'warn';
+  return 'bad';
+}
+function marginDeltaText(act, plan, status){
+  if(act == null || plan == null) return '';
+  const diff = (act - plan) * 100;
+  if(status === 'closed' || Math.abs(diff) >= 1){
+    if(diff > 0) return `<div class="margin-delta delta-up">▲ ${diff.toFixed(1).replace('.',',')} pp vs. plan</div>`;
+    if(diff < 0) return `<div class="margin-delta delta-down">▼ ${Math.abs(diff).toFixed(1).replace('.',',')} pp vs. plan</div>`;
+    return `<div class="margin-delta delta-flat">En línea con plan</div>`;
+  }
+  return `<div class="margin-delta delta-flat">Proyecto en curso</div>`;
+}
 
 // ── LOCALSTORAGE BRIDGE — Importar fichas de proyecto ────────────────────────
 (function cargarFichas(){
@@ -363,6 +504,20 @@ let vista = 'cards';
       if(edSel.options[i].value === savedPM){ edSel.value = savedPM; break; }
     }
   }
+
+  // Restaurar filtros/orden persistidos (chat CONFIGURACIÓN DASHBOARD 2026-05-04)
+  try {
+    const saved = JSON.parse(localStorage.getItem('griky_dashboard_filtros_v1') || '{}');
+    if(saved.sem)  document.getElementById('selSem').value  = saved.sem;
+    if(saved.sort) document.getElementById('selSort').value = saved.sort;
+    if(saved.vista === 'cards' || saved.vista === 'tabla'){
+      vista = saved.vista;
+      document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+      const tab = document.getElementById('vt-' + vista);
+      if(tab) tab.classList.add('active');
+    }
+  } catch(e){}
+
   onPerfilChange();
 })();
 
@@ -476,92 +631,209 @@ function render(){
   }
 
   main.innerHTML = html;
+
+  // Persistir filtros/orden en localStorage (chat CONFIGURACIÓN DASHBOARD 2026-05-04)
+  try {
+    localStorage.setItem('griky_dashboard_filtros_v1', JSON.stringify({
+      perfil: document.getElementById('selPerfil').value,
+      ed:     document.getElementById('selED').value,
+      sem:    document.getElementById('selSem').value,
+      sort:   (document.getElementById('selSort')||{}).value || 'default',
+      vista:  vista,
+    }));
+  } catch(e){}
 }
 
-// ── VISTA CARDS ───────────────────────────────────────────────────────────────
+// ── VISTA CARDS (FICHA REDESIGN) ─────────────────────────────────────────────
 function renderCards(filtered){
+  const sortVal = (document.getElementById('selSort')||{}).value || 'default';
   let html = '';
 
-  // Rojo primero, luego amarillo, luego verde
-  const semOrder = {rojo:0,amarillo:1,verde:2,gris:3};
-
-  Object.entries(filtered).forEach(([pm, proyectos]) => {
-    const sorted = [...proyectos].sort((a,b)=>semOrder[a.sem]-semOrder[b.sem]);
-    html += `
-    <div class="ed-section">
-      <div class="ed-header">
-        <div>
-          <div class="ed-title">ED ${pm}</div>
-          <div class="ed-pm">${sorted.length} proyecto${sorted.length!==1?'s':''} activos</div>
-        </div>
-        <div class="ed-line"></div>
-        <div class="ed-total">${sorted.filter(p=>p.sem==='verde').length}🟢 ${sorted.filter(p=>p.sem==='amarillo').length}🟡 ${sorted.filter(p=>p.sem==='rojo').length}🔴 ${sorted.filter(p=>p.sem==='gris').length}⚪</div>
-      </div>
-      <div class="proj-grid">`;
-
-    sorted.forEach(p => {
-      const ritmoOk = p.ritmoAct >= p.ritmoReq;
-      const ritmoClass = ritmoOk ? 'ok' : p.ritmoAct >= p.ritmoReq*0.7 ? 'warn' : 'bad';
-      const sprintClass = p.sprint>=90?'ok':p.sprint>=60?'warn':'bad';
-      const diasCierre = p.fechaCierre ? Math.round((new Date(p.fechaCierre)-new Date())/(1000*3600*24)) : null;
-      const diasClass = diasCierre===null?'neutral':diasCierre>30?'ok':diasCierre>14?'warn':'bad';
-
+  if(sortVal === 'default'){
+    // Mantener agrupación por ED, ordenando por semáforo dentro de cada grupo
+    const semOrder = {rojo:0,amarillo:1,verde:2,gris:3};
+    Object.entries(filtered).forEach(([pm, proyectos]) => {
+      const sorted = [...proyectos].sort((a,b)=>semOrder[a.sem]-semOrder[b.sem]);
       html += `
-        <div class="pcard">
-          <div class="pcard-stripe ${p.sem}"></div>
-          <div class="pcard-head">
-            <div class="pcard-top">
-              <div>
-                <div class="pcard-name">${p.nombre}</div>
-                <div class="pcard-client">${p.cliente} · ${p.cursos} cursos · ${p.upLabel}s</div>
-              </div>
-              <div class="sem-badge ${p.sem}">${p.sem==='verde'?'🟢 Verde':p.sem==='amarillo'?'🟡 Amarillo':p.sem==='gris'?'⚪ Sin datos':'🔴 Rojo'}</div>
-            </div>
-
-            <div class="pcard-progress">
-              <div class="prog-row">
-                <span class="prog-label">Avance del proyecto</span>
-                <span class="prog-pct">${p.avance}%</span>
-              </div>
-              <div class="prog-bar">
-                <div class="prog-fill ${p.sem}" style="width:${p.avance}%"></div>
-              </div>
-            </div>
-
-            ${p.alert?`<div class="alert-banner ${p.sem==='amarillo'?'warn':''}">⚠️ ${p.alert}</div>`:''}
+      <div class="ed-section">
+        <div class="ed-header">
+          <div>
+            <div class="ed-title">ED ${pm}</div>
+            <div class="ed-pm">${sorted.length} proyecto${sorted.length!==1?'s':''} activo${sorted.length!==1?'s':''}</div>
           </div>
-
-          <div class="pcard-metrics">
-            <div class="metric">
-              <div class="metric-val ${sprintClass}">${p.sprint}%</div>
-              <div class="metric-label">Sprint</div>
-            </div>
-            <div class="metric">
-              <div class="metric-val ${ritmoClass}">${p.ritmoAct}<span style="font-size:10px;font-weight:400;color:var(--gray);">/${p.ritmoReq}</span></div>
-              <div class="metric-label">Ritmo rec/sem</div>
-            </div>
-            <div class="metric">
-              <div class="metric-val ${diasClass}">${diasCierre!==null?diasCierre+'d':'—'}</div>
-              <div class="metric-label">Para cierre</div>
-            </div>
-            <div class="metric">
-              <div class="metric-val">${p.recHechos}<span style="font-size:10px;font-weight:400;color:var(--gray);">/${p.totalRec}</span></div>
-              <div class="metric-label">Recursos</div>
-            </div>
-          </div>
-        </div>`;
+          <div class="ed-line"></div>
+          <div class="ed-total">${sorted.filter(p=>p.sem==='verde').length}🟢 ${sorted.filter(p=>p.sem==='amarillo').length}🟡 ${sorted.filter(p=>p.sem==='rojo').length}🔴 ${sorted.filter(p=>p.sem==='gris').length}⚪</div>
+        </div>
+        <div class="ficha-grid">`;
+      sorted.forEach(p => { html += renderFichaCard(p, false); });
+      html += `</div></div>`;
     });
+  } else {
+    // Lista plana ordenada según el criterio
+    const all = Object.entries(filtered).flatMap(([pm, proyectos]) =>
+      proyectos.map(p => ({...p, pm}))
+    );
+    const statusOrderOverdue = { overdue:0, warn:1, ok:2, none:3, closed:4 };
+    const statusOrderDueSoon = { warn:0, overdue:1, ok:2, none:3, closed:4 };
+    const sortFns = {
+      overdue: (a,b) => {
+        const sa = entregaStatus(a), sb = entregaStatus(b);
+        const o = statusOrderOverdue[sa] - statusOrderOverdue[sb];
+        if(o !== 0) return o;
+        const da = diasACierre(a), db = diasACierre(b);
+        if(da == null && db == null) return 0;
+        if(da == null) return 1;
+        if(db == null) return -1;
+        return da - db;
+      },
+      dueSoon: (a,b) => {
+        const sa = entregaStatus(a), sb = entregaStatus(b);
+        const o = statusOrderDueSoon[sa] - statusOrderDueSoon[sb];
+        if(o !== 0) return o;
+        const da = diasACierre(a), db = diasACierre(b);
+        if(da == null && db == null) return 0;
+        if(da == null) return 1;
+        if(db == null) return -1;
+        return da - db;
+      },
+      marginDesc: (a,b) => {
+        const ma = marginActCalc(a), mb = marginActCalc(b);
+        if(ma == null && mb == null) return 0;
+        if(ma == null) return 1;
+        if(mb == null) return -1;
+        return mb - ma;
+      },
+    };
+    all.sort(sortFns[sortVal] || sortFns.overdue);
 
+    const titleMap = {
+      overdue: 'Vencidos primero',
+      dueSoon: 'Próximos a vencer',
+      marginDesc: 'Mayor margen actual'
+    };
+    html += `
+      <div class="ed-section">
+        <div class="ed-header">
+          <div>
+            <div class="ed-title">${titleMap[sortVal]||'Proyectos'}</div>
+            <div class="ed-pm">${all.length} proyecto${all.length!==1?'s':''} · ordenamiento global</div>
+          </div>
+          <div class="ed-line"></div>
+        </div>
+        <div class="ficha-grid">`;
+    all.forEach(p => { html += renderFichaCard(p, true); });
     html += `</div></div>`;
-  });
+  }
 
   return html;
 }
 
-// ── VISTA TABLA ───────────────────────────────────────────────────────────────
+// ── RENDER FICHA INDIVIDUAL ─────────────────────────────────────────────────
+function renderFichaCard(p, showPM){
+  const status = entregaStatus(p);
+  const statusLabels = {
+    ok:'A tiempo', warn:'Próximo a vencer', overdue:'Vencido',
+    closed:'Cerrado', none:'Sin fecha'
+  };
+  const statusClasses = {
+    ok:'status-ok', warn:'status-warn', overdue:'status-overdue',
+    closed:'status-closed', none:'status-closed'
+  };
+
+  const cursosPct = (p.cursos > 0 && p.cursosAprobados !== null) ? p.cursosAprobados / p.cursos : null;
+  const recPct    = (p.totalRec > 0) ? p.recHechos / p.totalRec : null;
+  const mPlan = marginPlanCalc(p);
+  const mAct  = marginActCalc(p);
+
+  const fillCls = pct => pct === null ? 'gris' : pct >= 0.7 ? 'verde' : pct >= 0.25 ? 'amarillo' : 'rojo';
+  const PEND = '<span class="pendiente">Pendiente</span>';
+
+  const fechaEntregaHTML = p.fechaCierre ? fmtFechaCorta(p.fechaCierre) : PEND;
+
+  const cursosBlock = cursosPct === null
+    ? `<div class="progress-value pendiente-val">${PEND}</div>
+       <div class="progress-bar"><div class="progress-fill gris" style="width:0%"></div></div>`
+    : `<div class="progress-value">${Math.round(cursosPct*100)}%</div>
+       <div class="progress-bar"><div class="progress-fill ${fillCls(cursosPct)}" style="width:${Math.max(cursosPct*100, cursosPct>0?4:0)}%"></div></div>`;
+
+  const recBlock = recPct === null
+    ? `<div class="progress-value pendiente-val">${PEND}</div>
+       <div class="progress-bar"><div class="progress-fill gris" style="width:0%"></div></div>`
+    : `<div class="progress-value">${Math.round(recPct*100)}%</div>
+       <div class="progress-bar"><div class="progress-fill ${fillCls(recPct)}" style="width:${Math.max(recPct*100, recPct>0?4:0)}%"></div></div>`;
+
+  return `
+    <div class="pcard ficha">
+      <div class="pcard-stripe ${p.sem}"></div>
+      <div class="pcard-head">
+        <div class="pcard-top">
+          <div style="min-width:0;flex:1;">
+            <div class="pcard-cliente-label">Cliente</div>
+            <div class="pcard-cliente">${p.cliente || PEND}</div>
+            <div class="pcard-proyecto">${p.nombre || PEND}</div>
+            <div class="pcard-entrega">Entrega planeada: ${fechaEntregaHTML}</div>
+          </div>
+          <div class="pcard-badges">
+            ${showPM && p.pm ? `<span class="pm-pill">${p.pm}</span>` : ''}
+            <span class="status-pill ${statusClasses[status]}">${statusLabels[status]}</span>
+          </div>
+        </div>
+      </div>
+      <div class="progress-block">
+        <div class="progress">
+          <div class="progress-label">Cursos aprobados</div>
+          ${cursosBlock}
+        </div>
+        <div class="progress">
+          <div class="progress-label">Recursos ejecutados</div>
+          ${recBlock}
+        </div>
+      </div>
+      ${p.alert?`<div class="alert-banner ${p.sem==='amarillo'?'warn':''}" style="margin:0 18px 12px;">⚠️ ${p.alert}</div>`:''}
+      <div class="counts-grid">
+        <div class="count-cell">
+          <div class="count-label">Cursos planeados</div>
+          <div class="count-value">${p.cursos > 0 ? p.cursos : PEND}</div>
+        </div>
+        <div class="count-cell">
+          <div class="count-label">Cursos aprobados</div>
+          <div class="count-value">${p.cursosAprobados !== null && p.cursos > 0 ? `${p.cursosAprobados} <span class="total">/ ${p.cursos}</span>` : PEND}</div>
+        </div>
+        <div class="count-cell">
+          <div class="count-label">Recursos planeados</div>
+          <div class="count-value">${p.totalRec > 0 ? p.totalRec : PEND}</div>
+        </div>
+        <div class="count-cell">
+          <div class="count-label">Recursos ejecutados</div>
+          <div class="count-value">${p.totalRec > 0 ? `${p.recHechos} <span class="total">/ ${p.totalRec}</span>` : PEND}</div>
+        </div>
+      </div>
+      <div class="finance">
+        <div class="finance-title">Finanzas</div>
+        <div class="money-row">
+          <div class="money"><div class="money-label">Valor contrato</div><div class="money-value">${p.valorContrato !== null ? fmtMoney(p.valorContrato) : PEND}</div></div>
+          <div class="money"><div class="money-label">Presupuesto</div><div class="money-value">${p.presupuesto !== null ? fmtMoney(p.presupuesto) : PEND}</div></div>
+          <div class="money"><div class="money-label">Costos ejec.</div><div class="money-value">${p.costosEjec !== null ? fmtMoney(p.costosEjec) : PEND}</div></div>
+        </div>
+        <div class="margin-row">
+          <div class="margin-box planned">
+            <div class="margin-label">Margen planeado</div>
+            <div class="margin-value">${mPlan !== null ? fmtMargin(mPlan) : PEND}</div>
+          </div>
+          <div class="margin-box actual ${marginClassFn(mAct, mPlan)}">
+            <div class="margin-label">Margen actual</div>
+            <div class="margin-value">${mAct !== null ? fmtMargin(mAct) : PEND}</div>
+            ${marginDeltaText(mAct, mPlan, status)}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── VISTA TABLA (FICHA REDESIGN 2026-05-04) ──────────────────────────────────
 function renderTabla(filtered){
   let html = `
-  <div style="background:var(--white);border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;">
+  <div style="background:var(--white);border:1px solid var(--mid);border-radius:var(--r);box-shadow:var(--sh);overflow-x:auto;">
     <table class="detail-table">
       <thead>
         <tr>
@@ -569,10 +841,12 @@ function renderTabla(filtered){
           <th>ED / PM</th>
           <th>Semáforo</th>
           <th style="min-width:140px;">Avance</th>
-          <th>Sprint</th>
-          <th>Ritmo</th>
           <th>Recursos</th>
           <th>Cierre</th>
+          <th>Ppto</th>
+          <th>AC</th>
+          <th>Margen $</th>
+          <th>Margen %</th>
           <th>Alerta</th>
         </tr>
       </thead>
@@ -583,13 +857,23 @@ function renderTabla(filtered){
     .flatMap(([pm,proyectos])=>proyectos.map(p=>({...p,pm})))
     .sort((a,b)=>semOrder[a.sem]-semOrder[b.sem]);
 
+  const PEND_TD = '<span class="pendiente">Pendiente</span>';
+
   allProy.forEach(p => {
-    const ritmoOk = p.ritmoAct >= p.ritmoReq;
-    const ritmoClass = ritmoOk?'ok':p.ritmoAct>=p.ritmoReq*0.7?'warn':'bad';
-    const sprintClass = p.sprint>=90?'ok':p.sprint>=60?'warn':'bad';
-    const diasCierre = p.fechaCierre ? Math.round((new Date(p.fechaCierre)-new Date())/(1000*3600*24)) : null;
+    const diasCierre = p.fechaCierre ? Math.round((new Date(p.fechaCierre+'T12:00:00')-new Date())/(1000*3600*24)) : null;
     const diasClass = diasCierre===null?'neutral':diasCierre>30?'ok':diasCierre>14?'warn':'bad';
     const fechaFmt = p.fechaCierre ? new Date(p.fechaCierre+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short'}) : '—';
+
+    // Datos financieros — muestran "Pendiente" si null
+    const presupHTML = p.presupuesto !== null ? fmtMoney(p.presupuesto) : PEND_TD;
+    const acHTML     = p.costosEjec  !== null ? fmtMoney(p.costosEjec)  : PEND_TD;
+    const margenAbs  = (p.valorContrato !== null && p.costosEjec !== null) ? p.valorContrato - p.costosEjec : null;
+    const margenPct  = marginActCalc(p);
+    const margenPlan = marginPlanCalc(p);
+    const margenAbsHTML = margenAbs !== null ? fmtMoney(margenAbs) : PEND_TD;
+    const margenCls = marginClassFn(margenPct, margenPlan);
+    const pillClass = margenCls === 'good' ? 'ok' : margenCls === 'warn' ? 'warn' : margenCls === 'bad' ? 'bad' : 'neutral';
+    const margenPctHTML = margenPct !== null ? `<span class="pill ${pillClass}">${fmtMargin(margenPct)}</span>` : PEND_TD;
 
     html += `
       <tr>
@@ -609,17 +893,15 @@ function renderTabla(filtered){
             <div class="mini-pct">${p.avance}%</div>
           </div>
         </td>
-        <td><span class="pill ${sprintClass}">${p.sprint}%</span></td>
+        <td style="font-size:12px;">${p.totalRec > 0 ? `${p.recHechos}/${p.totalRec}` : PEND_TD}</td>
         <td>
-          <span class="pill ${ritmoClass}">${p.ritmoAct}/${p.ritmoReq} r/s</span>
+          <div style="font-size:12px;font-weight:600;">${fechaFmt}</div>
+          ${diasCierre!==null?`<div class="pill ${diasClass}" style="margin-top:3px;">${diasCierre}d</div>`:''}
         </td>
-        <td style="font-size:12px;">${p.recHechos}/${p.totalRec}</td>
-        <td>
-          <div style="font-size:12px;font-weight:600;" class="${diasClass==='ok'?'':''}">
-            ${fechaFmt}
-          </div>
-          <div class="pill ${diasClass}" style="margin-top:3px;">${diasCierre!==null?diasCierre+'d':'—'}</div>
-        </td>
+        <td style="font-size:12px;font-weight:600;color:var(--navy);white-space:nowrap;">${presupHTML}</td>
+        <td style="font-size:12px;font-weight:600;color:var(--navy);white-space:nowrap;">${acHTML}</td>
+        <td style="font-size:12px;font-weight:600;color:var(--navy);white-space:nowrap;">${margenAbsHTML}</td>
+        <td style="white-space:nowrap;">${margenPctHTML}</td>
         <td style="font-size:11px;color:${p.alert?'var(--red)':'var(--gray)'};">
           ${p.alert?'⚠️ '+p.alert.substring(0,40)+'…':'—'}
         </td>
