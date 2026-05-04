@@ -346,17 +346,13 @@ const DATA = {
     { id:'m5', nombre:'Ibero Colombia',           cliente:'Ibero Colombia',  avance:100, cursos:6, upLabel:'Sprint', totalRec:15,  recHechos:15,  sprint:6, ritmoReq:1, ritmoAct:0, fechaInicio:'2025-10-07', fechaCierre:'2026-06-15', alert:null },
     { id:'m6', nombre:'Buen Café cursos sueltos', cliente:'Buen Café',       avance:100, cursos:3, upLabel:'Sprint', totalRec:12,  recHechos:12,  sprint:3, ritmoReq:2, ritmoAct:0, fechaInicio:'2025-10-07', fechaCierre:'2025-12-12', alert:null },
   ],
-  'Jean Villegas': [
-    { id:'j1', nombre:'Griky Academy',   cliente:'Griky Academy', avance:0, cursos:0, upLabel:'Unidad', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:'Probando modelos de diplomados y plataformas de autor. Modelo ABCDE en piloto.' },
-    { id:'j2', nombre:'Utesa',           cliente:'Utesa',         avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
-    { id:'j3', nombre:'UAX Diapositivas',cliente:'UAX',           avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
-  ],
+  'Jean Villegas': [],
   'Marcela Osorio': [
-    { id:'v1', nombre:'Vértice',                 cliente:'Vértice',     avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'v_esic',      nombre:'ESIC',      cliente:'ESIC',                  avance:0,  cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'v_mondragon', nombre:'Mondragón', cliente:'Universidad Mondragón', avance:50, cursos:4, cursosAprobados:2, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'2025-11-03', fechaCierre:'2026-02-27', alert:null },
   ],
   'Jorge Osorio': [
+    { id:'v1', nombre:'Vértice',                 cliente:'Vértice',     avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
     { id:'jo_eia', nombre:'EIA', cliente:'EIA', avance:0, cursos:0, upLabel:'Módulo', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'', fechaCierre:'', alert:null },
   ],
 };
@@ -394,6 +390,11 @@ const FINANCIALS_USD = {
   'm4':  { valorContrato: 52248,  presupuesto: 14412, costosEjec: 0     }, // UDDI
   'm5':  { valorContrato: 72000,  presupuesto: 35280, costosEjec: 39367 }, // Ibero Colombia (IBERO COL)
   'v1':  { valorContrato: 68104,  presupuesto: 13621, costosEjec: 0     }, // Vértice
+  // Datos adicionales recibidos 2026-05-04 (segundo lote)
+  'a1':  { valorContrato: 1150,   presupuesto: 265,   costosEjec: 102   }, // Banco Popular
+  'a2':  { valorContrato: 8700,   presupuesto: 988,   costosEjec: 1032  }, // Fundación Orenda
+  'a4':  { valorContrato: 4200,   presupuesto: 223,   costosEjec: 104   }, // Tecnológico ARGOS
+  'm6':  { valorContrato: 2100,   presupuesto: 1029,  costosEjec: 681   }, // Buen Café cursos sueltos
   // Nuevos / consolidados (2026-05-04)
   's_umb':           { valorContrato: 72000,  presupuesto: 35280, costosEjec: 23087 }, // UMB (Sophia)
   'v_esic':          { valorContrato: 58103,  presupuesto: 7497,  costosEjec: 4901  }, // ESIC consolidado (3 filas Excel)
@@ -459,9 +460,10 @@ function fmtFechaCorta(iso){
   return `${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
 }
 function marginClassFn(act, plan){
-  if(act == null || plan == null) return '';
-  if(act >= plan) return 'good';
-  if(act >= 0)    return 'warn';
+  // Umbrales absolutos (2026-05-04): >=80% verde · >=65% amarillo · <65% rojo
+  if(act == null) return '';
+  if(act >= 0.80) return 'good';
+  if(act >= 0.65) return 'warn';
   return 'bad';
 }
 function marginDeltaText(act, plan, status){
