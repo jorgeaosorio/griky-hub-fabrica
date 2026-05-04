@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento Semanal PM · Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #FF2D55; --navy: #22304C; --green: #2BC168; --yellow: #F5A623;
+  --gray: #667078; --light: #F6F7FB; --mid: #E2E8F0; --white: #ffffff;
+  --red-alpha: rgba(255,45,85,0.10); --red-border: rgba(255,45,85,0.25);
+  --radius: 10px; --shadow: 0 2px 12px rgba(34,48,76,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Roboto', sans-serif; background: var(--light); color: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* HEADER */
+header { background: var(--navy); position: relative; overflow: hidden; flex-shrink: 0; }
+.hdr-accent { position: absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--red) 0%, #ff6b8a 100%); }
+.hdr-circle { position: absolute; border-radius: 50%; background: rgba(255,45,85,0.08); pointer-events: none; }
+.hdr-inner { position: relative; z-index:1; display:flex; align-items:center; padding: 14px 28px; gap: 20px; }
+.logo-block { display:flex; align-items:center; gap:10px; }
+.logo-svg { width:32px; height:32px; }
+.logo-text { font-size:20px; font-weight:700; color:var(--white); letter-spacing:-0.3px; }
+.logo-sep { width:1px; height:22px; background:rgba(255,255,255,0.2); margin:0 4px; }
+.hdr-subtitle { font-size:12px; color:rgba(255,255,255,0.5); font-weight:300; }
+.hdr-right { margin-left:auto; }
+.progress-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+.progress-label { font-size:10px; color:rgba(255,255,255,0.4); font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
+.progress-track { width:140px; height:3px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--red); border-radius:2px; transition:width 0.6s cubic-bezier(.4,0,.2,1); width:0%; }
+.step-count { font-size:11px; color:rgba(255,255,255,0.35); font-weight:300; }
+
+/* LAYOUT */
+.app { display:flex; flex:1; overflow:hidden; height:calc(100vh - 61px); }
+
+/* SIDEBAR */
+.sidebar { width:220px; background:var(--white); border-right:1px solid var(--mid); padding:20px 12px; display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
+.sidebar-label { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--gray); padding:0 10px; margin-bottom:10px; }
+.step-row { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; transition:background 0.2s; }
+.step-row.active { background:var(--red-alpha); }
+.step-num { width:22px; height:22px; border-radius:50%; border:1.5px solid var(--mid); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--gray); flex-shrink:0; transition:all 0.3s; }
+.step-row.active .step-num { border-color:var(--red); color:var(--red); background:var(--red-alpha); }
+.step-row.done .step-num { border-color:var(--green); background:var(--green); color:var(--white); }
+.step-name { font-size:12px; color:var(--gray); font-weight:400; line-height:1.3; }
+.step-row.active .step-name { color:var(--navy); font-weight:500; }
+.step-row.done .step-name { color:var(--green); }
+.sidebar-footer { margin-top:auto; padding:14px 10px 0; border-top:1px solid var(--mid); }
+.sidebar-tip { font-size:10px; color:var(--gray); line-height:1.6; font-style:italic; }
+
+/* CHAT */
+.chat-area { flex:1; display:flex; flex-direction:column; overflow:hidden; background:var(--light); }
+.messages { flex:1; overflow-y:auto; padding:28px 36px; display:flex; flex-direction:column; gap:18px; scroll-behavior:smooth; }
+.messages::-webkit-scrollbar { width:4px; }
+.messages::-webkit-scrollbar-thumb { background:var(--mid); border-radius:2px; }
+.msg { max-width:660px; animation:fadeUp 0.25s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);} }
+.msg.claude { align-self:flex-start; }
+.msg.user { align-self:flex-end; }
+.msg-meta { font-size:10px; color:var(--gray); margin-bottom:5px; display:flex; align-items:center; gap:5px; font-weight:500; letter-spacing:0.3px; }
+.msg.user .msg-meta { justify-content:flex-end; }
+.meta-dot { width:5px; height:5px; border-radius:50%; background:var(--red); }
+.msg-bubble { padding:14px 18px; border-radius:var(--radius); font-size:13.5px; line-height:1.75; }
+.msg.claude .msg-bubble { background:var(--white); border:1px solid var(--mid); border-top-left-radius:3px; box-shadow:var(--shadow); color:var(--navy); }
+.msg.user .msg-bubble { background:var(--navy); color:var(--white); border-top-right-radius:3px; font-weight:300; }
+
+/* TYPING */
+.typing-wrap { display:flex; align-items:center; gap:6px; padding:14px 18px; background:var(--white); border:1px solid var(--mid); border-radius:var(--radius); border-top-left-radius:3px; box-shadow:var(--shadow); width:fit-content; }
+.typing-dot { width:6px; height:6px; border-radius:50%; background:var(--red); opacity:0.4; animation:blink 1.3s infinite; }
+.typing-dot:nth-child(2){animation-delay:0.2s;} .typing-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes blink{0%,60%,100%{transform:translateY(0);opacity:0.3;}30%{transform:translateY(-5px);opacity:1;}}
+
+/* OPTION BUTTONS */
+.opt-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.opt-btn { padding:10px 16px; border-radius:8px; border:1.5px solid var(--mid); background:var(--white); cursor:pointer; font-family:'Roboto',sans-serif; font-size:12px; font-weight:500; color:var(--navy); transition:all 0.2s; box-shadow:var(--shadow); }
+.opt-btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(34,48,76,0.13); }
+.opt-btn.green:hover { border-color:var(--green); background:rgba(43,193,104,0.07); color:#1e9a56; }
+.opt-btn.yellow:hover { border-color:var(--yellow); background:rgba(245,166,35,0.07); color:#c47d00; }
+.opt-btn.red:hover { border-color:var(--red); background:var(--red-alpha); color:var(--red); }
+
+/* SEMÁFORO */
+.sem-row { display:flex; gap:10px; margin-top:12px; }
+.sem-btn { flex:1; padding:14px 10px; border-radius:10px; border:2px solid var(--mid); background:var(--white); cursor:pointer; font-family:'Roboto',sans-serif; font-size:12px; font-weight:500; color:var(--navy); text-align:center; transition:all 0.2s; line-height:1.5; box-shadow:var(--shadow); }
+.sem-btn:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(34,48,76,0.14);}
+.sem-btn.verde:hover{border-color:var(--green);background:rgba(43,193,104,0.07);color:#1e9a56;}
+.sem-btn.amarillo:hover{border-color:var(--yellow);background:rgba(245,166,35,0.07);color:#c47d00;}
+.sem-btn.rojo:hover{border-color:var(--red);background:var(--red-alpha);color:var(--red);}
+.sem-emoji{font-size:22px;display:block;margin-bottom:4px;}
+
+/* INPUT */
+.input-zone { padding:16px 36px 20px; background:var(--white); border-top:1px solid var(--mid); }
+.input-row { display:flex; gap:10px; align-items:flex-end; }
+textarea { flex:1; background:var(--light); border:1.5px solid var(--mid); border-radius:var(--radius); color:var(--navy); font-family:'Roboto',sans-serif; font-size:13.5px; padding:12px 16px; resize:none; min-height:48px; max-height:130px; outline:none; transition:border-color 0.2s, box-shadow 0.2s; line-height:1.5; }
+textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-alpha);}
+textarea::placeholder{color:var(--gray);font-weight:300;}
+textarea:disabled{opacity:0.5;cursor:not-allowed;}
+.send-btn { width:48px; height:48px; border-radius:var(--radius); border:none; background:var(--red); color:var(--white); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; flex-shrink:0; box-shadow:0 3px 10px rgba(255,45,85,0.30); font-size:20px; }
+.send-btn:hover{background:#e01f45;transform:scale(1.05);}
+.send-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* DOWNLOAD */
+.dl-card { background:var(--white); border:1.5px solid var(--red-border); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); margin-top:6px; }
+.dl-header { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.dl-check { width:28px; height:28px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; color:var(--white); font-size:14px; flex-shrink:0; }
+.dl-title { font-size:15px; font-weight:700; color:var(--navy); }
+.dl-sub { font-size:12px; color:var(--gray); margin-bottom:16px; line-height:1.7; }
+.dl-sub code { background:var(--light); border:1px solid var(--mid); padding:1px 6px; border-radius:4px; font-size:11px; color:var(--navy); }
+.dl-btn { display:inline-flex; align-items:center; gap:8px; padding:11px 20px; background:var(--red); color:var(--white); border:none; border-radius:8px; font-family:'Roboto',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; box-shadow:0 3px 10px rgba(255,45,85,0.28); }
+.dl-btn:hover{background:#e01f45;transform:translateY(-1px);}
+.preview-md { margin-top:14px; background:var(--light); border:1px solid var(--mid); border-radius:8px; padding:14px 16px; font-family:'Courier New',monospace; font-size:10.5px; color:var(--gray); max-height:180px; overflow-y:auto; white-space:pre-wrap; line-height:1.7; }
+
+/* BADGES */
+.pill-red { display:inline-block; background:var(--red-alpha); color:var(--red); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; margin-right:4px; }
+.pill-step { display:inline-block; background:var(--red-alpha); color:var(--red); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; letter-spacing:0.5px; }
+.pill-green { display:inline-block; background:rgba(43,193,104,0.10); color:var(--green); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+
+/* AVANCE BAR */
+.avance-bar { display:flex; align-items:center; gap:12px; margin-top:8px; padding:8px 14px; background:var(--light); border:1px solid var(--mid); border-radius:8px; }
+.avance-track { flex:1; height:8px; background:var(--mid); border-radius:4px; overflow:hidden; position:relative; }
+.avance-fill-plan { height:100%; background:rgba(34,48,76,0.2); border-radius:4px; position:absolute; top:0; left:0; }
+.avance-fill-real { height:100%; background:var(--green); border-radius:4px; position:absolute; top:0; left:0; transition:width 0.4s ease; }
+.avance-lbl { font-size:11px; font-weight:700; min-width:50px; text-align:right; }
+
+/* NUMBER INPUT */
+.num-input { width:60px; padding:6px 8px; border:1.5px solid var(--mid); border-radius:6px; font-family:'Roboto',sans-serif; font-size:13px; text-align:center; color:var(--navy); outline:none; }
+.num-input:focus { border-color:var(--red); box-shadow:0 0 0 3px var(--red-alpha); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-accent"></div>
+  <div class="hdr-circle" style="width:200px;height:200px;top:-80px;right:60px;"></div>
+  <div class="hdr-circle" style="width:100px;height:100px;top:10px;right:260px;opacity:0.5;"></div>
+  <div class="hdr-inner">
+    <div class="logo-block" aria-label="Griky Seguimiento Semanal Fábrica">
+      <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#FF2D55"/>
+        <text x="16" y="23" font-family="Roboto,sans-serif" font-weight="700" font-size="18" fill="white" text-anchor="middle">G</text>
+      </svg>
+      <span class="logo-text">Griky</span>
+      <div class="logo-sep" aria-hidden="true"></div>
+      <span class="hdr-subtitle">Seguimiento Semanal · Fábrica</span>
+    </div>
+    <div class="hdr-right" style="display:flex;align-items:center;gap:16px;">
+      <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" aria-label="Avance del seguimiento">
+        <span class="progress-label">Avance del seguimiento</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <span class="step-count" id="stepCount">Paso 0 de 5</span>
+      </div>
+      <button onclick="window.location.href='griky-fabrica-hub.html'" aria-label="Volver al Hub" style="padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-family:'Roboto',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.6)'">← Hub</button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+  <nav class="sidebar" aria-label="Pasos del seguimiento">
+    <div class="sidebar-label">Secciones</div>
+    <div class="step-row active" id="sr0"><div class="step-num" id="sn0">1</div><div class="step-name">Identificación</div></div>
+    <div class="step-row" id="sr1"><div class="step-num" id="sn1">2</div><div class="step-name">Cumplimiento</div></div>
+    <div class="step-row" id="sr2"><div class="step-num" id="sn2">3</div><div class="step-name">Riesgos</div></div>
+    <div class="step-row" id="sr3"><div class="step-num" id="sn3">4</div><div class="step-name">Equipo</div></div>
+    <div class="step-row" id="sr4"><div class="step-num" id="sn4">5</div><div class="step-name">Cierre</div></div>
+    <div class="sidebar-footer">
+      <div class="sidebar-tip">El sistema carga tus compromisos de la Planeación Semanal y calcula el avance automáticamente.</div>
+    </div>
+  </nav>
+
+  <div class="chat-area">
+    <div class="messages" id="messages"></div>
+    <div class="input-zone">
+      <div class="input-row">
+        <textarea id="userInput" placeholder="Escribe tu respuesta aquí..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMsg()" disabled>↑</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   SEGUIMIENTO SEMANAL — Griky Fábrica
+   Lee compromisos de localStorage (griky_planeaciones) y pregunta
+   específicamente por cada bloque. Calcula % automáticamente.
+   ═══════════════════════════════════════════════════════════════════ */
+
+const REC_LABEL = {
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
+  mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
+  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar'
+};
+const AREA_LABEL = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico'};
+const REC_AREA = {
+  vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',
+  mul_sto:'multimedia',mul_ris:'multimedia',mul_pre:'multimedia',mul_inf:'multimedia',mul_act:'multimedia',mul_vst:'multimedia',mul_gen:'multimedia',mul_dis:'multimedia',
+  gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico'
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+const S = {
+  step:0, sub:0, enabled:false,
+  pm:'', semana:'',
+  planeacion:null,         // The loaded planeación object
+  // Cumplimiento tracking: array of {proyecto, curso, up, recId, comprometidos, entregados}
+  entregas:[],
+  // Flattened questions queue: [{proyecto, bloque, recId, cantidad}]
+  queue:[], qIdx:0,
+  // Per-project results
+  proyResultados:{},
+  // Risks
+  riesgos:[],
+  riesgoIdx:0,
+  // Equipo
+  equipo:{},
+  // Cierre
+  cierre:{},
+  // Cursos al cliente esta semana (loop por proyecto)
+  // porProyecto: [{ proyecto, entregados, aprobados }, ...]
+  cursosCliente:{ porProyecto:[], idx:0 }
+};
+
+const $ = id => document.getElementById(id);
+const msgs = () => $('messages');
+const TOTAL_STEPS = 5;
+
+function scrollEnd(){ setTimeout(()=>{ const m=msgs(); m.scrollTop=m.scrollHeight; },80); }
+function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,130)+'px'; }
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); } }
+function enable(v){ $('userInput').disabled=!v; $('sendBtn').disabled=!v; S.enabled=v; if(v) setTimeout(()=>$('userInput').focus(),100); }
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function updateNav(){
+  const pct=Math.round((S.step/TOTAL_STEPS)*100);
+  $('progressFill').style.width=pct+'%';
+  $('stepCount').textContent='Paso '+S.step+' de '+TOTAL_STEPS;
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const row=$('sr'+i), num=$('sn'+i);
+    row.className='step-row';
+    if(i<S.step){ row.classList.add('done'); num.textContent='\u2713'; }
+    else if(i===S.step){ row.classList.add('active'); num.textContent=i+1; }
+    else { num.textContent=i+1; }
+  }
+}
+
+function addMsg(role, html){
+  const wrap=document.createElement('div'); wrap.className='msg '+role;
+  const meta=document.createElement('div'); meta.className='msg-meta';
+  meta.innerHTML=role==='claude'
+    ?'<div class="meta-dot"></div>Asistente Griky'
+    :'Tú<div class="meta-dot" style="background:rgba(255,255,255,0.3)"></div>';
+  const bubble=document.createElement('div'); bubble.className='msg-bubble'; bubble.innerHTML=html;
+  wrap.appendChild(meta); wrap.appendChild(bubble); msgs().appendChild(wrap); scrollEnd();
+}
+
+function showTyping(){
+  const wrap=document.createElement('div'); wrap.className='msg claude'; wrap.id='typing';
+  const meta=document.createElement('div'); meta.className='msg-meta';
+  meta.innerHTML='<div class="meta-dot"></div>Asistente Griky';
+  const t=document.createElement('div'); t.className='typing-wrap';
+  t.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  wrap.appendChild(meta); wrap.appendChild(t); msgs().appendChild(wrap); scrollEnd();
+}
+function removeTyping(){ const t=$('typing'); if(t) t.remove(); }
+
+function claude(html, delay=650){
+  return new Promise(r=>{ showTyping(); setTimeout(()=>{ removeTyping(); addMsg('claude',html); r(); }, delay); });
+}
+
+// ── LOAD DATA FROM LOCALSTORAGE ──────────────────────────────────────────────
+function loadPlaneacion(pm){
+  let planes=[];
+  try { planes=JSON.parse(localStorage.getItem('griky_planeaciones'))||[]; } catch(e){}
+  // Find latest planeación for this PM
+  const matching = planes.filter(p => p.pm === pm);
+  if(matching.length===0) return null;
+  // Sort by date descending, return latest
+  matching.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  return matching[0];
+}
+
+function detectPM(){
+  // Try to get PM name from Hub localStorage
+  try {
+    const hub = JSON.parse(localStorage.getItem('griky_hub_user'));
+    if(hub && hub.nombre) return hub.nombre;
+  } catch(e){}
+  // Try from last planeacion
+  try {
+    const planes = JSON.parse(localStorage.getItem('griky_planeaciones'))||[];
+    if(planes.length>0) return planes[planes.length-1].pm;
+  } catch(e){}
+  return null;
+}
+
+// Build the question queue from planeación data
+function buildQueue(plan){
+  const queue=[];
+  plan.proyectos.forEach(proy => {
+    // Aggregate all resource types across bloques for this project
+    const agregado = {};
+    proy.bloques.forEach(b => {
+      Object.entries(b.counts).forEach(([recId, cant]) => {
+        if(cant>0){
+          if(!agregado[recId]) agregado[recId]=0;
+          agregado[recId]+=cant;
+        }
+      });
+    });
+    // Create one question per resource type per project
+    Object.entries(agregado).forEach(([recId, cantidad]) => {
+      queue.push({
+        proyecto: proy.nombre,
+        color: proy.color||'var(--navy)',
+        recId,
+        recLabel: REC_LABEL[recId]||recId,
+        areaLabel: AREA_LABEL[REC_AREA[recId]]||'',
+        cantidad,
+        // Ficha data for % calculation
+        totalRecProyecto: proy.totalRecProyecto||0,
+        cierre: proy.cierre||'',
+        inicio: proy.inicio||''
+      });
+    });
+  });
+  return queue;
+}
+
+// ── SEND MESSAGE ─────────────────────────────────────────────────────────────
+async function sendMsg(){
+  const inp=$('userInput');
+  const txt=inp.value.trim();
+  if(!txt||!S.enabled) return;
+  inp.value=''; inp.style.height='auto';
+  addMsg('user', esc(txt));
+  enable(false);
+  await processInput(txt);
+}
+
+// Centralized input handler
+async function processInput(txt){
+  if(S.step===0) await stepIdentificacion(txt);
+  else if(S.step===1) await stepCumplimiento(txt);
+  else if(S.step===2) await stepRiesgos(txt);
+  else if(S.step===3) await stepEquipo(txt);
+  else if(S.step===4) await stepCierre(txt);
+}
+
+// ── STEP 0: IDENTIFICACIÓN ──────────────────────────────────────────────────
+async function stepIdentificacion(txt){
+  if(S.sub===0){
+    // Received PM name
+    S.pm = txt.trim();
+    const plan = loadPlaneacion(S.pm);
+    if(!plan){
+      await claude('No encontré una Planeación Semanal guardada para <strong>'+esc(S.pm)+'</strong>. Asegúrate de haber completado y descargado tu Planeación Semanal primero.<br><br>Intenta con otro nombre o vuelve a la <a href="griky-planeacion-semanal.html" style="color:var(--red);font-weight:700;">Planeación Semanal</a>.');
+      enable(true);
+      return;
+    }
+    S.planeacion = plan;
+    S.semana = plan.semana;
+    S.queue = buildQueue(plan);
+
+    // Show summary of what was found
+    let resumen = '';
+    plan.proyectos.forEach(p => {
+      const nRec = p.bloques.reduce((a,b)=>a+b.total,0);
+      resumen += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
+        '<div style="width:10px;height:10px;border-radius:3px;background:'+esc(p.color||'var(--navy)')+'"></div>' +
+        '<strong>'+esc(p.nombre)+'</strong> — '+nRec+' recursos comprometidos</div>';
+    });
+
+    S.step=1; S.sub=0; S.qIdx=0; updateNav();
+    await claude('Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen + '<br>Vamos a revisar el cumplimiento de cada compromiso.', 700);
+    await askNextCumplimiento();
+    return;
+  }
+}
+
+// ── STEP 1: CUMPLIMIENTO (resource by resource) ─────────────────────────────
+async function askNextCumplimiento(){
+  if(S.qIdx >= S.queue.length){
+    await finishCumplimiento();
+    return;
+  }
+  const q = S.queue[S.qIdx];
+  const progreso = '('+(S.qIdx+1)+' de '+S.queue.length+')';
+
+  // Build the question with option buttons
+  const qId = 'q_'+S.qIdx;
+  const html = '<span class="pill-step">CUMPLIMIENTO '+progreso+'</span><br><br>' +
+    'Te comprometiste a entregar <strong>'+q.cantidad+' '+esc(q.recLabel)+'</strong> para <strong>'+esc(q.proyecto)+'</strong>.<br><br>' +
+    '<div class="opt-row">' +
+      '<button class="opt-btn green" onclick="pickCumplimiento(\'si\','+S.qIdx+')">✅ Sí, todos</button>' +
+      '<button class="opt-btn yellow" onclick="pickCumplimiento(\'parcial\','+S.qIdx+')">⚠️ Parcial</button>' +
+      '<button class="opt-btn red" onclick="pickCumplimiento(\'no\','+S.qIdx+')">❌ No entregué</button>' +
+    '</div>';
+
+  await claude(html, 400);
+  // Don't enable text input — use buttons. But keep input available for free text too
+  enable(false);
+}
+
+// Called when user clicks an option button
+async function pickCumplimiento(tipo, idx){
+  if(idx!==S.qIdx) return; // Prevent double-click on old questions
+  const q = S.queue[S.qIdx];
+
+  if(tipo==='si'){
+    addMsg('user', '✅ Sí, todos ('+q.cantidad+')');
+    S.entregas.push({
+      proyecto: q.proyecto, recId: q.recId, recLabel: q.recLabel,
+      comprometidos: q.cantidad, entregados: q.cantidad, estado:'cumplido'
+    });
+    S.qIdx++;
+    await claude('<span style="color:var(--green);font-weight:700;">✓ '+q.cantidad+'/'+q.cantidad+' entregados.</span>', 250);
+    await askNextCumplimiento();
+  }
+  else if(tipo==='no'){
+    addMsg('user', '❌ No entregué');
+    S.entregas.push({
+      proyecto: q.proyecto, recId: q.recId, recLabel: q.recLabel,
+      comprometidos: q.cantidad, entregados: 0, estado:'no entregado'
+    });
+    S.qIdx++;
+    await claude('<span style="color:var(--red);font-weight:700;">✗ 0/'+q.cantidad+' entregados.</span> ¿Cuál fue la razón principal?', 300);
+    S.sub=10; // waiting for reason
+    enable(true);
+  }
+  else if(tipo==='parcial'){
+    addMsg('user', '⚠️ Parcial');
+    S.sub=20; // waiting for partial count
+    await claude('¿Cuántos de los <strong>'+q.cantidad+' '+esc(q.recLabel)+'</strong> entregaste?<br><em style="font-size:12px;color:var(--gray);">Escribe el número.</em>', 300);
+    enable(true);
+  }
+}
+
+async function stepCumplimiento(txt){
+  const q = S.queue[S.qIdx] || S.queue[S.qIdx-1];
+
+  if(S.sub===10){
+    // Reason for non-delivery
+    S.entregas[S.entregas.length-1].razon = txt;
+    S.sub=0;
+    await claude('<span style="color:var(--gray);font-weight:500;">Anotado.</span>', 200);
+    await askNextCumplimiento();
+    return;
+  }
+
+  if(S.sub===20){
+    // Partial count
+    const n = parseInt(txt);
+    const qCurrent = S.queue[S.qIdx];
+    if(isNaN(n) || n<0 || n>qCurrent.cantidad){
+      await claude('Ingresa un número entre 0 y '+qCurrent.cantidad+'.');
+      enable(true);
+      return;
+    }
+    S.entregas.push({
+      proyecto: qCurrent.proyecto, recId: qCurrent.recId, recLabel: qCurrent.recLabel,
+      comprometidos: qCurrent.cantidad, entregados: n, estado:'parcial'
+    });
+    S.qIdx++;
+    S.sub=11; // waiting for reason on partial
+    await claude('<span style="color:var(--yellow);font-weight:700;">⚠ '+n+'/'+qCurrent.cantidad+' entregados.</span> ¿Cuál fue la razón de la entrega parcial?', 300);
+    enable(true);
+    return;
+  }
+
+  if(S.sub===11){
+    // Reason for partial
+    S.entregas[S.entregas.length-1].razon = txt;
+    S.sub=0;
+    await claude('<span style="color:var(--gray);font-weight:500;">Anotado.</span>', 200);
+    await askNextCumplimiento();
+    return;
+  }
+
+  // ── CURSOS AL CLIENTE (loop por proyecto) ──
+  // sub=30: # cursos entregados al cliente para el proyecto current
+  if(S.sub===30){
+    const n = parseInt(txt);
+    if(isNaN(n) || n < 0){
+      await claude('Ingresa un número válido (0 o más).');
+      enable(true);
+      return;
+    }
+    const proy = S.cursosCliente.porProyecto[S.cursosCliente.idx];
+    proy.entregados = n;
+    S.sub = 31;
+    await claude(
+      (n>0 ? '<span style="color:var(--green);font-weight:700;">✓ '+n+' entregado(s) para aprobación.</span><br><br>' : '<span style="color:var(--gray);">0 entregados.</span><br><br>') +
+      '✅ ¿Cuántos cursos <strong>te aprobó el cliente</strong> en <strong>'+esc(proy.proyecto)+'</strong> esta semana?<br>' +
+      '<em style="font-size:12px;color:var(--gray);">Escribe el número (0 si ninguno).</em>',
+      350
+    );
+    enable(true);
+    return;
+  }
+
+  // sub=31: # cursos aprobados por cliente para el proyecto current
+  if(S.sub===31){
+    const n = parseInt(txt);
+    if(isNaN(n) || n < 0){
+      await claude('Ingresa un número válido (0 o más).');
+      enable(true);
+      return;
+    }
+    const proy = S.cursosCliente.porProyecto[S.cursosCliente.idx];
+    proy.aprobados = n;
+    if(n > 0){
+      await claude('<span style="color:var(--green);font-weight:700;">✓ '+n+' aprobado(s) por el cliente.</span>', 250);
+    }
+    S.cursosCliente.idx++;
+    S.sub = 0;
+    await askCursosClienteProyecto();
+    return;
+  }
+}
+
+async function finishCumplimiento(){
+  // Calculate per-project stats
+  const plan = S.planeacion;
+  const proyStats = {};
+
+  S.entregas.forEach(e => {
+    if(!proyStats[e.proyecto]) proyStats[e.proyecto] = { comprometidos:0, entregados:0, detalles:[] };
+    proyStats[e.proyecto].comprometidos += e.comprometidos;
+    proyStats[e.proyecto].entregados += e.entregados;
+    proyStats[e.proyecto].detalles.push(e);
+  });
+
+  // Calculate global cumplimiento
+  const totalComp = S.entregas.reduce((a,e)=>a+e.comprometidos,0);
+  const totalEnt = S.entregas.reduce((a,e)=>a+e.entregados,0);
+  const pctCumpl = totalComp>0 ? Math.round((totalEnt/totalComp)*100) : 100;
+
+  S.proyResultados = proyStats;
+  S.pctCumplimiento = pctCumpl;
+  S.totalComprometidos = totalComp;
+  S.totalEntregados = totalEnt;
+
+  // Calculate % avance real per project (entregados / totalRecProyecto from Ficha)
+  const avanceHTML = [];
+  plan.proyectos.forEach(p => {
+    const stats = proyStats[p.nombre];
+    if(!stats) return;
+    const totalFicha = p.totalRecProyecto || 0;
+    const entregadosSemana = stats.entregados;
+    // % avance real = entregados esta semana / total del proyecto * 100
+    // In a real system you'd accumulate across weeks — for now it's per-week
+    const pctReal = totalFicha > 0 ? Math.round((entregadosSemana/totalFicha)*100) : 0;
+
+    // % planeado = based on time elapsed
+    let pctPlaneado = 0;
+    if(p.inicio && p.cierre){
+      const hoy = new Date();
+      const ini = new Date(p.inicio.split('/').reverse().join('-'));
+      const fin = new Date(p.cierre.split('/').reverse().join('-'));
+      const totalDias = Math.max((fin-ini)/(86400000),1);
+      const diasTranscurridos = Math.max((hoy-ini)/(86400000),0);
+      pctPlaneado = Math.min(100, Math.round((diasTranscurridos/totalDias)*100));
+    }
+
+    const colorAvance = pctReal >= pctPlaneado ? 'var(--green)' : (pctReal >= pctPlaneado*0.7 ? 'var(--yellow)' : 'var(--red)');
+
+    // Detect risk
+    if(pctReal < pctPlaneado * 0.7){
+      S.riesgos.push({ nombre: p.nombre, pctReal, pctPlaneado, entregados:entregadosSemana, totalFicha });
+    }
+
+    avanceHTML.push(
+      '<div style="margin-bottom:12px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+          '<strong>'+esc(p.nombre)+'</strong>' +
+          '<span style="font-size:12px;color:var(--gray);">'+entregadosSemana+' de '+stats.comprometidos+' comprometidos entregados</span>' +
+        '</div>' +
+        '<div class="avance-bar">' +
+          '<div style="font-size:10px;color:var(--gray);min-width:60px;">Planeado</div>' +
+          '<div class="avance-track"><div class="avance-fill-plan" style="width:'+pctPlaneado+'%"></div><div class="avance-fill-real" style="width:'+pctReal+'%;background:'+colorAvance+'"></div></div>' +
+          '<div class="avance-lbl" style="color:'+colorAvance+'">'+pctReal+'%<span style="color:var(--gray);font-weight:400;"> / '+pctPlaneado+'%</span></div>' +
+        '</div>' +
+        (totalFicha>0 ? '<div style="font-size:10px;color:var(--gray);margin-top:3px;">Total proyecto: '+totalFicha+' recursos (Ficha)</div>' : '') +
+      '</div>'
+    );
+
+    // Store for MD
+    if(!S.proyResultados[p.nombre]) S.proyResultados[p.nombre] = {};
+    S.proyResultados[p.nombre].pctReal = pctReal;
+    S.proyResultados[p.nombre].pctPlaneado = pctPlaneado;
+    S.proyResultados[p.nombre].totalFicha = totalFicha;
+  });
+
+  const colorCumpl = pctCumpl>=80?'var(--green)':pctCumpl>=50?'var(--yellow)':'var(--red)';
+
+  await claude(
+    '<strong>Resumen de cumplimiento del sprint</strong><br><br>' +
+    '<div style="display:inline-flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 16px;margin-bottom:14px;">' +
+      '<span style="font-size:22px;">📊</span>' +
+      '<div>' +
+        '<div style="font-size:11px;color:var(--gray);font-weight:500;">CUMPLIMIENTO SPRINT</div>' +
+        '<div style="font-size:22px;font-weight:700;color:'+colorCumpl+';">'+pctCumpl+'%</div>' +
+        '<div style="font-size:11px;color:var(--gray);">'+totalEnt+' de '+totalComp+' recursos entregados</div>' +
+      '</div>' +
+    '</div><br>' +
+    '<strong>Avance por proyecto (real vs. planeado):</strong><br><br>' +
+    avanceHTML.join(''),
+  700);
+
+  // Antes de pasar a riesgos: dos preguntas sobre cursos al cliente
+  await askCursosCliente();
+}
+
+// ── CURSOS AL CLIENTE (sub-paso de Cumplimiento, loop por proyecto) ──────────
+async function askCursosCliente(){
+  // Inicializa la estructura por proyecto, una entrada por proyecto en la planeación
+  S.cursosCliente = {
+    porProyecto: (S.planeacion?.proyectos || []).map(p => ({
+      proyecto: p.nombre, entregados: 0, aprobados: 0
+    })),
+    idx: 0
+  };
+  if(S.cursosCliente.porProyecto.length === 0){
+    // Sin proyectos en planeación, saltar directo
+    await afterCursosCliente();
+    return;
+  }
+  await claude(
+    '<strong>Avance de cursos al cliente esta semana</strong><br><br>' +
+    'Vamos a revisar proyecto por proyecto cuántos cursos <strong>entregaste al cliente para aprobación final</strong> y cuántos <strong>te aprobó</strong>.<br><br>' +
+    '<em style="font-size:12px;color:var(--gray);">Si no hubo movimiento en algún proyecto, escribe <strong>0</strong>.</em>',
+    700
+  );
+  await askCursosClienteProyecto();
+}
+
+async function askCursosClienteProyecto(){
+  if(S.cursosCliente.idx >= S.cursosCliente.porProyecto.length){
+    // Resumen breve antes de pasar al siguiente paso
+    const totE = S.cursosCliente.porProyecto.reduce((a,c)=>a+(c.entregados||0),0);
+    const totA = S.cursosCliente.porProyecto.reduce((a,c)=>a+(c.aprobados||0),0);
+    await claude(
+      '<strong>Resumen cursos al cliente:</strong><br>' +
+      '📤 '+totE+' entregado(s) para aprobación · ✅ '+totA+' aprobado(s) por el cliente.',
+      400
+    );
+    await afterCursosCliente();
+    return;
+  }
+  const proy = S.cursosCliente.porProyecto[S.cursosCliente.idx];
+  const progreso = '('+(S.cursosCliente.idx+1)+' de '+S.cursosCliente.porProyecto.length+')';
+  S.sub = 30;
+  await claude(
+    '<span class="pill-step">CURSOS A CLIENTE '+progreso+'</span><br><br>' +
+    '📤 <strong>'+esc(proy.proyecto)+'</strong><br>' +
+    '¿Cuántos cursos <strong>entregaste al cliente para aprobación final</strong> esta semana?<br>' +
+    '<em style="font-size:12px;color:var(--gray);">Escribe el número (0 si ninguno).</em>',
+    400
+  );
+  enable(true);
+}
+
+async function afterCursosCliente(){
+  // Reanuda el flujo original: riesgos o equipo
+  S.step=2; S.sub=0; updateNav();
+
+  if(S.riesgos.length > 0){
+    const pills = S.riesgos.map(r=>'<span class="pill-red">⚠ '+esc(r.nombre)+' ('+r.pctReal+'% vs '+r.pctPlaneado+'% planeado)</span>').join(' ');
+    await claude('Detecté <strong>'+S.riesgos.length+' proyecto(s) con avance por debajo de lo planeado</strong>:<br><br>'+pills+'<br><br>Cuéntame sobre cada uno.', 600);
+    S.riesgoIdx=0;
+    await askRiesgo();
+  } else {
+    await claude('<span style="color:var(--green);font-weight:700;">✅ Todos tus proyectos van en línea con lo planeado.</span> Pasamos a equipo.', 500);
+    S.step=3; updateNav();
+    await startEquipo();
+  }
+}
+
+// ── STEP 2: RIESGOS ──────────────────────────────────────────────────────────
+async function askRiesgo(){
+  if(S.riesgoIdx >= S.riesgos.length){
+    S.step=3; S.sub=0; updateNav();
+    await claude('Riesgos documentados. Pasamos a <strong>equipo y producción</strong>.', 400);
+    await startEquipo();
+    return;
+  }
+  const r = S.riesgos[S.riesgoIdx];
+  await claude(
+    '<span class="pill-red">⚠ '+esc(r.nombre)+'</span> — Avance real: <strong>'+r.pctReal+'%</strong> vs planeado: <strong>'+r.pctPlaneado+'%</strong><br><br>' +
+    'Cuéntame en un mensaje:<br>' +
+    '<span style="color:var(--gray);font-size:13px;line-height:2.2;">' +
+      '🔴 <strong>Principal bloqueo o riesgo</strong><br>' +
+      '⚡ <strong>Acción tomada o propuesta</strong><br>' +
+      '🙋 <strong>¿Necesitas intervención del Director?</strong> (sí/no)<br>' +
+      '🤝 <strong>Relación con el cliente</strong> (positiva / neutral / negativa)' +
+    '</span>', 500);
+  enable(true);
+}
+
+async function stepRiesgos(txt){
+  S.riesgos[S.riesgoIdx].detalle = txt;
+  S.riesgoIdx++;
+  await claude('<span style="color:var(--green);font-weight:700;">✓ Anotado.</span>', 200);
+  await askRiesgo();
+}
+
+// ── STEP 3: EQUIPO ───────────────────────────────────────────────────────────
+async function startEquipo(){
+  await claude(
+    'Cuéntame brevemente sobre tu equipo esta semana:<br><br>' +
+    '<span style="color:var(--gray);font-size:13px;line-height:2.2;">' +
+      '👥 <strong>Composición</strong> (DI, Video, Multimedia, Gráfico, Impl, QA)<br>' +
+      '⚠ <strong>Novedades</strong> (vacaciones, incapacidades, refuerzos)<br>' +
+      '📈 <strong>¿Necesitas refuerzo</strong> de algún rol la próxima semana?' +
+    '</span><br>' +
+    '<em style="font-size:12px;color:var(--gray);">Ej: "2 DI, 3 Video, 1 Multimedia — Carlos de vacaciones, necesito refuerzo de Video"</em>', 600);
+  enable(true);
+}
+
+async function stepEquipo(txt){
+  S.equipo.composicion = txt;
+  S.step=4; S.sub=0; updateNav();
+  await claude('Llegamos a la <strong>última sección</strong> — semáforo y cierre.', 400);
+  await startCierre();
+}
+
+// ── STEP 4: CIERRE ───────────────────────────────────────────────────────────
+async function startCierre(){
+  const wrap=document.createElement('div'); wrap.className='msg claude';
+  const meta=document.createElement('div'); meta.className='msg-meta';
+  meta.innerHTML='<div class="meta-dot"></div>Asistente Griky';
+  const bubble=document.createElement('div'); bubble.className='msg-bubble';
+  bubble.innerHTML='¿Cómo calificarías tu semana como PM?' +
+    '<div class="sem-row">' +
+      '<button class="sem-btn verde" onclick="pickSem(\'🟢 Verde — Semana bajo control\')"><span class="sem-emoji">🟢</span>Verde<br><span style="font-size:10px;color:var(--gray);font-weight:400;">Bajo control</span></button>' +
+      '<button class="sem-btn amarillo" onclick="pickSem(\'🟡 Amarillo — Tensiones manejables\')"><span class="sem-emoji">🟡</span>Amarillo<br><span style="font-size:10px;color:var(--gray);font-weight:400;">Con tensiones</span></button>' +
+      '<button class="sem-btn rojo" onclick="pickSem(\'🔴 Rojo — Semana crítica\')"><span class="sem-emoji">🔴</span>Rojo<br><span style="font-size:10px;color:var(--gray);font-weight:400;">Requiere atención</span></button>' +
+    '</div>';
+  wrap.appendChild(meta); wrap.appendChild(bubble); msgs().appendChild(wrap); scrollEnd();
+}
+
+function pickSem(val){
+  if(S.step!==4||S.sub!==0) return;
+  S.cierre.sem=val; S.sub=1;
+  addMsg('user', val);
+  claude('Anotado: <strong>'+val+'</strong>.<br><br>' +
+    'Escribe un <strong>resumen ejecutivo breve</strong> de tu semana (2-3 líneas). Si hay lección aprendida, agrégala separada por <strong>|</strong>.<br>' +
+    '<em style="font-size:12px;color:var(--gray);">Ej: "Semana productiva, se recuperó atraso en USS. | Lección: confirmar insumos antes de comprometer sprint."</em>', 500).then(()=>enable(true));
+}
+
+async function stepCierre(txt){
+  if(S.sub===1){
+    const parts=txt.split('|').map(x=>x.trim());
+    S.cierre.resumen=parts[0]||'';
+    S.cierre.leccion=parts[1]||null;
+    S.step=5; S.sub=0; updateNav(); enable(false);
+    await claude('<span style="color:var(--green);font-weight:700;">✅ ¡Seguimiento completo!</span> Generando tu archivo .md…', 400);
+    setTimeout(buildMD, 700);
+  }
+}
+
+// ── GENERAR MD ───────────────────────────────────────────────────────────────
+function buildMD(){
+  const fecha=new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const fn='seguimiento-semana-'+S.semana+'-'+S.pm.toLowerCase().replace(/\s+/g,'_')+'.md';
+  const plan=S.planeacion;
+
+  // --- Tabla cumplimiento por recurso ---
+  let tablaCumpl='| Proyecto | Tipo recurso | Comprometidos | Entregados | Estado |\n|---|---|---|---|---|\n';
+  S.entregas.forEach(e => {
+    const icon = e.estado==='cumplido'?'✅':e.estado==='parcial'?'⚠️':'❌';
+    tablaCumpl += '| '+e.proyecto+' | '+e.recLabel+' | '+e.comprometidos+' | '+e.entregados+' | '+icon+' '+e.estado+(e.razon?' — '+e.razon:'') + ' |\n';
+  });
+
+  // --- Tabla avance por proyecto ---
+  let tablaAvance = '| Proyecto | Entregados semana | Total proyecto (Ficha) | % Avance real | % Planeado | Estado |\n|---|---|---|---|---|---|\n';
+  plan.proyectos.forEach(p => {
+    const stats = S.proyResultados[p.nombre];
+    if(!stats) return;
+    const pctReal = stats.pctReal||0;
+    const pctPlaneado = stats.pctPlaneado||0;
+    const totalFicha = stats.totalFicha||0;
+    const entregados = stats.entregados||0;
+    const icon = pctReal>=pctPlaneado ? '🟢' : (pctReal>=pctPlaneado*0.7?'🟡':'🔴');
+    tablaAvance += '| '+p.nombre+' | '+entregados+' | '+totalFicha+' | '+pctReal+'% | '+pctPlaneado+'% | '+icon+' |\n';
+  });
+
+  // --- Riesgos ---
+  let detalleR = '';
+  if(S.riesgos.length>0){
+    S.riesgos.forEach(r => {
+      detalleR += '\n#### ⚠ '+r.nombre+' ('+r.pctReal+'% real vs '+r.pctPlaneado+'% planeado)\n'+(r.detalle||'[Sin detalle]')+'\n';
+    });
+  } else {
+    detalleR = '_Sin proyectos en riesgo esta semana._';
+  }
+
+  // --- Lección ---
+  const leccion = S.cierre.leccion ? '**Lección aprendida:**\n'+S.cierre.leccion : '_Sin lecciones registradas esta semana._';
+
+  const colorCumpl = S.pctCumplimiento>=80?'🟢':S.pctCumplimiento>=50?'🟡':'🔴';
+
+  const md = '# Seguimiento Semanal PM — Griky Fábrica\n' +
+    '**PM:** '+S.pm+'\n' +
+    '**Semana:** '+S.semana+'\n' +
+    '**Fecha:** '+fecha+'\n' +
+    '**Generado vía:** Asistente conversacional Griky\n\n' +
+    '---\n\n' +
+    '## PARTE 1 · Cumplimiento del Sprint\n\n' +
+    tablaCumpl + '\n' +
+    '**Total comprometidos:** '+S.totalComprometidos+'\n' +
+    '**Total entregados:** '+S.totalEntregados+'\n' +
+    '**% Cumplimiento del sprint:** '+colorCumpl+' '+S.pctCumplimiento+'%\n\n' +
+    '### Cursos al cliente esta semana\n\n' +
+    (function(){
+      const lst = (S.cursosCliente && S.cursosCliente.porProyecto) || [];
+      let tot_e = 0, tot_a = 0;
+      let tabla = '| Proyecto | Entregados al cliente | Aprobados por cliente |\n|---|---|---|\n';
+      lst.forEach(c => {
+        tot_e += (c.entregados||0);
+        tot_a += (c.aprobados||0);
+        tabla += '| '+c.proyecto+' | '+(c.entregados||0)+' | '+(c.aprobados||0)+' |\n';
+      });
+      tabla += '| **Total** | **'+tot_e+'** | **'+tot_a+'** |\n';
+      return tabla;
+    })() + '\n' +
+    '---\n\n' +
+    '## PARTE 2 · Avance por Proyecto (Calculado automáticamente)\n\n' +
+    tablaAvance + '\n' +
+    '> Los porcentajes son calculados por el sistema:\n' +
+    '> - **% Avance real** = Recursos entregados esta semana / Total recursos del proyecto (Ficha)\n' +
+    '> - **% Planeado** = Tiempo transcurrido / Duración total del proyecto\n\n' +
+    '---\n\n' +
+    '## PARTE 3 · Proyectos en Riesgo\n' +
+    detalleR + '\n\n' +
+    '---\n\n' +
+    '## PARTE 4 · Equipo\n\n' +
+    (S.equipo.composicion||'_No reportado._') + '\n\n' +
+    '---\n\n' +
+    '## PARTE 5 · Semáforo y Cierre\n\n' +
+    '**Semáforo de la semana:** '+S.cierre.sem+'\n\n' +
+    '**Resumen ejecutivo:**\n' +
+    (S.cierre.resumen||'') + '\n\n' +
+    leccion + '\n\n' +
+    '---\n' +
+    '_Seguimiento generado automáticamente · Griky Fábrica · '+fecha+'_\n';
+
+  window._md=md; window._fn=fn;
+
+  // Save seguimiento to localStorage for consolidation
+  guardarSeguimientoEnLS();
+
+  showDL(md,fn);
+}
+
+function guardarSeguimientoEnLS(){
+  const seguimiento = {
+    pm: S.pm, semana: S.semana,
+    fecha: new Date().toISOString(),
+    pctCumplimiento: S.pctCumplimiento,
+    totalComprometidos: S.totalComprometidos,
+    totalEntregados: S.totalEntregados,
+    entregas: S.entregas,
+    riesgos: S.riesgos.map(r=>({nombre:r.nombre, pctReal:r.pctReal, pctPlaneado:r.pctPlaneado, detalle:r.detalle})),
+    equipo: S.equipo,
+    cierre: S.cierre,
+    cursosCliente: S.cursosCliente,
+    proyResultados: {}
+  };
+  // Copy per-project avance
+  if(S.planeacion){
+    S.planeacion.proyectos.forEach(p => {
+      const stats = S.proyResultados[p.nombre];
+      if(stats){
+        seguimiento.proyResultados[p.nombre] = { pctReal:stats.pctReal, pctPlaneado:stats.pctPlaneado, entregados:stats.entregados, comprometidos:stats.comprometidos };
+      }
+    });
+  }
+  let segs=[];
+  try { segs=JSON.parse(localStorage.getItem('griky_seguimientos'))||[]; } catch(e){}
+  const idx = segs.findIndex(s=>s.pm===S.pm && s.semana===S.semana);
+  if(idx>=0) segs[idx]=seguimiento; else segs.push(seguimiento);
+  localStorage.setItem('griky_seguimientos', JSON.stringify(segs));
+}
+
+function showDL(md,fn){
+  const wrap=document.createElement('div'); wrap.className='msg claude'; wrap.style.maxWidth='660px';
+  const meta=document.createElement('div'); meta.className='msg-meta';
+  meta.innerHTML='<div class="meta-dot"></div>Asistente Griky';
+  const card=document.createElement('div'); card.className='dl-card';
+
+  const colorCumpl = S.pctCumplimiento>=80?'#2BC168':S.pctCumplimiento>=50?'#F5A623':'#FF2D55';
+
+  card.innerHTML =
+    '<div class="dl-header"><div class="dl-check">✓</div><div class="dl-title">Seguimiento listo</div></div>' +
+    '<div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;">' +
+      '<div style="background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;">' +
+        '<span style="font-size:18px;">📊</span><div>' +
+          '<div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Cumplimiento sprint</div>' +
+          '<div style="font-size:20px;font-weight:700;color:'+colorCumpl+';">'+S.pctCumplimiento+'%</div>' +
+          '<div style="font-size:10px;color:var(--gray);">'+S.totalEntregados+' de '+S.totalComprometidos+' recursos</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;">' +
+        '<span style="font-size:18px;">🚦</span><div>' +
+          '<div style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Semáforo</div>' +
+          '<div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:2px;">'+S.cierre.sem+'</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dl-sub">Archivo: <code>'+fn+'</code></div>' +
+    '<button class="dl-btn" onclick="doDownload()">⬇ Descargar .md</button>' +
+    '<div class="preview-md">'+esc(md)+'</div>';
+
+  wrap.appendChild(meta); wrap.appendChild(card); msgs().appendChild(wrap); scrollEnd();
+}
+
+function doDownload(){
+  // Download MD
+  const blob=new Blob([window._md],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=window._fn; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// buildJSONExport kept for Hub sync button (reads from localStorage)
+function buildJSONExport(){
+  const plan=S.planeacion;
+  const proyectos=[];
+  if(plan){
+    plan.proyectos.forEach(p=>{
+      const stats=S.proyResultados[p.nombre]||{};
+      proyectos.push({
+        nombre:p.nombre,
+        totalRecProyecto:p.totalRecProyecto||0,
+        inicio:p.inicio||'', cierre:p.cierre||'',
+        nCursos:p.nCursos||0,
+        entregadosSemana:stats.entregados||0,
+        comprometidosSemana:stats.comprometidos||0,
+        pctAvanceReal:stats.pctReal||0,
+        pctPlaneado:stats.pctPlaneado||0,
+        enRiesgo:(stats.pctReal||0)<(stats.pctPlaneado||0)*0.7
+      });
+    });
+  }
+  return {
+    tipo:'seguimiento',
+    version:'1.0',
+    pm:S.pm, semana:S.semana,
+    fecha:new Date().toISOString(),
+    cumplimiento:{
+      pctCumplimiento:S.pctCumplimiento,
+      totalComprometidos:S.totalComprometidos,
+      totalEntregados:S.totalEntregados
+    },
+    entregas:S.entregas,
+    proyectos,
+    riesgos:S.riesgos.map(r=>({nombre:r.nombre,pctReal:r.pctReal,pctPlaneado:r.pctPlaneado,detalle:r.detalle||''})),
+    equipo:S.equipo,
+    cierre:S.cierre
+  };
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+async function init(){
+  enable(false); updateNav();
+
+  const detectedPM = detectPM();
+
+  await claude('Bienvenido al <strong>Seguimiento Semanal</strong> de Griky Fábrica 📋<br><br>' +
+    'Este asistente carga tus compromisos de la <strong>Planeación Semanal</strong> y te pregunta específicamente por cada entrega. El <strong>% de avance se calcula automáticamente</strong> — no necesitas escribirlo.', 800);
+
+  if(detectedPM){
+    // Try to auto-load
+    const plan = loadPlaneacion(detectedPM);
+    if(plan){
+      S.pm = detectedPM;
+      S.planeacion = plan;
+      S.semana = plan.semana;
+      S.queue = buildQueue(plan);
+
+      let resumen = '';
+      plan.proyectos.forEach(p => {
+        const nRec = p.bloques.reduce((a,b)=>a+b.total,0);
+        resumen += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
+          '<div style="width:10px;height:10px;border-radius:3px;background:'+esc(p.color||'var(--navy)')+'"></div>' +
+          '<strong>'+esc(p.nombre)+'</strong> — '+nRec+' recursos comprometidos</div>';
+      });
+
+      S.step=1; S.sub=0; S.qIdx=0; updateNav();
+      await claude('Hola, <strong>'+esc(detectedPM.split(' ')[0])+'</strong> 👋 Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen + '<br>Vamos a revisar el cumplimiento de cada compromiso.', 700);
+      await askNextCumplimiento();
+      return;
+    }
+  }
+
+  // Fallback: ask for name
+  await claude('Para comenzar, ¿cuál es tu <strong>nombre completo</strong>?<br><em style="font-size:12px;color:var(--gray);">Debe coincidir con el nombre que usaste en la Planeación Semanal.</em>', 1000);
+  enable(true);
+}
+
+init();
+</script>
+</body>
+</html>

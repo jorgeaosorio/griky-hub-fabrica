@@ -586,11 +586,20 @@ const SEGUIMIENTO_BASELINE = '2026-05-04T23:59:59';
           match.p.recHechos = (match.p.recHechos || 0) + (parseInt(e.entregados)||0);
         });
       }
-      // Acumular cursos aprobados por cliente (a nivel PM, no proyecto — por ahora solo log)
-      if(seg.cursosCliente && seg.cursosCliente.aprobados){
-        // El detalle viene en texto libre (cursosCliente.detalleAprobados); cuando
-        // tengamos un formato estructurado se podrá distribuir por proyecto.
-        // Por ahora, no se acumula automáticamente para no introducir errores.
+      // Acumular cursos aprobados por cliente (estructurados por proyecto, formato Opción B)
+      if(seg.cursosCliente && Array.isArray(seg.cursosCliente.porProyecto)){
+        seg.cursosCliente.porProyecto.forEach(c => {
+          const aprob = parseInt(c.aprobados) || 0;
+          if(aprob <= 0) return;
+          const match = findByName(c.proyecto);
+          if(!match){
+            console.warn('Cursos aprobados sin match en DATA:', c.proyecto, '— PM:', seg.pm, 'semana:', seg.semana);
+            return;
+          }
+          // Si cursosAprobados era null (Pendiente), lo arrancamos en 0 antes de sumar
+          if(match.p.cursosAprobados == null) match.p.cursosAprobados = 0;
+          match.p.cursosAprobados += aprob;
+        });
       }
     });
   } catch(e){ console.warn('Error procesando seguimientos:', e); }
