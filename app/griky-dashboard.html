@@ -338,9 +338,10 @@ const DATA = {
     { id:'a6', nombre:'Externado',          cliente:'Externado',          avance:0,  cursos:23, upLabel:'Módulo',  totalRec:23,   recHechos:0,   sprint:11, ritmoReq:0, ritmoAct:0, fechaInicio:'2026-02-20', fechaCierre:'2026-06-15', alert:'Cliente no ha compartido totalidad de insumos. Retraso con ANATO.' },
     { id:'a8', nombre:'Cesún',              cliente:'Cesún',              avance:0,  cursos:0,  upLabel:'Módulo',  totalRec:0,    recHechos:0,   sprint:0,  ritmoReq:0, ritmoAct:0, fechaInicio:'',           fechaCierre:'',           alert:null },
     { id:'a9', nombre:'USAP',               cliente:'USAP',               avance:0,  cursos:0,  upLabel:'Módulo',  totalRec:0,    recHechos:0,   sprint:0,  ritmoReq:0, ritmoAct:0, fechaInicio:'',           fechaCierre:'',           alert:null },
+    { id:'a_utp', nombre:'UTP',             cliente:'UTP',                avance:40, cursos:10, upLabel:'Módulo',  totalRec:0,    recHechos:0,   sprint:0,  ritmoReq:0, ritmoAct:0, fechaInicio:'2025-10-20', fechaCierre:'2025-12-15', alert:null },
   ],
   'Margarita Rosales': [
-    { id:'m_apus_sueltos', nombre:'Apus cursos sueltos', cliente:'Apus', avance:100, cursos:18, cursosAprobados:18, upLabel:'Semana', totalRec:162, recHechos:162, sprint:9, ritmoReq:9, ritmoAct:9, fechaInicio:'2025-11-14', fechaCierre:'2026-02-02', alert:null },
+    { id:'m_apus_sueltos', nombre:'Apus cursos sueltos', cliente:'Apus', avance:21, cursos:18, cursosAprobados:18, upLabel:'Curso', totalRec:0, recHechos:0, sprint:0, ritmoReq:0, ritmoAct:0, fechaInicio:'2025-11-14', fechaCierre:'2026-02-02', alert:null },
     { id:'m_apus_mba',     nombre:'Apus MBA',            cliente:'Apus', avance:0,   cursos:8,  cursosAprobados:0,  upLabel:'Semana', totalRec:64,  recHechos:0,   sprint:1, ritmoReq:6, ritmoAct:0, fechaInicio:'2026-04-01', fechaCierre:'2026-06-30', alert:'Cliente no ha entregado insumos para iniciar producción.' },
     { id:'m4', nombre:'UDDI',                     cliente:'UDDI',            avance:84,  cursos:13, upLabel:'Módulo', totalRec:58,  recHechos:49,  sprint:4, ritmoReq:3, ritmoAct:0, fechaInicio:'2026-03-30', fechaCierre:'2026-09-27', alert:'Videos pendientes por subir a Monday. Cuello de botella en video.' },
     { id:'m5', nombre:'Ibero Colombia',           cliente:'Ibero Colombia',  avance:100, cursos:6, upLabel:'Sprint', totalRec:15,  recHechos:15,  sprint:6, ritmoReq:1, ritmoAct:0, fechaInicio:'2025-10-07', fechaCierre:'2026-06-15', alert:null },
@@ -394,6 +395,7 @@ const FINANCIALS_USD = {
   'a1':  { valorContrato: 1150,   presupuesto: 265,   costosEjec: 102   }, // Banco Popular
   'a2':  { valorContrato: 8700,   presupuesto: 988,   costosEjec: 1032  }, // Fundación Orenda
   'a4':  { valorContrato: 4200,   presupuesto: 223,   costosEjec: 104   }, // Tecnológico ARGOS
+  'a_utp':{ valorContrato: 38000,  presupuesto: 9114,  costosEjec: 7493  }, // UTP (Juan)
   'm6':  { valorContrato: 2100,   presupuesto: 1029,  costosEjec: 681   }, // Buen Café cursos sueltos
   // Nuevos / consolidados (2026-05-04)
   's_umb':           { valorContrato: 72000,  presupuesto: 35280, costosEjec: 23087 }, // UMB (Sophia)
@@ -410,6 +412,79 @@ Object.values(DATA).forEach(proyectos => {
       p.valorContrato = fin.valorContrato;
       p.presupuesto   = fin.presupuesto;
       p.costosEjec    = fin.costosEjec;
+    }
+  });
+});
+
+// ── CURSOS PLANEADOS (2026-05-04, lote 1) ────────────────────────────────────
+// Override del campo `cursos` con los datos enviados por Jorge en Excel.
+// Pendiente: cantidad de cursos entregados (cursosAprobados) — segundo lote.
+const CURSOS_PLANEADOS = {
+  's1':  50,    // USS
+  's2':  120,   // Ibero México (IBERO MX)
+  's3':  100,   // U América (alert previo decía 35 — Jorge: revisar contexto)
+  's4':  60,    // ESAM (alert previo decía 19 cursos · 95 módulos — Jorge: revisar)
+  's7':  10,    // Politécnica
+  's8':  156,   // Indoamérica (lote 2: era 36, ahora 156)
+  's12': 60,    // UDLA (era 38)
+  's_umb':          120,  // UMB
+  'a3':  3,     // Gimnasio La Fontana
+  'a5':  2,     // Vigo & Coruña
+  'a6':  1,     // Externado (lote 2: era 23, ahora 1)
+  'a8':  16,    // Cesún
+  'a9':  240,   // USAP
+  'a_utp': 10,  // UTP (Juan)
+  'm4':  18,    // UDDI (era 13)
+  'm5':  120,   // Ibero Colombia (era 6)
+  'm6':  8,     // Buen Café cursos sueltos (lote 2: era 3, ahora 8)
+  'v1':  3,     // Vértice
+  'v_esic':         23,   // ESIC consolidado (5+7+11)
+  'v_mondragon':    9,    // Mondragón (lote 2: era 4→5→9)
+  'm_apus_sueltos': 248,  // APUS cursos sueltos (Jorge confirmó 2026-05-04)
+  'm_apus_mba':     22,   // APUS MBA (Jorge confirmó 2026-05-04)
+  'jo_eia':         13,   // EIA consolidado (1+12)
+};
+Object.values(DATA).forEach(proyectos => {
+  proyectos.forEach(p => {
+    if(CURSOS_PLANEADOS[p.id] !== undefined){
+      p.cursos = CURSOS_PLANEADOS[p.id];
+    }
+  });
+});
+
+// ── CURSOS APROBADOS / ENTREGADOS (2026-05-04, lote 2) ───────────────────────
+// Override del campo `cursosAprobados` con los datos enviados por Jorge.
+const CURSOS_APROBADOS = {
+  's1':  0,    // USS
+  's2':  60,   // Ibero México
+  's3':  1,    // U América
+  's4':  7,    // ESAM
+  's7':  0,    // Politécnica
+  's8':  113,  // Indoamérica
+  's12': 18,   // UDLA
+  's_umb':          70,   // UMB
+  'a1':  0,    // Banco Popular
+  'a2':  3,    // Fundación Orenda
+  'a3':  0,    // La Fontana
+  'a4':  0,    // Tecnológico ARGOS
+  'a5':  0,    // Vigo & Coruña
+  'a6':  0,    // Externado
+  'a8':  9,    // Cesún
+  'a9':  44,   // USAP
+  'a_utp': 4,  // UTP (Juan)
+  'm5':  54,   // Ibero Colombia
+  'm6':  8,    // Buen Café cursos sueltos
+  'v1':  0,    // Vértice
+  'v_esic':         0,    // ESIC
+  'v_mondragon':    2,    // Mondragón
+  'm_apus_sueltos': 52,   // APUS cursos sueltos (Jorge confirmó: 52/248)
+  'm_apus_mba':     0,    // APUS MBA (Jorge confirmó: 0/22)
+  'jo_eia':         12,   // EIA
+};
+Object.values(DATA).forEach(proyectos => {
+  proyectos.forEach(p => {
+    if(CURSOS_APROBADOS[p.id] !== undefined){
+      p.cursosAprobados = CURSOS_APROBADOS[p.id];
     }
   });
 });
@@ -877,7 +952,7 @@ function renderTabla(filtered){
     <table class="detail-table">
       <thead>
         <tr>
-          <th>Proyecto</th>
+          <th>Cliente / Proyecto</th>
           <th>ED / PM</th>
           <th>Semáforo</th>
           <th style="min-width:140px;">Avance</th>
@@ -918,8 +993,8 @@ function renderTabla(filtered){
     html += `
       <tr>
         <td>
-          <div style="font-weight:600;color:var(--navy);font-size:13px;">${p.nombre}</div>
-          <div style="font-size:11px;color:var(--gray);">${p.cliente}</div>
+          <div style="font-weight:700;color:var(--navy);font-size:13px;">${p.cliente}</div>
+          <div style="font-size:11px;color:var(--gray);">${p.nombre}</div>
         </td>
         <td style="font-size:12px;color:var(--gray);">${p.pm}</td>
         <td>
