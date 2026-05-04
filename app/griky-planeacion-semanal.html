@@ -200,6 +200,22 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
   .ritmo-strip{margin-left:0;flex-wrap:wrap;}
   .totales-card{grid-template-columns:repeat(3,1fr);}
 }
+
+/* METAS DE CIERRE POR CLIENTE */
+.metas-card{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);margin-bottom:14px;}
+.metas-title{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.metas-sub{font-size:11.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
+.metas-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.metas-tbl thead th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);padding:8px 10px;border-bottom:2px solid var(--mid);}
+.metas-tbl thead th.center{text-align:center;}
+.metas-tbl tbody td{padding:8px 10px;border-bottom:1px solid rgba(226,232,240,.6);vertical-align:middle;}
+.metas-tbl tbody tr:last-child td{border-bottom:none;}
+.metas-cliente{font-weight:700;color:var(--navy);}
+.metas-input{background:var(--light);border:1.5px solid var(--mid);border-radius:6px;padding:6px 10px;font-family:'Roboto',sans-serif;font-size:13px;color:var(--navy);outline:none;width:64px;text-align:center;transition:border-color .2s;}
+.metas-input:focus{border-color:var(--red);background:var(--white);}
+.metas-totales{margin-top:12px;display:flex;gap:14px;padding:10px 14px;background:var(--light);border-radius:8px;font-size:11.5px;color:var(--gray);}
+.metas-totales strong{color:var(--navy);font-size:14px;font-weight:800;}
+.metas-empty{font-size:12px;color:var(--gray);font-style:italic;padding:8px 4px;}
 </style>
 </head>
 <body>
@@ -623,6 +639,16 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
           <div class="tc-item"><div class="tc-val total" id="tr_total">0</div><div class="tc-label">Total</div></div>
         </div>
 
+        <!-- METAS DE CIERRE POR CLIENTE -->
+        <div class="metas-card" id="metasCard">
+          <div class="metas-title">🎯 Metas de cierre por cliente</div>
+          <div class="metas-sub">Define cuántos cursos esperas <strong>entregar para revisión final del cliente</strong> y cuántos esperas tener <strong>aprobados por el cliente</strong> al cierre de la semana.</div>
+          <div id="metasClienteWrap"></div>
+          <div class="metas-totales" id="metasTotales" style="display:none;">
+            <span>Total semana → <strong id="mt_entrega">0</strong> cursos a revisión final · <strong id="mt_aprobar">0</strong> cursos a aprobar por cliente</span>
+          </div>
+        </div>
+
         <div class="ritmo-alert ok" id="ritmoAlert" style="display:none;">
           <span id="ritmoAlertIcon">✅</span>&nbsp;
           <span id="ritmoAlertText">—</span>
@@ -825,7 +851,21 @@ var PLAN_PRECARGADO = {
     {id:'pre_sp_6',proyId:'udla',proyNombre:'UDLA',color:'verde',
       curso:'',up:'',nota:'Multimedia y gráfico UDLA (varios cursos)',
       counts:{mul_sto:10,mul_act:29,mul_pre:7,gra_inf:14},total:60}
+  ],
+  'jorge|2026-05-04': [
+    {id:'pre_jo_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
+      curso:'',up:'',nota:'Producción semana: 24 videos estándar + 12 PDFs',
+      counts:{vid_std:24,gra_pdf:12},total:36}
   ]
+};
+
+// ── METAS DE CIERRE POR CLIENTE PRECARGADAS ───────────────────────────────────
+// Clave: "pmKey|YYYY-MM-DD" — { 'Cliente X': {entrega: N, aprobar: N} }
+var METAS_PRECARGADAS = {
+  'jorge|2026-05-04': {
+    'Vértice': {entrega:0, aprobar:0},
+    'EIA':     {entrega:1, aprobar:0}
+  }
 };
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
@@ -836,6 +876,8 @@ var pmNombre = '';
 var semanaStr = '';
 var editingId = null;
 var counts = {};
+// metasCliente: { 'ESAM': {entrega: N, aprobar: N}, ... }
+var metasCliente = {};
 
 function resetCounts(){ counts = {}; ALL_REC_IDS.forEach(function(id){ counts[id]=0; }); }
 resetCounts();
@@ -856,6 +898,7 @@ function onPMChange(){
     proyectos = [];
     pmNombre = '';
     bloques = [];
+    metasCliente = {};
     renderBlocksList();
     updateRitmoChips();
     showPane('welcome');
@@ -867,6 +910,7 @@ function onPMChange(){
   proyectos = pmData.proyectos.map(function(p){ return {id:p.id, nombre:p.nombre, cliente:p.cliente, color:'verde', ritmo:(p.ficha?p.ficha.ritmo:0)||0, ficha:p.ficha||null}; });
 
   bloques = [];
+  metasCliente = {};
 
   // Cargar planeación precargada si existe para este PM y semana
   var fechaSel = document.getElementById('selFecha').value;
@@ -874,11 +918,14 @@ function onPMChange(){
   if(PLAN_PRECARGADO[planKey]){
     bloques = JSON.parse(JSON.stringify(PLAN_PRECARGADO[planKey]));
   }
+  if(METAS_PRECARGADAS[planKey]){
+    metasCliente = JSON.parse(JSON.stringify(METAS_PRECARGADAS[planKey]));
+  }
 
   renderBlocksList();
   updateRitmoChips();
-  showPane(bloques.length > 0 ? 'resumen' : 'welcome');
-  if(bloques.length > 0) renderResumen();
+  showPane('resumen');
+  renderResumen();
 
   // Llenar select de proyectos en el form
   var sel = document.getElementById('f_proyecto');
@@ -901,13 +948,18 @@ function onFechaChange(){
   // Recargar planeación precargada si cambia la fecha y hay PM seleccionado
   if(pmKey){
     bloques = [];
+    metasCliente = {};
     var planKey = pmKey + '|' + val;
     if(PLAN_PRECARGADO[planKey]){
       bloques = JSON.parse(JSON.stringify(PLAN_PRECARGADO[planKey]));
     }
+    if(METAS_PRECARGADAS[planKey]){
+      metasCliente = JSON.parse(JSON.stringify(METAS_PRECARGADAS[planKey]));
+    }
     renderBlocksList();
     updateRitmoChips();
-    if(bloques.length > 0){ renderResumen(); showPane('resumen'); }
+    renderResumen();
+    showPane('resumen');
   }
 }
 
@@ -1107,8 +1159,71 @@ function deleteBlock(id){
   else showPane('resumen');
 }
 
+// ── METAS DE CIERRE POR CLIENTE ───────────────────────────────────────────────
+function getClientesUnicos(){
+  var seen = {};
+  var arr = [];
+  proyectos.forEach(function(p){
+    if(p.cliente && !seen[p.cliente]){ seen[p.cliente]=true; arr.push(p.cliente); }
+  });
+  return arr;
+}
+function ensureMetaCliente(cliente){
+  if(!metasCliente[cliente]) metasCliente[cliente] = {entrega:0, aprobar:0};
+  return metasCliente[cliente];
+}
+function updateMetaCliente(cliente, tipo, valor){
+  var v = parseInt(valor)||0;
+  if(v<0) v=0;
+  ensureMetaCliente(cliente)[tipo] = v;
+  updateMetasTotales();
+}
+function updateMetasTotales(){
+  var totEnt=0, totApr=0;
+  Object.keys(metasCliente).forEach(function(c){
+    totEnt += metasCliente[c].entrega||0;
+    totApr += metasCliente[c].aprobar||0;
+  });
+  var elE = document.getElementById('mt_entrega');
+  var elA = document.getElementById('mt_aprobar');
+  var box = document.getElementById('metasTotales');
+  if(elE) elE.textContent = totEnt;
+  if(elA) elA.textContent = totApr;
+  if(box) box.style.display = (totEnt+totApr>0)?'flex':'none';
+}
+function renderMetasCliente(){
+  var wrap = document.getElementById('metasClienteWrap');
+  if(!wrap) return;
+  var clientes = getClientesUnicos();
+  if(clientes.length===0){
+    wrap.innerHTML = '<div class="metas-empty">Selecciona un PM para ver sus clientes.</div>';
+    return;
+  }
+  var rows = '';
+  clientes.forEach(function(c){
+    var m = ensureMetaCliente(c);
+    rows +=
+      '<tr>'+
+        '<td class="metas-cliente">'+c+'</td>'+
+        '<td style="text-align:center;"><input class="metas-input" type="number" min="0" value="'+(m.entrega||0)+'" onchange="updateMetaCliente(\''+c.replace(/'/g,"\\'")+'\',\'entrega\',this.value)" onfocus="this.select()"/></td>'+
+        '<td style="text-align:center;"><input class="metas-input" type="number" min="0" value="'+(m.aprobar||0)+'" onchange="updateMetaCliente(\''+c.replace(/'/g,"\\'")+'\',\'aprobar\',this.value)" onfocus="this.select()"/></td>'+
+      '</tr>';
+  });
+  wrap.innerHTML =
+    '<table class="metas-tbl">'+
+      '<thead><tr>'+
+        '<th>Cliente</th>'+
+        '<th class="center">📤 Cursos a entregar para revisión final</th>'+
+        '<th class="center">✅ Cursos a aprobar por cliente</th>'+
+      '</tr></thead>'+
+      '<tbody>'+rows+'</tbody>'+
+    '</table>';
+  updateMetasTotales();
+}
+
 // ── RESUMEN ───────────────────────────────────────────────────────────────────
 function renderResumen(){
+  renderMetasCliente();
   document.getElementById('resumenSub').textContent = pmNombre+' · '+semanaStr+' · '+bloques.length+' bloques';
 
   var tot = {di:0,video:0,grafico:0,multimedia:0,impl:0,total:0};
@@ -1207,6 +1322,22 @@ function exportMD(){
     bloquesMD += '\n**Subtotal bloque:** '+b.total+' recursos\n';
   });
 
+  // Metas de cierre por cliente
+  var metasMD = '';
+  var clientes = getClientesUnicos();
+  var totalEnt = 0, totalApr = 0;
+  if(clientes.length > 0){
+    metasMD += '## Metas de cierre por cliente\n\n';
+    metasMD += '| Cliente | Cursos a entregar para revisión final | Cursos a aprobar por cliente |\n|---|---|---|\n';
+    clientes.forEach(function(c){
+      var m = metasCliente[c]||{entrega:0,aprobar:0};
+      totalEnt += m.entrega||0;
+      totalApr += m.aprobar||0;
+      metasMD += '| '+c+' | **'+(m.entrega||0)+'** | **'+(m.aprobar||0)+'** |\n';
+    });
+    metasMD += '| **TOTAL** | **'+totalEnt+'** | **'+totalApr+'** |\n\n---\n\n';
+  }
+
   var md = '# Planeación Semanal — Griky Fábrica\n'+
   '**PM:** '+pmNombre+'\n'+
   '**Semana:** '+semanaStr+'\n'+
@@ -1218,8 +1349,11 @@ function exportMD(){
   '| Recursos comprometidos | **'+totalComp+'** |\n'+
   '| Ritmo requerido | '+totalRitmo+' rec/sem |\n'+
   '| Cobertura del sprint | '+(totalRitmo>0?Math.round((totalComp/totalRitmo)*100)+'%':'—')+' |\n'+
-  '| Bloques de trabajo | '+bloques.length+' |\n\n'+
+  '| Bloques de trabajo | '+bloques.length+' |\n'+
+  '| Cursos a entregar para revisión final (semana) | **'+totalEnt+'** |\n'+
+  '| Cursos a aprobar por cliente (semana) | **'+totalApr+'** |\n\n'+
   '---\n\n'+
+  metasMD+
   '## Bloques de trabajo\n'+
   bloquesMD+
   '---\n_Planeación generada · Griky Fábrica · '+fecha+'_\n'+
@@ -1238,6 +1372,19 @@ function copiarResumen(){
   bloques.forEach(function(b){
     txt += '• '+b.proyNombre+(b.curso?' ('+b.curso+(b.up?' · '+b.up:'')+ ')':'')+': '+b.total+' recursos\n';
   });
+  var clientes = getClientesUnicos();
+  var totalEnt=0, totalApr=0;
+  clientes.forEach(function(c){ var m=metasCliente[c]||{}; totalEnt+=(m.entrega||0); totalApr+=(m.aprobar||0); });
+  if(totalEnt+totalApr>0){
+    txt += '\n🎯 Metas de cierre por cliente:\n';
+    clientes.forEach(function(c){
+      var m=metasCliente[c]||{entrega:0,aprobar:0};
+      if((m.entrega||0)+(m.aprobar||0)>0){
+        txt += '• '+c+': '+(m.entrega||0)+' a revisión final · '+(m.aprobar||0)+' a aprobar\n';
+      }
+    });
+    txt += '   Total: '+totalEnt+' a revisión · '+totalApr+' a aprobar\n';
+  }
   navigator.clipboard.writeText(txt).then(function(){alert('Resumen copiado ✓');});
 }
 
