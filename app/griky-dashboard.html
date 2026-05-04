@@ -583,6 +583,33 @@ Object.values(DATA).forEach(proyectos => {
   });
 });
 
+// ── FECHAS PLANEADAS DE INICIO/CIERRE (2026-05-04, lote 5) ───────────────────
+// Override de fechaInicio y fechaCierre. Necesarias para el cálculo del semáforo.
+// ICami / Curso Finanzas queda sin fechas → semáforo en gris.
+const FECHAS = {
+  's1':  { inicio:'2025-09-22', cierre:'2026-02-13' }, // USS
+  's2':  { inicio:'2025-01-07', cierre:'2026-01-07' }, // Ibero México
+  's5':  { inicio:'2025-07-28', cierre:'2026-01-23' }, // Cinemark
+  's7':  { inicio:'2025-06-18', cierre:'2025-08-01' }, // Politécnica
+  's8':  { inicio:'2025-09-01', cierre:'2025-10-31' }, // Indoamérica
+  'a1':  { inicio:'2025-12-01', cierre:'2026-01-23' }, // Banco Popular
+  'a3':  { inicio:'2025-10-31', cierre:'2025-12-30' }, // Gimnasio La Fontana
+  'a8':  { inicio:'2025-11-28', cierre:'2026-06-01' }, // Cesún
+  'a9':  { inicio:'2025-02-11', cierre:'2027-02-11' }, // USAP
+  'v1':  { inicio:'2026-03-26', cierre:'2026-05-31' }, // Vértice
+  'v_esic':        { inicio:'2026-04-06', cierre:'2026-06-19' }, // ESIC consolidado
+  'jo_eia':        { inicio:'2026-01-05', cierre:'2026-03-26' }, // EIA consolidado
+};
+Object.values(DATA).forEach(proyectos => {
+  proyectos.forEach(p => {
+    const f = FECHAS[p.id];
+    if(f){
+      p.fechaInicio = f.inicio;
+      p.fechaCierre = f.cierre;
+    }
+  });
+});
+
 // ── BASELINE Y ACUMULACIÓN DE SEGUIMIENTOS SEMANALES ─────────────────────────
 // Principio (Jorge 2026-05-04):
 //  - totalRec  = total de recursos PLANEADOS por contrato (NO se mueve por planeación semanal)
