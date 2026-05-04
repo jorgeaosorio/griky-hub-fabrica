@@ -57,7 +57,7 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .main::-webkit-scrollbar-thumb{background:var(--mid);border-radius:2px;}
 
 /* ── GLOBAL STATS ── */
-.global-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px;}
+.global-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:24px;}
 .gstat{background:var(--white);border:1px solid var(--mid);border-radius:var(--r);padding:16px 14px;box-shadow:var(--sh);text-align:center;position:relative;overflow:hidden;}
 .gstat::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
 .gstat.total::before{background:var(--navy);}
@@ -67,7 +67,14 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .gstat.gris::before{background:#888;}
 .gstat.sprint::before{background:#7EC8E3;}
 .gstat.ritmo::before{background:#B19CD9;}
+.gstat.cursos-plan::before{background:#7c3aed;}
+.gstat.cursos-pct::before{background:#3b82f6;}
+.gstat.valor::before{background:#10b981;}
+.gstat.ppto::before{background:#f59e0b;}
+.gstat.ac::before{background:#ef4444;}
+.gstat.margen::before{background:#8b5cf6;}
 .gstat-val{font-family:'Roboto',sans-serif;font-size:28px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:4px;}
+.gstat-val.gstat-val-money{font-size:22px;}
 .gstat-val.green{color:var(--green);}
 .gstat-val.yellow{color:var(--yellow);}
 .gstat-val.red{color:var(--red);}
@@ -691,14 +698,28 @@ function render(){
     return;
   }
 
-  // Stats globales
-  const nTotal = all.length;
-  const nVerde = all.filter(p=>p.sem==='verde').length;
+  // ── Stats globales (recalculados sobre proyectos visibles) ──
+  // Conteos de semáforo
+  const nTotal    = all.length;
+  const nVerde    = all.filter(p=>p.sem==='verde').length;
   const nAmarillo = all.filter(p=>p.sem==='amarillo').length;
-  const nRojo = all.filter(p=>p.sem==='rojo').length;
-  const nGris = all.filter(p=>p.sem==='gris').length;
-  const avgSprint = Math.round(all.reduce((a,p)=>a+p.sprint,0)/nTotal);
-  const enRitmo = all.filter(p=>p.ritmoAct>=p.ritmoReq).length;
+  const nRojo     = all.filter(p=>p.sem==='rojo').length;
+  const nGris     = all.filter(p=>p.sem==='gris').length;
+
+  // Cursos: planeados y entregados (cuando hay datos)
+  const totalCursosPlan  = all.reduce((a,p)=>a + (p.cursos > 0 ? p.cursos : 0), 0);
+  const totalCursosAprob = all.reduce((a,p)=>a + (p.cursosAprobados !== null ? p.cursosAprobados : 0), 0);
+  const pctCursos = totalCursosPlan > 0 ? Math.round(totalCursosAprob / totalCursosPlan * 100) : 0;
+
+  // Finanzas (USD): valor contrato, presupuesto (BAC), costos ejecutados (AC), margen
+  const totalValor = all.reduce((a,p)=>a + (p.valorContrato || 0), 0);
+  const totalPpto  = all.reduce((a,p)=>a + (p.presupuesto   || 0), 0);
+  const totalAC    = all.reduce((a,p)=>a + (p.costosEjec    || 0), 0);
+  const margenActFabrica = totalValor > 0 ? (totalValor - totalAC) / totalValor : null;
+  const pctEjecPpto = totalPpto > 0 ? Math.round(totalAC / totalPpto * 100) : 0;
+  const margenColor = margenActFabrica == null ? '' :
+                      margenActFabrica >= 0.80 ? 'green' :
+                      margenActFabrica >= 0.65 ? 'yellow' : 'red';
 
   let html = `
   <div class="global-stats">
@@ -727,15 +748,35 @@ function render(){
       <div class="gstat-label">⚪ Sin datos</div>
       <div class="gstat-sub">Faltan fechas o recursos</div>
     </div>
-    <div class="gstat sprint">
-      <div class="gstat-val">${avgSprint}%</div>
-      <div class="gstat-label">Sprint promedio</div>
-      <div class="gstat-sub">Cumplimiento semanal</div>
+    <div class="gstat cursos-plan">
+      <div class="gstat-val">${totalCursosPlan}</div>
+      <div class="gstat-label">📚 Cursos planeados</div>
+      <div class="gstat-sub">${totalCursosAprob} entregados (${pctCursos}%)</div>
     </div>
-    <div class="gstat ritmo">
-      <div class="gstat-val ${enRitmo===nTotal?'green':enRitmo>nTotal/2?'yellow':'red'}">${enRitmo}/${nTotal}</div>
-      <div class="gstat-label">En ritmo</div>
-      <div class="gstat-sub">Proyectos a tiempo</div>
+    <div class="gstat cursos-pct">
+      <div class="gstat-val ${pctCursos>=80?'green':pctCursos>=40?'yellow':'red'}">${pctCursos}%</div>
+      <div class="gstat-label">📦 Avance cursos</div>
+      <div class="gstat-sub">${totalCursosAprob}/${totalCursosPlan} entregados</div>
+    </div>
+    <div class="gstat valor">
+      <div class="gstat-val gstat-val-money">${fmtMoney(totalValor)}</div>
+      <div class="gstat-label">💼 Valor contrato</div>
+      <div class="gstat-sub">Total fábrica</div>
+    </div>
+    <div class="gstat ppto">
+      <div class="gstat-val gstat-val-money">${fmtMoney(totalPpto)}</div>
+      <div class="gstat-label">📋 Presupuesto</div>
+      <div class="gstat-sub">Total BAC</div>
+    </div>
+    <div class="gstat ac">
+      <div class="gstat-val gstat-val-money">${fmtMoney(totalAC)}</div>
+      <div class="gstat-label">💸 Ejecutado (AC)</div>
+      <div class="gstat-sub">${pctEjecPpto}% del ppto</div>
+    </div>
+    <div class="gstat margen">
+      <div class="gstat-val ${margenColor}">${margenActFabrica != null ? fmtMargin(margenActFabrica) : '—'}</div>
+      <div class="gstat-label">📈 Margen actual</div>
+      <div class="gstat-sub">Toda la fábrica</div>
     </div>
   </div>`;
 
