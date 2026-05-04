@@ -496,6 +496,52 @@ Object.values(DATA).forEach(proyectos => {
   });
 });
 
+// ── RECURSOS PLANEADOS / EJECUTADOS (2026-05-04, lote 3) ─────────────────────
+// Override de totalRec (planeados) y recHechos (entregados) por proyecto.
+// Para APUS Jorge envió un total consolidado (14702/1937). Asumo que todo va a
+// "Apus cursos sueltos" porque MBA arrancará después y aún tiene 0 cursos
+// aprobados. Si la distribución real es distinta, reasignar entre m_apus_sueltos
+// y m_apus_mba.
+const RECURSOS = {
+  's1':  { totalRec: 2460,  recHechos: 1230 }, // USS
+  's2':  { totalRec: 1561,  recHechos: 487  }, // Ibero México
+  's3':  { totalRec: 1513,  recHechos: 672  }, // U América (antes 1496/576)
+  's4':  { totalRec: 976,   recHechos: 449  }, // ESAM (antes 860/629)
+  's5':  { totalRec: 48,    recHechos: 0    }, // Cinemark
+  's6':  { totalRec: 0,     recHechos: 0    }, // ICami / Curso Finanzas
+  's7':  { totalRec: 874,   recHechos: 261  }, // Politécnica
+  's8':  { totalRec: 2125,  recHechos: 1070 }, // Indoamérica
+  's12': { totalRec: 1676,  recHechos: 1356 }, // UDLA (antes 1134/956)
+  's_umb':         { totalRec: 2289, recHechos: 1520 }, // UMB
+  'a1':  { totalRec: 12,    recHechos: 0    }, // Banco Popular
+  'a2':  { totalRec: 60,    recHechos: 51   }, // Fundación Orenda (antes 67/50)
+  'a3':  { totalRec: 360,   recHechos: 0    }, // Gimnasio La Fontana
+  'a4':  { totalRec: 38,    recHechos: 38   }, // Tecnológico ARGOS (antes 28/16)
+  'a5':  { totalRec: 93,    recHechos: 93   }, // Vigo & Coruña (antes 82/36)
+  'a6':  { totalRec: 25,    recHechos: 0    }, // Externado (antes 23/0)
+  'a8':  { totalRec: 505,   recHechos: 203  }, // Cesún
+  'a9':  { totalRec: 6211,  recHechos: 3509 }, // USAP
+  'a_utp':         { totalRec: 2359, recHechos: 2359 }, // UTP
+  'm4':  { totalRec: 2025,  recHechos: 110  }, // UDDI (antes 58/49)
+  'm5':  { totalRec: 2963,  recHechos: 1044 }, // Ibero Colombia (antes 15/15)
+  'm6':  { totalRec: 88,    recHechos: 88   }, // Buen Café cursos sueltos
+  'm_apus_sueltos':{ totalRec: 14702, recHechos: 1937 }, // APUS total (todo asignado a sueltos por ahora)
+  'm_apus_mba':    { totalRec: 0,    recHechos: 0    }, // APUS MBA — Jorge confirmará distribución real
+  'v1':  { totalRec: 801,   recHechos: 509  }, // Vértice
+  'v_esic':        { totalRec: 893,  recHechos: 234  }, // ESIC consolidado
+  'v_mondragon':   { totalRec: 234,  recHechos: 174  }, // Mondragón
+  'jo_eia':        { totalRec: 479,  recHechos: 273  }, // EIA consolidado
+};
+Object.values(DATA).forEach(proyectos => {
+  proyectos.forEach(p => {
+    const r = RECURSOS[p.id];
+    if(r){
+      p.totalRec  = r.totalRec;
+      p.recHechos = r.recHechos;
+    }
+  });
+});
+
 // ── HELPERS FICHA ────────────────────────────────────────────────────────────
 function diasACierre(p){
   if(!p.fechaCierre) return null;
