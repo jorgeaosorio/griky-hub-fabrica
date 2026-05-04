@@ -68,6 +68,7 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .gstat.sprint::before{background:#7EC8E3;}
 .gstat.ritmo::before{background:#B19CD9;}
 .gstat.cursos-plan::before{background:#7c3aed;}
+.gstat.cursos-entreg::before{background:#06b6d4;}
 .gstat.cursos-pct::before{background:#3b82f6;}
 .gstat.valor::before{background:#10b981;}
 .gstat.ppto::before{background:#f59e0b;}
@@ -183,7 +184,7 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .sec-toggle.open .sec-toggle-chevron{transform:rotate(90deg);}
 
 /* === FICHA REDESIGN (2026-05-04) ============================================ */
-.ficha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px;}
+.ficha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:14px;}
 .pcard.ficha{display:flex;flex-direction:column;}
 .ficha .pcard-head{padding:18px 20px 12px;}
 .ficha .pcard-cliente-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
@@ -203,10 +204,10 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .ficha .status-overdue::before{background:var(--red);}
 .ficha .status-closed{background:#e8e8e8;color:#888;}
 .ficha .status-closed::before{background:#888;}
-.ficha .progress-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 12px;}
-.ficha .progress{background:var(--light);border-radius:8px;padding:10px 12px;}
-.ficha .progress-label{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;line-height:1.2;}
-.ficha .progress-value{font-size:18px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:6px;}
+.ficha .progress-block{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 18px 12px;}
+.ficha .progress{background:var(--light);border-radius:8px;padding:9px 10px;}
+.ficha .progress-label{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;line-height:1.2;min-height:22px;}
+.ficha .progress-value{font-size:16px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:5px;}
 .ficha .progress-value.pendiente-val{font-size:11px;color:#aaa;font-weight:500;font-style:italic;}
 .ficha .progress-bar{width:100%;height:5px;background:var(--mid);border-radius:999px;overflow:hidden;}
 .ficha .progress-fill{height:100%;border-radius:999px;transition:width .4s ease;}
@@ -214,7 +215,7 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .ficha .progress-fill.amarillo{background:var(--yellow);}
 .ficha .progress-fill.rojo{background:var(--red);}
 .ficha .progress-fill.gris{background:#bbb;}
-.ficha .counts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--mid);border-top:1px solid var(--mid);border-bottom:1px solid var(--mid);}
+.ficha .counts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--mid);border-top:1px solid var(--mid);border-bottom:1px solid var(--mid);}
 .ficha .count-cell{background:var(--white);padding:10px 12px;}
 .ficha .count-label{font-size:10px;color:var(--gray);margin-bottom:3px;line-height:1.2;}
 .ficha .count-value{font-size:15px;font-weight:700;color:var(--navy);line-height:1.1;}
@@ -372,10 +373,11 @@ let vista = 'cards';
 // null = "Pendiente" en pantalla. Jorge llenará después.
 Object.values(DATA).forEach(proyectos => {
   proyectos.forEach(p => {
-    if (p.cursosAprobados === undefined) p.cursosAprobados = null;
-    if (p.valorContrato   === undefined) p.valorContrato   = null;
-    if (p.presupuesto     === undefined) p.presupuesto     = null;
-    if (p.costosEjec      === undefined) p.costosEjec      = null;
+    if (p.cursosEntregados === undefined) p.cursosEntregados = null; // entregados al cliente para aprobación final
+    if (p.cursosAprobados  === undefined) p.cursosAprobados  = null; // aprobados por el cliente
+    if (p.valorContrato    === undefined) p.valorContrato    = null;
+    if (p.presupuesto      === undefined) p.presupuesto      = null;
+    if (p.costosEjec       === undefined) p.costosEjec       = null;
   });
 });
 
@@ -459,34 +461,73 @@ Object.values(DATA).forEach(proyectos => {
   });
 });
 
-// ── CURSOS APROBADOS / ENTREGADOS (2026-05-04, lote 2) ───────────────────────
-// Override del campo `cursosAprobados` con los datos enviados por Jorge.
+// ── CURSOS ENTREGADOS AL CLIENTE (2026-05-04, lote 4) ────────────────────────
+// Cursos enviados al cliente para revisión final (≠ aprobados).
+// Para APUS Jorge envió "63 entregados / 0 aprobados" → todo a sueltos (MBA aún no arranca).
+const CURSOS_ENTREGADOS = {
+  's1':  25,    // USS
+  's2':  27,    // Ibero México
+  's3':  18,    // U América
+  's4':  9,     // ESAM
+  's7':  4,     // Politécnica
+  's8':  119,   // Indoamérica
+  's12': 40,    // UDLA
+  's_umb':          78,   // UMB
+  'a1':  0,     // Banco Popular
+  'a2':  5,     // Fundación Orenda
+  'a3':  0,     // La Fontana
+  'a4':  2,     // Tecnológico ARGOS
+  'a5':  0,     // Vigo & Coruña
+  'a6':  0,     // Externado
+  'a8':  13,    // Cesún
+  'a9':  83,    // USAP
+  'a_utp':          10,   // UTP
+  'm4':  0,     // UDDI
+  'm5':  77,    // Ibero Colombia
+  'm6':  8,     // Buen Café cursos sueltos
+  'm_apus_sueltos': 63,   // APUS sueltos (todo el lote APUS)
+  'm_apus_mba':     0,    // APUS MBA
+  'v_esic':         11,   // ESIC consolidado
+  'v_mondragon':    6,    // Mondragón
+  'jo_eia':         12,   // EIA consolidado
+};
+Object.values(DATA).forEach(proyectos => {
+  proyectos.forEach(p => {
+    if(CURSOS_ENTREGADOS[p.id] !== undefined){
+      p.cursosEntregados = CURSOS_ENTREGADOS[p.id];
+    }
+  });
+});
+
+// ── CURSOS APROBADOS POR EL CLIENTE (2026-05-04, lote 4) ─────────────────────
+// Reemplaza valores previos. Algunos cambian (ver "antes"): el lote 2 mezclaba
+// "entregados" y "aprobados" — ahora se separa correctamente.
 const CURSOS_APROBADOS = {
-  's1':  0,    // USS
-  's2':  60,   // Ibero México
-  's3':  1,    // U América
-  's4':  7,    // ESAM
-  's7':  0,    // Politécnica
-  's8':  113,  // Indoamérica
-  's12': 18,   // UDLA
+  's1':  0,     // USS
+  's2':  27,    // Ibero México (antes 60)
+  's3':  1,     // U América
+  's4':  7,     // ESAM
+  's7':  0,     // Politécnica
+  's8':  113,   // Indoamérica
+  's12': 24,    // UDLA (antes 18)
   's_umb':          70,   // UMB
-  'a1':  0,    // Banco Popular
-  'a2':  3,    // Fundación Orenda
-  'a3':  0,    // La Fontana
-  'a4':  0,    // Tecnológico ARGOS
-  'a5':  0,    // Vigo & Coruña
-  'a6':  0,    // Externado
-  'a8':  9,    // Cesún
-  'a9':  44,   // USAP
-  'a_utp': 4,  // UTP (Juan)
-  'm5':  54,   // Ibero Colombia
-  'm6':  8,    // Buen Café cursos sueltos
-  'v1':  0,    // Vértice
-  'v_esic':         0,    // ESIC
+  'a1':  0,     // Banco Popular
+  'a2':  3,     // Fundación Orenda
+  'a3':  0,     // La Fontana
+  'a4':  0,     // Tecnológico ARGOS
+  'a5':  0,     // Vigo & Coruña
+  'a6':  0,     // Externado
+  'a8':  9,     // Cesún
+  'a9':  55,    // USAP (antes 44)
+  'a_utp':          4,    // UTP
+  'm4':  0,     // UDDI
+  'm5':  54,    // Ibero Colombia
+  'm6':  0,     // Buen Café (antes 8 — cliente aún no aprueba)
+  'm_apus_sueltos': 0,    // APUS sueltos (antes 52 — aún no aprobados)
+  'm_apus_mba':     0,    // APUS MBA
+  'v_esic':         9,    // ESIC consolidado (antes 0)
   'v_mondragon':    2,    // Mondragón
-  'm_apus_sueltos': 52,   // APUS cursos sueltos (Jorge confirmó: 52/248)
-  'm_apus_mba':     0,    // APUS MBA (Jorge confirmó: 0/22)
-  'jo_eia':         12,   // EIA
+  'jo_eia':         0,    // EIA (antes 12 — aún no aprobados)
 };
 Object.values(DATA).forEach(proyectos => {
   proyectos.forEach(p => {
@@ -586,19 +627,25 @@ const SEGUIMIENTO_BASELINE = '2026-05-04T23:59:59';
           match.p.recHechos = (match.p.recHechos || 0) + (parseInt(e.entregados)||0);
         });
       }
-      // Acumular cursos aprobados por cliente (estructurados por proyecto, formato Opción B)
+      // Acumular cursos entregados/aprobados al cliente (formato Opción B por proyecto)
       if(seg.cursosCliente && Array.isArray(seg.cursosCliente.porProyecto)){
         seg.cursosCliente.porProyecto.forEach(c => {
+          const ent = parseInt(c.entregados) || 0;
           const aprob = parseInt(c.aprobados) || 0;
-          if(aprob <= 0) return;
+          if(ent <= 0 && aprob <= 0) return;
           const match = findByName(c.proyecto);
           if(!match){
-            console.warn('Cursos aprobados sin match en DATA:', c.proyecto, '— PM:', seg.pm, 'semana:', seg.semana);
+            console.warn('Cursos cliente sin match en DATA:', c.proyecto, '— PM:', seg.pm, 'semana:', seg.semana);
             return;
           }
-          // Si cursosAprobados era null (Pendiente), lo arrancamos en 0 antes de sumar
-          if(match.p.cursosAprobados == null) match.p.cursosAprobados = 0;
-          match.p.cursosAprobados += aprob;
+          if(ent > 0){
+            if(match.p.cursosEntregados == null) match.p.cursosEntregados = 0;
+            match.p.cursosEntregados += ent;
+          }
+          if(aprob > 0){
+            if(match.p.cursosAprobados == null) match.p.cursosAprobados = 0;
+            match.p.cursosAprobados += aprob;
+          }
         });
       }
     });
@@ -614,10 +661,11 @@ function diasACierre(p){
   return Math.round((d - today) / (1000*60*60*24));
 }
 function entregaStatus(p){
-  // Cerrado: avance global ≥ 100% o todos los recursos ejecutados
+  // Cerrado: avance global ≥ 100% o todos los recursos ejecutados Y todos los cursos aprobados
   const recOk = p.totalRec > 0 && p.recHechos >= p.totalRec;
   const cursosOk = p.cursos > 0 && p.cursosAprobados !== null && p.cursosAprobados >= p.cursos;
   if((recOk && cursosOk) || p.avance >= 100) return 'closed';
+  // Compat: cursosOk basado en aprobados (no entregados) — un proyecto con todo entregado pero pendiente de aprobación NO está cerrado.
   const dias = diasACierre(p);
   if(dias === null) return 'none';
   if(dias < 0) return 'overdue';
@@ -815,10 +863,12 @@ function render(){
   const nRojo     = all.filter(p=>p.sem==='rojo').length;
   const nGris     = all.filter(p=>p.sem==='gris').length;
 
-  // Cursos: planeados y entregados (cuando hay datos)
-  const totalCursosPlan  = all.reduce((a,p)=>a + (p.cursos > 0 ? p.cursos : 0), 0);
-  const totalCursosAprob = all.reduce((a,p)=>a + (p.cursosAprobados !== null ? p.cursosAprobados : 0), 0);
-  const pctCursos = totalCursosPlan > 0 ? Math.round(totalCursosAprob / totalCursosPlan * 100) : 0;
+  // Cursos: planeados, entregados al cliente, aprobados por el cliente
+  const totalCursosPlan      = all.reduce((a,p)=>a + (p.cursos > 0 ? p.cursos : 0), 0);
+  const totalCursosEntregados = all.reduce((a,p)=>a + (p.cursosEntregados !== null ? p.cursosEntregados : 0), 0);
+  const totalCursosAprob     = all.reduce((a,p)=>a + (p.cursosAprobados !== null ? p.cursosAprobados : 0), 0);
+  const pctEntregados = totalCursosPlan > 0 ? Math.round(totalCursosEntregados / totalCursosPlan * 100) : 0;
+  const pctCursos     = totalCursosPlan > 0 ? Math.round(totalCursosAprob / totalCursosPlan * 100) : 0;
 
   // Finanzas (USD): valor contrato, presupuesto (BAC), costos ejecutados (AC), margen
   const totalValor = all.reduce((a,p)=>a + (p.valorContrato || 0), 0);
@@ -860,12 +910,17 @@ function render(){
     <div class="gstat cursos-plan">
       <div class="gstat-val">${totalCursosPlan}</div>
       <div class="gstat-label">📚 Cursos planeados</div>
-      <div class="gstat-sub">${totalCursosAprob} entregados (${pctCursos}%)</div>
+      <div class="gstat-sub">${totalCursosEntregados} entregados · ${totalCursosAprob} aprobados</div>
+    </div>
+    <div class="gstat cursos-entreg">
+      <div class="gstat-val ${pctEntregados>=80?'green':pctEntregados>=40?'yellow':'red'}">${pctEntregados}%</div>
+      <div class="gstat-label">📤 Entregados al cliente</div>
+      <div class="gstat-sub">${totalCursosEntregados}/${totalCursosPlan} cursos</div>
     </div>
     <div class="gstat cursos-pct">
       <div class="gstat-val ${pctCursos>=80?'green':pctCursos>=40?'yellow':'red'}">${pctCursos}%</div>
-      <div class="gstat-label">📦 Avance cursos</div>
-      <div class="gstat-sub">${totalCursosAprob}/${totalCursosPlan} entregados</div>
+      <div class="gstat-label">✅ Aprobados por cliente</div>
+      <div class="gstat-sub">${totalCursosAprob}/${totalCursosPlan} cursos</div>
     </div>
     <div class="gstat valor">
       <div class="gstat-val gstat-val-money">${fmtMoney(totalValor)}</div>
@@ -1005,8 +1060,9 @@ function renderFichaCard(p, showPM){
     closed:'status-closed', none:'status-closed'
   };
 
-  const cursosPct = (p.cursos > 0 && p.cursosAprobados !== null) ? p.cursosAprobados / p.cursos : null;
-  const recPct    = (p.totalRec > 0) ? p.recHechos / p.totalRec : null;
+  const entregadosPct = (p.cursos > 0 && p.cursosEntregados !== null) ? p.cursosEntregados / p.cursos : null;
+  const cursosPct     = (p.cursos > 0 && p.cursosAprobados !== null) ? p.cursosAprobados / p.cursos : null;
+  const recPct        = (p.totalRec > 0) ? p.recHechos / p.totalRec : null;
   const mPlan = marginPlanCalc(p);
   const mAct  = marginActCalc(p);
 
@@ -1015,17 +1071,16 @@ function renderFichaCard(p, showPM){
 
   const fechaEntregaHTML = p.fechaCierre ? fmtFechaCorta(p.fechaCierre) : PEND;
 
-  const cursosBlock = cursosPct === null
+  // Barra de progreso reutilizable
+  const progBar = pct => pct === null
     ? `<div class="progress-value pendiente-val">${PEND}</div>
        <div class="progress-bar"><div class="progress-fill gris" style="width:0%"></div></div>`
-    : `<div class="progress-value">${Math.round(cursosPct*100)}%</div>
-       <div class="progress-bar"><div class="progress-fill ${fillCls(cursosPct)}" style="width:${Math.max(cursosPct*100, cursosPct>0?4:0)}%"></div></div>`;
+    : `<div class="progress-value">${Math.round(pct*100)}%</div>
+       <div class="progress-bar"><div class="progress-fill ${fillCls(pct)}" style="width:${Math.max(pct*100, pct>0?4:0)}%"></div></div>`;
 
-  const recBlock = recPct === null
-    ? `<div class="progress-value pendiente-val">${PEND}</div>
-       <div class="progress-bar"><div class="progress-fill gris" style="width:0%"></div></div>`
-    : `<div class="progress-value">${Math.round(recPct*100)}%</div>
-       <div class="progress-bar"><div class="progress-fill ${fillCls(recPct)}" style="width:${Math.max(recPct*100, recPct>0?4:0)}%"></div></div>`;
+  const entregadosBlock = progBar(entregadosPct);
+  const cursosBlock     = progBar(cursosPct);
+  const recBlock        = progBar(recPct);
 
   return `
     <div class="pcard ficha">
@@ -1046,6 +1101,10 @@ function renderFichaCard(p, showPM){
       </div>
       <div class="progress-block">
         <div class="progress">
+          <div class="progress-label">Cursos entregados</div>
+          ${entregadosBlock}
+        </div>
+        <div class="progress">
           <div class="progress-label">Cursos aprobados</div>
           ${cursosBlock}
         </div>
@@ -1061,14 +1120,18 @@ function renderFichaCard(p, showPM){
           <div class="count-value">${p.cursos > 0 ? p.cursos : PEND}</div>
         </div>
         <div class="count-cell">
+          <div class="count-label">Cursos entregados</div>
+          <div class="count-value">${p.cursosEntregados !== null && p.cursos > 0 ? `${p.cursosEntregados} <span class="total">/ ${p.cursos}</span>` : PEND}</div>
+        </div>
+        <div class="count-cell">
           <div class="count-label">Cursos aprobados</div>
           <div class="count-value">${p.cursosAprobados !== null && p.cursos > 0 ? `${p.cursosAprobados} <span class="total">/ ${p.cursos}</span>` : PEND}</div>
         </div>
-        <div class="count-cell">
+        <div class="count-cell" style="grid-column: span 1;">
           <div class="count-label">Recursos planeados</div>
           <div class="count-value">${p.totalRec > 0 ? p.totalRec : PEND}</div>
         </div>
-        <div class="count-cell">
+        <div class="count-cell" style="grid-column: span 2;">
           <div class="count-label">Recursos ejecutados</div>
           <div class="count-value">${p.totalRec > 0 ? `${p.recHechos} <span class="total">/ ${p.totalRec}</span>` : PEND}</div>
         </div>
@@ -1106,6 +1169,7 @@ function renderTabla(filtered){
           <th>ED / PM</th>
           <th>Semáforo</th>
           <th style="min-width:140px;">Avance</th>
+          <th>Cursos<br><span style="font-weight:400;font-size:9px;">Entr / Aprob / Plan</span></th>
           <th>Recursos</th>
           <th>Cierre</th>
           <th>Ppto</th>
@@ -1158,6 +1222,7 @@ function renderTabla(filtered){
             <div class="mini-pct">${p.avance}%</div>
           </div>
         </td>
+        <td style="font-size:12px;">${p.cursos > 0 ? `${p.cursosEntregados ?? 0}/${p.cursosAprobados ?? 0}/${p.cursos}` : PEND_TD}</td>
         <td style="font-size:12px;">${p.totalRec > 0 ? `${p.recHechos}/${p.totalRec}` : PEND_TD}</td>
         <td>
           <div style="font-size:12px;font-weight:600;">${fechaFmt}</div>
