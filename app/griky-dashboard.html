@@ -542,6 +542,60 @@ Object.values(DATA).forEach(proyectos => {
   });
 });
 
+// ── BASELINE Y ACUMULACIÓN DE SEGUIMIENTOS SEMANALES ─────────────────────────
+// Principio (Jorge 2026-05-04):
+//  - totalRec  = total de recursos PLANEADOS por contrato (NO se mueve por planeación semanal)
+//  - recHechos = total de recursos ENTREGADOS a la fecha
+// Los datos cargados arriba son el baseline al 2026-05-04. Cualquier seguimiento
+// semanal con fecha posterior al baseline ACUMULA sus entregas al recHechos del
+// proyecto correspondiente (no reemplaza). Así, semana a semana, los reportes
+// de los PMs alimentan el dashboard sin riesgo de doble conteo.
+const SEGUIMIENTO_BASELINE = '2026-05-04T23:59:59';
+(function acumularSeguimientos(){
+  try {
+    const segs = JSON.parse(localStorage.getItem('griky_seguimientos')) || [];
+    const baseline = new Date(SEGUIMIENTO_BASELINE);
+    if(!Array.isArray(segs)) return;
+    // Indice nombre/cliente → proyecto en DATA, case-insensitive
+    const idx = [];
+    Object.values(DATA).forEach(proyectos => {
+      proyectos.forEach(p => {
+        idx.push({ p, nombre: (p.nombre||'').toLowerCase().trim(), cliente: (p.cliente||'').toLowerCase().trim() });
+      });
+    });
+    const findByName = (target) => {
+      const t = (target||'').toLowerCase().trim();
+      if(!t) return null;
+      return (idx.find(x => x.nombre === t) ||
+              idx.find(x => x.cliente === t) ||
+              idx.find(x => x.nombre.includes(t) || t.includes(x.nombre)) ||
+              null);
+    };
+    segs.forEach(seg => {
+      if(!seg.fecha) return;
+      const fechaSeg = new Date(seg.fecha);
+      if(isNaN(fechaSeg.getTime()) || fechaSeg <= baseline) return; // solo posteriores al baseline
+      // Acumular recursos entregados
+      if(Array.isArray(seg.entregas)){
+        seg.entregas.forEach(e => {
+          const match = findByName(e.proyecto);
+          if(!match){
+            console.warn('Seguimiento sin match en DATA:', e.proyecto, '— PM:', seg.pm, 'semana:', seg.semana);
+            return;
+          }
+          match.p.recHechos = (match.p.recHechos || 0) + (parseInt(e.entregados)||0);
+        });
+      }
+      // Acumular cursos aprobados por cliente (a nivel PM, no proyecto — por ahora solo log)
+      if(seg.cursosCliente && seg.cursosCliente.aprobados){
+        // El detalle viene en texto libre (cursosCliente.detalleAprobados); cuando
+        // tengamos un formato estructurado se podrá distribuir por proyecto.
+        // Por ahora, no se acumula automáticamente para no introducir errores.
+      }
+    });
+  } catch(e){ console.warn('Error procesando seguimientos:', e); }
+})();
+
 // ── HELPERS FICHA ────────────────────────────────────────────────────────────
 function diasACierre(p){
   if(!p.fechaCierre) return null;
