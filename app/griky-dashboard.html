@@ -1168,9 +1168,11 @@ function renderTabla(filtered){
           <th>Cliente / Proyecto</th>
           <th>ED / PM</th>
           <th>Semáforo</th>
-          <th style="min-width:140px;">Avance</th>
+          <th style="min-width:120px;">% Entregados</th>
+          <th style="min-width:120px;">% Aprobados</th>
           <th>Cursos<br><span style="font-weight:400;font-size:9px;">Entr / Aprob / Plan</span></th>
           <th>Recursos</th>
+          <th style="min-width:120px;">% Producción</th>
           <th>Cierre</th>
           <th>Ppto</th>
           <th>AC</th>
@@ -1187,6 +1189,17 @@ function renderTabla(filtered){
     .sort((a,b)=>semOrder[a.sem]-semOrder[b.sem]);
 
   const PEND_TD = '<span class="pendiente">Pendiente</span>';
+
+  // Mini-barra de progreso para una columna (num/den) con color por umbral
+  const fillByPct = pct => pct >= 70 ? 'verde' : pct >= 40 ? 'amarillo' : 'rojo';
+  const buildMini = (num, den) => {
+    if(num == null || !den || den <= 0) return PEND_TD;
+    const pct = Math.min(100, Math.round(num/den*100));
+    return '<div class="mini-prog">' +
+             '<div class="mini-bar"><div class="mini-fill '+fillByPct(pct)+'" style="width:'+pct+'%"></div></div>' +
+             '<div class="mini-pct">'+pct+'%</div>' +
+           '</div>';
+  };
 
   allProy.forEach(p => {
     const diasCierre = p.fechaCierre ? Math.round((new Date(p.fechaCierre+'T12:00:00')-new Date())/(1000*3600*24)) : null;
@@ -1216,14 +1229,11 @@ function renderTabla(filtered){
             ${p.sem==='verde'?'🟢 Verde':p.sem==='amarillo'?'🟡 Amarillo':p.sem==='gris'?'⚪ Sin datos':'🔴 Rojo'}
           </span>
         </td>
-        <td>
-          <div class="mini-prog">
-            <div class="mini-bar"><div class="mini-fill ${p.sem}" style="width:${p.avance}%"></div></div>
-            <div class="mini-pct">${p.avance}%</div>
-          </div>
-        </td>
+        <td>${buildMini(p.cursosEntregados, p.cursos)}</td>
+        <td>${buildMini(p.cursosAprobados, p.cursos)}</td>
         <td style="font-size:12px;">${p.cursos > 0 ? `${p.cursosEntregados ?? 0}/${p.cursosAprobados ?? 0}/${p.cursos}` : PEND_TD}</td>
         <td style="font-size:12px;">${p.totalRec > 0 ? `${p.recHechos}/${p.totalRec}` : PEND_TD}</td>
+        <td>${buildMini(p.recHechos, p.totalRec)}</td>
         <td>
           <div style="font-size:12px;font-weight:600;">${fechaFmt}</div>
           ${diasCierre!==null?`<div class="pill ${diasClass}" style="margin-top:3px;">${diasCierre}d</div>`:''}
