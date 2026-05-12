@@ -738,6 +738,7 @@ var PM_PROYECTOS = {
   vilma: {
     nombre: 'Marcela Osorio',
     proyectos: [
+      {id:'esic', nombre:'ESIC (General)', cliente:'ESIC'},
       {id:'esic_marketing', nombre:'ESIC Pregrado Marketing', cliente:'ESIC'},
       {id:'esic_ventas', nombre:'ESIC Directivo Ventas', cliente:'ESIC'}
     ]
@@ -903,6 +904,21 @@ var PLAN_PRECARGADO = {
       curso:'',up:'',nota:'UMB: 8 vid podcast + 13 vid estándar',
       counts:{vid_pod:8,vid_std:13},total:21}
   ],
+  'vilma|2026-05-04': [
+    {id:'pre_vi04_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'',up:'',nota:'ESIC: 7 vid std + 7 podcast + 4 pres interactiva + 10 Rise + 4 activ interactiva + 7 PDF',
+      counts:{vid_std:7,vid_pod:7,mul_pre:4,mul_ris:10,mul_act:4,gra_pdf:7},total:39}
+  ],
+  'vilma|2026-05-11': [
+    {id:'pre_vi11_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'',up:'',nota:'ESIC: 3 pres interactiva + 8 Rise + 3 activ interactiva',
+      counts:{mul_pre:3,mul_ris:8,mul_act:3},total:14}
+  ],
+  'vilma|2026-05-18': [
+    {id:'pre_vi18_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'',up:'',nota:'ESIC: 3 Rise',
+      counts:{mul_ris:3},total:3}
+  ],
   'andres|2026-05-04': [
     {id:'pre_ju04_1',proyId:'usap',proyNombre:'USAP',color:'verde',
       curso:'',up:'',nota:'USAP: 10 Rise + 10 actividades + 1 ebook',
@@ -997,6 +1013,15 @@ var METAS_PRECARGADAS = {
     'Politécnica':  {entrega:0, aprobar:0},
     'UDLA':         {entrega:0, aprobar:0},
     'UMB':          {entrega:0, aprobar:0}
+  },
+  'vilma|2026-05-04': {
+    'ESIC':  {entrega:0, aprobar:0}
+  },
+  'vilma|2026-05-11': {
+    'ESIC':  {entrega:0, aprobar:0}
+  },
+  'vilma|2026-05-18': {
+    'ESIC':  {entrega:0, aprobar:0}
   },
   'andres|2026-05-04': {
     'USAP':       {entrega:0, aprobar:0},
