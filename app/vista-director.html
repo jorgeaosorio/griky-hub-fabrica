@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vista Director · Griky Fábrica</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#22304C; --navy2:#1a2539; --navy3:#131d2e;
+  --red:#FF2D55; --red2:#e01f45;
+  --green:#2BC168; --yellow:#F5A623; --gray:#667078;
+  --light:#F6F7FB; --mid:#E2E8F0; --white:#ffffff;
+  --r:12px; --sh:0 2px 14px rgba(34,48,76,.09);
+  --sh2:0 8px 28px rgba(34,48,76,.14);
+  --video-bg:rgba(255,45,85,.08); --video-bdr:rgba(255,45,85,.22); --video-txt:#FF2D55;
+  --multi-bg:rgba(245,166,35,.08); --multi-bdr:rgba(245,166,35,.25); --multi-txt:#D48B0A;
+  --graf-bg:rgba(43,193,104,.08); --graf-bdr:rgba(43,193,104,.22); --graf-txt:#1E9B50;
+  --di-bg:rgba(102,112,120,.08); --di-bdr:rgba(102,112,120,.22); --di-txt:#667078;
+  --impl-bg:rgba(34,48,76,.06); --impl-bdr:rgba(34,48,76,.15); --impl-txt:#22304C;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;background:var(--light);color:var(--navy);min-height:100vh;}
+h1,h2,h3{font-family:'Roboto',sans-serif;}
+
+/* TOPBAR */
+.topbar{background:var(--navy3);position:relative;overflow:hidden;}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green) 0%,var(--red) 100%);}
+.topbar-inner{position:relative;z-index:1;display:flex;align-items:center;padding:0 28px;height:56px;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--white);}
+.logo-name{font-weight:700;font-size:16px;color:var(--white);}
+.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.15);margin:0 4px;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-back{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;cursor:pointer;transition:all .2s;text-decoration:none;}
+.btn-back:hover{background:rgba(255,255,255,.08);color:var(--white);}
+
+/* WEEK NAV */
+.week-nav{background:var(--navy2);padding:14px 28px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap;}
+.week-btn{padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+.week-btn:hover{background:rgba(255,255,255,.1);color:var(--white);}
+.week-btn.active{background:var(--red);border-color:var(--red);color:var(--white);font-weight:700;}
+.week-nav-arrows{display:flex;gap:6px;}
+.week-arrow{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.week-arrow:hover{background:rgba(255,255,255,.1);color:var(--white);}
+.week-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+
+/* KPI STRIP */
+.kpi-strip{display:flex;gap:12px;padding:20px 28px;flex-wrap:wrap;}
+.kpi-card{flex:1;min-width:160px;background:var(--white);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);border:1px solid var(--mid);}
+.kpi-val{font-size:28px;font-weight:800;line-height:1;}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gray);margin-top:4px;}
+.kpi-sub{font-size:11px;color:var(--gray);margin-top:2px;}
+
+/* PM CARDS */
+.pm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;padding:0 28px 28px;}
+.pm-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--mid);overflow:hidden;transition:box-shadow .2s;}
+.pm-card:hover{box-shadow:var(--sh2);}
+.pm-header{padding:16px 20px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--mid);}
+.pm-avatar{width:40px;height:40px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:var(--white);flex-shrink:0;}
+.pm-name{font-size:16px;font-weight:700;}
+.pm-total-badge{margin-left:auto;background:var(--navy);color:var(--white);padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;}
+
+/* VERTICAL BARS */
+.vert-section{padding:12px 20px 16px;}
+.vert-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.vert-label{width:80px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+.vert-bar-bg{flex:1;height:24px;background:var(--light);border-radius:6px;overflow:hidden;position:relative;}
+.vert-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;color:var(--white);min-width:2px;transition:width .4s ease;}
+.vert-bar.video{background:var(--red);}
+.vert-bar.multi{background:var(--yellow);}
+.vert-bar.graf{background:var(--green);}
+.vert-bar.di{background:var(--gray);}
+.vert-bar.impl{background:var(--navy);}
+.vert-count{font-size:12px;font-weight:700;min-width:30px;text-align:right;}
+
+/* TYPE PILLS */
+.type-pills{padding:0 20px 14px;display:flex;flex-wrap:wrap;gap:5px;}
+.type-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;border:1px solid;}
+.type-pill.video{background:var(--video-bg);border-color:var(--video-bdr);color:var(--video-txt);}
+.type-pill.multi{background:var(--multi-bg);border-color:var(--multi-bdr);color:var(--multi-txt);}
+.type-pill.graf{background:var(--graf-bg);border-color:var(--graf-bdr);color:var(--graf-txt);}
+.type-pill.di{background:var(--di-bg);border-color:var(--di-bdr);color:var(--di-txt);}
+.type-pill.impl{background:var(--impl-bg);border-color:var(--impl-bdr);color:var(--impl-txt);}
+.type-pill-count{font-weight:800;}
+
+/* CLIENT TAGS */
+.client-section{padding:0 20px 16px;}
+.client-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(34,48,76,.05);border:1px solid var(--mid);margin:0 4px 4px 0;}
+.client-tag-count{font-weight:800;color:var(--red);}
+
+/* NO DATA */
+.no-data{text-align:center;padding:60px 28px;color:var(--gray);}
+.no-data-icon{font-size:48px;margin-bottom:12px;}
+.no-data-text{font-size:14px;}
+
+/* TOTALS TABLE */
+.totals-section{padding:0 28px 28px;}
+.totals-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--mid);overflow:hidden;}
+.totals-title{padding:16px 20px 12px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);border-bottom:1px solid var(--mid);}
+.totals-table{width:100%;border-collapse:collapse;font-size:12px;}
+.totals-table th{background:var(--light);padding:8px 12px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);border-bottom:1px solid var(--mid);}
+.totals-table td{padding:8px 12px;border-bottom:1px solid rgba(226,232,240,.5);}
+.totals-table tr:last-child td{border-bottom:none;}
+.totals-table .row-total{font-weight:800;background:rgba(34,48,76,.03);}
+.totals-table .col-pm{font-weight:700;min-width:120px;}
+.totals-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+
+@media(max-width:600px){
+  .pm-grid{grid-template-columns:1fr;padding:0 12px 12px;}
+  .kpi-strip{padding:12px;gap:8px;}
+  .kpi-card{min-width:100px;padding:10px 12px;}
+  .kpi-val{font-size:22px;}
+  .week-nav{padding:10px 12px;}
+  .totals-section{padding:0 12px 12px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="griky-fabrica-hub.html">
+      <div class="logo-mark">G</div>
+      <div class="logo-name">Griky</div>
+    </a>
+    <div class="logo-sep"></div>
+    <div class="logo-sub">Vista Director · Fábrica</div>
+    <div class="topbar-right">
+      <a class="btn-back" href="griky-fabrica-hub.html">← Hub</a>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK NAV -->
+<div class="week-nav">
+  <div class="week-label">Semana</div>
+  <div class="week-nav-arrows">
+    <button class="week-arrow" id="btnPrev" onclick="navWeek(-1)">◀</button>
+    <button class="week-arrow" id="btnNext" onclick="navWeek(1)">▶</button>
+  </div>
+  <div id="weekBtns" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip" id="kpiStrip"></div>
+
+<!-- PM GRID -->
+<div class="pm-grid" id="pmGrid"></div>
+
+<!-- TOTALS TABLE -->
+<div class="totals-section" id="totalsSection"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATA — synced from griky-planeacion-semanal.html
+// ═══════════════════════════════════════════════════════════════════════════════
+var PM_ORDER = ['margarita','marcela','sophia','andres','jorge','jean'];
+var PM_NOMBRES = {
+  margarita:'Margarita Rosales', marcela:'Marcela Osorio', sophia:'Sophia Pacheco',
+  andres:'Juan Ochoa', jorge:'Jorge Osorio', jean:'Jean Villegas'
+};
+var PM_INICIALES = {
+  margarita:'MR', marcela:'MO', sophia:'SP', andres:'JO', jorge:'JO', jean:'JV'
+};
+
+var REC_AREA = {
+  di_cont:'di',di_guia:'di',
+  vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',vid_pre:'video',
+  mul_sto:'multimedia',mul_ris:'multimedia',mul_pre:'multimedia',mul_inf:'multimedia',mul_act:'multimedia',mul_vst:'multimedia',mul_gen:'multimedia',mul_dis:'multimedia',
+  gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico',
+  impl_lms:'impl'
+};
+var REC_LABEL = {
+  di_cont:'Contenidos teóricos',di_guia:'Guías DI',
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',vid_pre:'Video Premiere',
+  mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Pres. interactiva',mul_inf:'Infogr. interactiva',mul_act:'Activ. interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño plataforma',
+  gra_inf:'Infografía',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Pres. estándar',
+  impl_lms:'Disp. LMS'
+};
+var AREA_LABEL = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico',di:'DI',impl:'Implementación'};
+var AREA_CSS = {video:'video',multimedia:'multi',grafico:'graf',di:'di',impl:'impl'};
+
+var PLAN_PRECARGADO = {
+  'margarita|2026-05-04': [
+    {proyNombre:'APUS',counts:{vid_ava:20,mul_pre:120,vid_aud:85,mul_dis:180,gra_pdf:48},total:453},
+    {proyNombre:'Universidad Europea',counts:{vid_ava:93,vid_std:2,vid_int:25,mul_pre:35,gra_ebo:85,gra_inf:15,gra_pdf:7},total:262}
+  ],
+  'margarita|2026-05-11': [
+    {proyNombre:'APUS',counts:{vid_ava:16,vid_pod:8,mul_pre:105,vid_aud:60,mul_dis:135,gra_pdf:32},total:356},
+    {proyNombre:'Universidad Europea',counts:{vid_ava:74,vid_std:6,vid_int:16,mul_pre:28,gra_ebo:75,gra_inf:21,gra_pdf:12},total:232}
+  ],
+  'margarita|2026-05-18': [
+    {proyNombre:'APUS',counts:{vid_ava:16,mul_gen:2,mul_pre:102,vid_aud:63,mul_dis:100,gra_pdf:32},total:315},
+    {proyNombre:'Universidad Europea',counts:{vid_ava:76,vid_std:4,vid_int:16,mul_pre:21,gra_ebo:85,gra_inf:21,gra_pdf:13},total:236}
+  ],
+  'margarita|2026-05-25': [
+    {proyNombre:'APUS',counts:{vid_ava:2,mul_gen:20,mul_pre:100,vid_aud:103,mul_dis:180,gra_pdf:40},total:445},
+    {proyNombre:'Universidad Europea',counts:{vid_ava:76,vid_std:5,vid_int:15,mul_pre:35,gra_ebo:110,gra_inf:27,gra_pdf:14},total:282}
+  ],
+  'sophia|2026-05-04': [
+    {proyNombre:'ESAM',counts:{vid_std:20,vid_ava:15,mul_ris:48,mul_inf:19,gra_inf:10},total:112},
+    {proyNombre:'UDLA',counts:{mul_sto:10,mul_act:29,mul_pre:7,gra_inf:14},total:60}
+  ],
+  'sophia|2026-05-11': [
+    {proyNombre:'ESAM',counts:{vid_ava:29,vid_std:29,mul_ris:28,mul_inf:12,gra_inf:3,gra_ebo:49,gra_pdf:20},total:170},
+    {proyNombre:'Indoamérica',counts:{vid_std:8,gra_ebo:6,gra_inf:6},total:20},
+    {proyNombre:'Politécnica',counts:{vid_std:1,mul_ris:16},total:17},
+    {proyNombre:'UDLA',counts:{mul_sto:8,mul_pre:1,gra_ban:2},total:11},
+    {proyNombre:'UMB',counts:{vid_pod:8,vid_std:13},total:21}
+  ],
+  'marcela|2026-05-04': [
+    {proyNombre:'ESIC',counts:{vid_std:7,vid_pod:7,mul_pre:4,mul_ris:10,mul_act:4,gra_pdf:7},total:39}
+  ],
+  'marcela|2026-05-11': [
+    {proyNombre:'ESIC',counts:{mul_pre:3,mul_ris:8,mul_act:3},total:14}
+  ],
+  'marcela|2026-05-18': [
+    {proyNombre:'ESIC',counts:{mul_ris:3},total:3}
+  ],
+  'andres|2026-05-04': [
+    {proyNombre:'USAP',counts:{mul_ris:10,mul_act:10,gra_ebo:1},total:21},
+    {proyNombre:'Externado',counts:{vid_pre:9},total:9},
+    {proyNombre:'Cesún',counts:{vid_ava:2},total:2}
+  ],
+  'andres|2026-05-11': [
+    {proyNombre:'Externado',counts:{vid_pre:8},total:8},
+    {proyNombre:'USAP',counts:{mul_ris:2,mul_act:4},total:6}
+  ],
+  'andres|2026-05-18': [
+    {proyNombre:'Externado',counts:{vid_pre:6},total:6},
+    {proyNombre:'USAP',counts:{vid_std:8},total:8}
+  ],
+  'jorge|2026-05-04': [
+    {proyNombre:'Vértice',counts:{vid_pre:16},total:16}
+  ],
+  'jorge|2026-05-11': [
+    {proyNombre:'Vértice',counts:{vid_pre:13},total:13},
+    {proyNombre:'EIA',counts:{mul_ris:2,mul_gen:1,gra_inf:8},total:11}
+  ],
+  'jorge|2026-05-18': [
+    {proyNombre:'Vértice',counts:{vid_pre:65},total:65},
+    {proyNombre:'EIA',counts:{mul_ris:10,mul_gen:5,gra_inf:22},total:37}
+  ],
+  'jorge|2026-05-25': [
+    {proyNombre:'Vértice',counts:{vid_pre:34},total:34},
+    {proyNombre:'EIA',counts:{vid_std:33,vid_pod:15,mul_ris:3,mul_gen:12},total:63}
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LOGIC
+// ═══════════════════════════════════════════════════════════════════════════════
+var allWeeks = [];
+var currentWeekIdx = 0;
+
+function init(){
+  // Discover all unique weeks
+  var wkSet = {};
+  Object.keys(PLAN_PRECARGADO).forEach(function(k){
+    var dt = k.split('|')[1];
+    wkSet[dt] = true;
+  });
+  allWeeks = Object.keys(wkSet).sort();
+  if(!allWeeks.length){ document.getElementById('pmGrid').innerHTML='<div class="no-data"><div class="no-data-icon">📋</div><div class="no-data-text">No hay planeaciones precargadas.</div></div>'; return; }
+
+  // Default to current week or first
+  var today = new Date();
+  var todayMon = new Date(today); todayMon.setDate(today.getDate() - today.getDay() + 1);
+  var todayStr = todayMon.toISOString().slice(0,10);
+  var bestIdx = allWeeks.indexOf(todayStr);
+  currentWeekIdx = bestIdx >= 0 ? bestIdx : 0;
+
+  renderWeekBtns();
+  renderWeek();
+}
+
+function renderWeekBtns(){
+  var container = document.getElementById('weekBtns');
+  container.innerHTML = '';
+  allWeeks.forEach(function(wk, idx){
+    var d = new Date(wk + 'T12:00:00');
+    var label = d.toLocaleDateString('es-CO',{day:'numeric',month:'short'});
+    var btn = document.createElement('button');
+    btn.className = 'week-btn' + (idx === currentWeekIdx ? ' active' : '');
+    btn.textContent = label;
+    btn.onclick = function(){ currentWeekIdx = idx; renderWeekBtns(); renderWeek(); };
+    container.appendChild(btn);
+  });
+}
+
+function navWeek(dir){
+  currentWeekIdx = Math.max(0, Math.min(allWeeks.length-1, currentWeekIdx + dir));
+  renderWeekBtns();
+  renderWeek();
+}
+
+function renderWeek(){
+  var weekDate = allWeeks[currentWeekIdx];
+  var pmData = {}; // pmKey -> {total, areas:{}, types:{}, clients:{}}
+
+  PM_ORDER.forEach(function(pm){
+    var key = pm + '|' + weekDate;
+    var bloques = PLAN_PRECARGADO[key];
+    if(!bloques) return;
+
+    var d = {total:0, areas:{}, types:{}, clients:{}};
+    bloques.forEach(function(b){
+      d.total += (b.total||0);
+      if(b.proyNombre) d.clients[b.proyNombre] = (d.clients[b.proyNombre]||0) + (b.total||0);
+      var c = b.counts || {};
+      Object.keys(c).forEach(function(t){
+        d.types[t] = (d.types[t]||0) + c[t];
+        var area = REC_AREA[t] || 'otro';
+        d.areas[area] = (d.areas[area]||0) + c[t];
+      });
+    });
+    pmData[pm] = d;
+  });
+
+  renderKPIs(pmData);
+  renderPMCards(pmData);
+  renderTotalsTable(pmData, weekDate);
+}
+
+function renderKPIs(pmData){
+  var totalRec = 0, totalPMs = 0;
+  var areasTot = {};
+  Object.keys(pmData).forEach(function(pm){
+    var d = pmData[pm];
+    totalRec += d.total;
+    totalPMs++;
+    Object.keys(d.areas).forEach(function(a){
+      areasTot[a] = (areasTot[a]||0) + d.areas[a];
+    });
+  });
+  var totalClients = {};
+  Object.keys(pmData).forEach(function(pm){
+    Object.keys(pmData[pm].clients).forEach(function(c){ totalClients[c]=true; });
+  });
+
+  var html = '';
+  html += '<div class="kpi-card"><div class="kpi-val" style="color:var(--red);">'+totalRec+'</div><div class="kpi-label">Recursos totales</div><div class="kpi-sub">'+totalPMs+' PMs activos</div></div>';
+  html += '<div class="kpi-card"><div class="kpi-val" style="color:var(--video-txt);">'+(areasTot.video||0)+'</div><div class="kpi-label">Video</div></div>';
+  html += '<div class="kpi-card"><div class="kpi-val" style="color:var(--multi-txt);">'+(areasTot.multimedia||0)+'</div><div class="kpi-label">Multimedia</div></div>';
+  html += '<div class="kpi-card"><div class="kpi-val" style="color:var(--graf-txt);">'+(areasTot.grafico||0)+'</div><div class="kpi-label">Gráfico</div></div>';
+  html += '<div class="kpi-card"><div class="kpi-val">'+Object.keys(totalClients).length+'</div><div class="kpi-label">Clientes</div></div>';
+  document.getElementById('kpiStrip').innerHTML = html;
+}
+
+function renderPMCards(pmData){
+  var grid = document.getElementById('pmGrid');
+  if(!Object.keys(pmData).length){
+    grid.innerHTML = '<div class="no-data"><div class="no-data-icon">📋</div><div class="no-data-text">Ningún PM tiene planeación para esta semana.</div></div>';
+    return;
+  }
+
+  var html = '';
+  PM_ORDER.forEach(function(pm){
+    var d = pmData[pm];
+    if(!d) return;
+
+    var maxArea = 0;
+    Object.keys(d.areas).forEach(function(a){ if(d.areas[a]>maxArea) maxArea=d.areas[a]; });
+
+    html += '<div class="pm-card">';
+    // Header
+    html += '<div class="pm-header">';
+    html += '<div class="pm-avatar">'+(PM_INICIALES[pm]||'?')+'</div>';
+    html += '<div><div class="pm-name">'+(PM_NOMBRES[pm]||pm)+'</div></div>';
+    html += '<div class="pm-total-badge">'+d.total+' rec</div>';
+    html += '</div>';
+
+    // Vertical bars
+    html += '<div class="vert-section">';
+    ['video','multimedia','grafico'].forEach(function(area){
+      var val = d.areas[area] || 0;
+      if(val === 0 && maxArea === 0) return;
+      var pct = maxArea > 0 ? Math.max(2, (val/maxArea)*100) : 0;
+      if(val === 0) pct = 0;
+      html += '<div class="vert-row">';
+      html += '<div class="vert-label" style="color:var(--'+AREA_CSS[area]+'-txt);">'+AREA_LABEL[area]+'</div>';
+      html += '<div class="vert-bar-bg"><div class="vert-bar '+AREA_CSS[area]+'" style="width:'+pct+'%;">'+(val>0 && pct>15 ? val : '')+'</div></div>';
+      html += '<div class="vert-count">'+val+'</div>';
+      html += '</div>';
+    });
+    // DI + Impl if present
+    ['di','impl'].forEach(function(area){
+      var val = d.areas[area] || 0;
+      if(val === 0) return;
+      var pct = maxArea > 0 ? Math.max(2, (val/maxArea)*100) : 0;
+      html += '<div class="vert-row">';
+      html += '<div class="vert-label" style="color:var(--'+AREA_CSS[area]+'-txt);">'+AREA_LABEL[area]+'</div>';
+      html += '<div class="vert-bar-bg"><div class="vert-bar '+AREA_CSS[area]+'" style="width:'+pct+'%;">'+(val>0 && pct>15 ? val : '')+'</div></div>';
+      html += '<div class="vert-count">'+val+'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // Type pills
+    var sortedTypes = Object.keys(d.types).sort(function(a,b){ return d.types[b]-d.types[a]; });
+    if(sortedTypes.length){
+      html += '<div class="type-pills">';
+      sortedTypes.forEach(function(t){
+        var area = REC_AREA[t] || 'di';
+        var css = AREA_CSS[area] || 'di';
+        html += '<span class="type-pill '+css+'"><span class="type-pill-count">'+d.types[t]+'</span> '+(REC_LABEL[t]||t)+'</span>';
+      });
+      html += '</div>';
+    }
+
+    // Clients
+    var clients = Object.keys(d.clients).sort(function(a,b){ return d.clients[b]-d.clients[a]; });
+    if(clients.length){
+      html += '<div class="client-section">';
+      clients.forEach(function(c){
+        html += '<span class="client-tag"><span class="client-tag-count">'+d.clients[c]+'</span> '+c+'</span>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function renderTotalsTable(pmData, weekDate){
+  var container = document.getElementById('totalsSection');
+  var activePMs = PM_ORDER.filter(function(pm){ return !!pmData[pm]; });
+  if(!activePMs.length){ container.innerHTML=''; return; }
+
+  var areas = ['video','multimedia','grafico','di','impl'];
+  var html = '<div class="totals-card">';
+  html += '<div class="totals-title">Resumen comparativo de la semana</div>';
+  html += '<table class="totals-table"><thead><tr>';
+  html += '<th class="col-pm">PM</th><th class="num">Video</th><th class="num">Multi</th><th class="num">Gráfico</th><th class="num">DI</th><th class="num">Impl</th><th class="num" style="font-weight:800;">Total</th>';
+  html += '</tr></thead><tbody>';
+
+  var colTotals = {video:0,multimedia:0,grafico:0,di:0,impl:0,total:0};
+
+  activePMs.forEach(function(pm){
+    var d = pmData[pm];
+    html += '<tr>';
+    html += '<td class="col-pm">'+(PM_NOMBRES[pm]||pm)+'</td>';
+    areas.forEach(function(a){
+      var v = d.areas[a]||0;
+      colTotals[a] += v;
+      html += '<td class="num">'+(v||'–')+'</td>';
+    });
+    colTotals.total += d.total;
+    html += '<td class="num" style="font-weight:800;">'+d.total+'</td>';
+    html += '</tr>';
+  });
+
+  html += '<tr class="row-total"><td class="col-pm">TOTAL FÁBRICA</td>';
+  areas.forEach(function(a){ html += '<td class="num">'+colTotals[a]+'</td>'; });
+  html += '<td class="num" style="font-weight:800;color:var(--red);">'+colTotals.total+'</td></tr>';
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+init();
+</script>
+</body>
+</html>

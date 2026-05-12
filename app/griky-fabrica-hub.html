@@ -704,6 +704,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
       <button class="nav-tab" onclick="openModule('griky-planeacion-semanal.html');setTab(this)">Planeación</button>
       <button class="nav-tab" onclick="openModule('reporte-semanal-pm-griky.html');setTab(this)">Seguimiento</button>
       <button class="nav-tab" onclick="openModule('griky-okrs.html');setTab(this)">OKRs</button>
+      <button class="nav-tab" onclick="openModule('vista-director.html');setTab(this)" style="color:var(--yellow);">Director</button>
     </nav>
 
     <div class="topbar-right">
@@ -911,6 +912,13 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
           <div class="mod-status live">✅ Disponible</div>
         </div>
 
+        <div class="mod-card" onclick="openModule('vista-director.html')">
+          <div class="mod-icon yellow">👁️</div>
+          <div class="mod-name">Vista Director</div>
+          <div class="mod-desc">Planeación consolidada de toda la Fábrica: todos los PMs, verticales, clientes y recursos por semana.</div>
+          <div class="mod-status live">✅ Disponible</div>
+        </div>
+
         <div class="mod-card disabled">
           <div class="mod-icon yellow">🚦</div>
           <div class="mod-name">Alistamiento</div>
@@ -995,6 +1003,9 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
         </a>
         <a class="quick-link" href="griky-dashboard.html">
           <span class="quick-link-icon">📊</span> Ver dashboard
+        </a>
+        <a class="quick-link" href="vista-director.html">
+          <span class="quick-link-icon">👁️</span> Vista Director
         </a>
         <a class="quick-link" href="griky-okrs.html">
           <span class="quick-link-icon">🎯</span> OKRs &amp; KPIs
