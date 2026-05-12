@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hub Monday · Griky Fábrica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #22304C;
+      --coral: #FF2D55;
+      --green: #2BC168;
+      --yellow: #F5A623;
+      --red: #E23D49;
+      --gray: #B3B8C5;
+      --bg: #F5F7FA;
+      --card: #FFFFFF;
+      --border: #E2E6EE;
+      --text: #1F2937;
+      --muted: #6B7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    header .subtitle {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+    header .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 32px;
+    }
+    button, .btn {
+      background: var(--navy);
+      color: white;
+      border: 0;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    button.ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      min-width: 280px;
+    }
+    .config-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .config-card label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .stat .label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .stat .value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.1;
+    }
+    .stat .sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .semaforo-bar {
+      display: flex;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+      background: #EEF2F7;
+    }
+    .semaforo-bar .g { background: var(--green); }
+    .semaforo-bar .y { background: var(--yellow); }
+    .semaforo-bar .r { background: var(--red); }
+    .semaforo-bar .gr { background: var(--gray); }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .section-header .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Dot semáforo */
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .dot.green { background: var(--green); }
+    .dot.yellow { background: var(--yellow); }
+    .dot.red { background: var(--red); }
+    .dot.gray { background: var(--gray); }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      background: #EEF2F7;
+      color: var(--navy);
+      margin: 2px 2px 2px 0;
+    }
+    .pill.green { background: #E7F8EE; color: #1B7C44; }
+    .pill.yellow { background: #FFF4DD; color: #946000; }
+    .pill.red { background: #FFE5EB; color: #B30025; }
+    .pill.gray { background: #EEF2F7; color: #5A6474; }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th {
+      background: #F8FAFC;
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tbody tr:hover { background: #FAFBFD; cursor: default; }
+    td a { color: var(--navy); text-decoration: none; }
+    td a:hover { text-decoration: underline; }
+
+    /* Client row */
+    .client-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .client-row:hover { background: #EEF2F7; }
+    .client-row .name { font-weight: 500; color: var(--navy); }
+    .client-row .meta { font-size: 12px; color: var(--muted); }
+    .client-details {
+      border: 1px solid var(--border);
+      border-top: 0;
+      border-radius: 0 0 8px 8px;
+      padding: 12px 16px;
+      margin-top: -7px;
+      margin-bottom: 8px;
+      background: white;
+    }
+
+    .empty, .loading, .error {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .error { color: #B30025; background: #FFE5EB; border-radius: 6px; }
+    .loading { font-style: italic; }
+
+    .days-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .days-badge.overdue { background: #FFE5EB; color: #B30025; }
+    .days-badge.soon { background: #FFF4DD; color: #946000; }
+    .days-badge.later { background: #EEF2F7; color: #5A6474; }
+
+    .progress-bar {
+      height: 6px;
+      background: #EEF2F7;
+      border-radius: 3px;
+      overflow: hidden;
+      width: 100px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .progress-bar .fill { height: 100%; background: var(--navy); }
+
+    @media (max-width: 720px) {
+      main { padding: 16px; }
+      .section { padding: 14px 16px; }
+      header { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Hub Monday · Griky Fábrica</h1>
+      <div class="subtitle" id="subtitle">Reportería en vivo desde griky-cast.monday.com</div>
+    </div>
+    <div class="actions">
+      <button class="ghost" id="refreshBtn">⟳ Refrescar</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="config-card">
+      <label for="workerUrl">URL del Worker:</label>
+      <input type="text" id="workerUrl" placeholder="https://griky-monday-discovery.jorge-osorio-c14.workers.dev" />
+      <button id="loadBtn">Cargar</button>
+      <span id="lastUpdate" style="font-size:12px;color:var(--muted);"></span>
+    </div>
+
+    <div id="errorBox" class="error" style="display:none;"></div>
+    <div id="loadingBox" class="loading" style="display:none;">Consultando Monday… puede tardar unos segundos si hay muchos cursos.</div>
+
+    <div id="dashboard" style="display:none;">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="label">Cursos totales</div>
+          <div class="value" id="statCursos">—</div>
+          <div class="semaforo-bar" id="statSemaforoBar"></div>
+          <div class="sub" id="statSemaforoLabel"></div>
+        </div>
+        <div class="stat">
+          <div class="label">Clientes</div>
+          <div class="value" id="statClientes">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Recursos</div>
+          <div class="value" id="statRecursos">—</div>
+          <div class="sub" id="statRecursosEtapas"></div>
+        </div>
+        <div class="stat">
+          <div class="label">UDDI (contador)</div>
+          <div class="value" id="statUddi">—</div>
+          <div class="sub">ítems totales del board</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>Semáforo por cliente</h2>
+          <div class="hint">Click en un cliente para ver sus cursos</div>
+        </div>
+        <div id="clientList"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>Próximas fechas de cierre</h2>
+          <div class="hint">Basado en FECHA REAL APROBACIÓN CURSO (o FECHA REAL CIERRE PRODUCCIÓN)</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Curso</th>
+              <th>PM</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="fechasBody"></tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>Carga por PM</h2>
+          <div class="hint">Cursos activos asignados por Project Manager</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>PM</th>
+              <th>Cursos activos</th>
+              <th>Distribución semáforo</th>
+            </tr>
+          </thead>
+          <tbody id="pmBody"></tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>Recursos (subelementos) por etapa de producción</h2>
+          <div class="hint">Conteo agregado desde el board "Subelementos de MASTER CONTENIDO"</div>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Etapa</th><th>Cantidad</th></tr>
+          </thead>
+          <tbody id="etapasBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const els = {
+      workerUrl: document.getElementById('workerUrl'),
+      loadBtn: document.getElementById('loadBtn'),
+      refreshBtn: document.getElementById('refreshBtn'),
+      errorBox: document.getElementById('errorBox'),
+      loadingBox: document.getElementById('loadingBox'),
+      dashboard: document.getElementById('dashboard'),
+      lastUpdate: document.getElementById('lastUpdate'),
+      statCursos: document.getElementById('statCursos'),
+      statClientes: document.getElementById('statClientes'),
+      statRecursos: document.getElementById('statRecursos'),
+      statUddi: document.getElementById('statUddi'),
+      statSemaforoBar: document.getElementById('statSemaforoBar'),
+      statSemaforoLabel: document.getElementById('statSemaforoLabel'),
+      statRecursosEtapas: document.getElementById('statRecursosEtapas'),
+      clientList: document.getElementById('clientList'),
+      fechasBody: document.getElementById('fechasBody'),
+      pmBody: document.getElementById('pmBody'),
+      etapasBody: document.getElementById('etapasBody'),
+    };
+
+    const DEFAULT_WORKER = 'https://griky-monday-discovery.jorge-osorio-c14.workers.dev';
+    const SAVED_KEY = 'griky_hub_worker_url';
+
+    els.workerUrl.value = localStorage.getItem(SAVED_KEY) || DEFAULT_WORKER;
+
+    els.loadBtn.addEventListener('click', loadHub);
+    els.refreshBtn.addEventListener('click', loadHub);
+    els.workerUrl.addEventListener('keydown', (e) => { if (e.key === 'Enter') loadHub(); });
+
+    async function loadHub() {
+      const url = els.workerUrl.value.trim().replace(/\/$/, '');
+      if (!url) { showError('Pega la URL del Worker.'); return; }
+      localStorage.setItem(SAVED_KEY, url);
+
+      els.errorBox.style.display = 'none';
+      els.dashboard.style.display = 'none';
+      els.loadingBox.style.display = 'block';
+      els.loadBtn.disabled = true;
+      els.refreshBtn.disabled = true;
+
+      try {
+        const res = await fetch(url + '/hub');
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Respuesta inválida');
+        render(data);
+        els.dashboard.style.display = 'block';
+      } catch (err) {
+        showError('No se pudo cargar: ' + err.message);
+      } finally {
+        els.loadingBox.style.display = 'none';
+        els.loadBtn.disabled = false;
+        els.refreshBtn.disabled = false;
+      }
+    }
+
+    function render(data) {
+      els.lastUpdate.textContent = 'Actualizado: ' + new Date(data.generated_at).toLocaleString();
+
+      const s = data.summary;
+      els.statCursos.textContent = s.total_cursos;
+      els.statClientes.textContent = s.total_clientes;
+      els.statRecursos.textContent = s.total_recursos;
+      els.statUddi.textContent = data.uddi.items_count;
+
+      renderSemaforoBar(s.semaforo_global, s.total_cursos);
+      renderClientes(data.clientes);
+      renderFechas(data.proximas_fechas_cierre);
+      renderPM(data.carga_pm);
+      renderEtapas(data.recursos);
+    }
+
+    function renderSemaforoBar(sem, total) {
+      if (!total) {
+        els.statSemaforoBar.innerHTML = '';
+        els.statSemaforoLabel.textContent = '';
+        return;
+      }
+      const pct = (n) => ((n || 0) / total * 100).toFixed(1) + '%';
+      els.statSemaforoBar.innerHTML =
+        `<div class="g" style="width:${pct(sem.green)}"></div>` +
+        `<div class="y" style="width:${pct(sem.yellow)}"></div>` +
+        `<div class="r" style="width:${pct(sem.red)}"></div>` +
+        `<div class="gr" style="width:${pct(sem.gray)}"></div>`;
+      els.statSemaforoLabel.innerHTML =
+        `<span class="dot green"></span>${sem.green||0} &nbsp;` +
+        `<span class="dot yellow"></span>${sem.yellow||0} &nbsp;` +
+        `<span class="dot red"></span>${sem.red||0} &nbsp;` +
+        `<span class="dot gray"></span>${sem.gray||0}`;
+    }
+
+    function renderClientes(clientes) {
+      if (!clientes || !clientes.length) {
+        els.clientList.innerHTML = '<div class="empty">Sin datos de clientes.</div>';
+        return;
+      }
+      els.clientList.innerHTML = clientes.map((c, idx) => {
+        const a = c.agregado;
+        return `
+          <div class="client-row" data-idx="${idx}">
+            <div>
+              <div class="name">${escapeHtml(c.nombre)}</div>
+              <div class="meta">${a.total} cursos · Avance promedio ${a.avance_promedio}%</div>
+            </div>
+            <div>
+              <span class="pill green"><span class="dot green"></span>${a.green||0}</span>
+              <span class="pill yellow"><span class="dot yellow"></span>${a.yellow||0}</span>
+              <span class="pill red"><span class="dot red"></span>${a.red||0}</span>
+              <span class="pill gray"><span class="dot gray"></span>${a.gray||0}</span>
+            </div>
+          </div>
+          <div class="client-details" id="client-details-${idx}" style="display:none;">
+            ${renderCursosTable(c.cursos)}
+          </div>
+        `;
+      }).join('');
+      els.clientList.querySelectorAll('.client-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const idx = row.dataset.idx;
+          const d = document.getElementById('client-details-' + idx);
+          d.style.display = (d.style.display === 'none') ? 'block' : 'none';
+        });
+      });
+    }
+
+    function renderCursosTable(cursos) {
+      return `
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Curso</th>
+              <th>Código</th>
+              <th>PM</th>
+              <th>Avance</th>
+              <th>Revisión final cliente</th>
+              <th>Fecha cierre</th>
+              <th>Monday</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${cursos.map(c => `
+              <tr>
+                <td><span class="dot ${c.semaforo}"></span></td>
+                <td>${escapeHtml(c.nombre)}</td>
+                <td>${escapeHtml(c.codigo || '—')}</td>
+                <td>${(c.pm||[]).map(escapeHtml).join(', ') || '—'}</td>
+                <td>
+                  <span class="progress-bar"><span class="fill" style="width:${c.avance||0}%;"></span></span>
+                  ${c.avance != null ? c.avance + '%' : '—'}
+                </td>
+                <td>${escapeHtml(c.revision_final_cliente || '—')}</td>
+                <td>${fmtDate(c.fecha_aprobacion) || fmtDate(c.fecha_cierre_produccion) || '—'}</td>
+                <td><a href="${c.monday_url}" target="_blank">abrir ↗</a></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderFechas(fechas) {
+      if (!fechas || !fechas.length) {
+        els.fechasBody.innerHTML = '<tr><td colspan="5" class="empty">Sin fechas próximas.</td></tr>';
+        return;
+      }
+      els.fechasBody.innerHTML = fechas.map(f => {
+        const badge = f.dias_restantes < 0
+          ? `<span class="days-badge overdue">vencido ${Math.abs(f.dias_restantes)}d</span>`
+          : f.dias_restantes <= 7
+            ? `<span class="days-badge soon">en ${f.dias_restantes}d</span>`
+            : `<span class="days-badge later">en ${f.dias_restantes}d</span>`;
+        return `
+          <tr>
+            <td>${escapeHtml(f.cliente)}</td>
+            <td>${escapeHtml(f.curso)}</td>
+            <td>${(f.pm||[]).map(escapeHtml).join(', ') || '—'}</td>
+            <td>${fmtDate(f.fecha)} ${badge}</td>
+            <td><span class="dot ${f.semaforo}"></span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderPM(pms) {
+      if (!pms || !pms.length) {
+        els.pmBody.innerHTML = '<tr><td colspan="3" class="empty">Sin PMs.</td></tr>';
+        return;
+      }
+      els.pmBody.innerHTML = pms.map(p => `
+        <tr>
+          <td>${escapeHtml(p.pm)}</td>
+          <td><strong>${p.cursos_activos}</strong></td>
+          <td>
+            <span class="pill green"><span class="dot green"></span>${p.green||0}</span>
+            <span class="pill yellow"><span class="dot yellow"></span>${p.yellow||0}</span>
+            <span class="pill red"><span class="dot red"></span>${p.red||0}</span>
+            <span class="pill gray"><span class="dot gray"></span>${p.gray||0}</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderEtapas(recursos) {
+      const porProduccion = recursos.por_produccion || {};
+      const rows = Object.entries(porProduccion).sort((a, b) => b[1] - a[1]);
+      if (!rows.length) {
+        els.etapasBody.innerHTML = '<tr><td colspan="2" class="empty">Sin recursos.</td></tr>';
+        return;
+      }
+      els.etapasBody.innerHTML = rows.map(([etapa, n]) => `
+        <tr><td>${escapeHtml(etapa)}</td><td><strong>${n}</strong></td></tr>
+      `).join('');
+      els.statRecursosEtapas.textContent = rows.length + ' etapas';
+    }
+
+    function fmtDate(d) {
+      if (!d) return '';
+      try {
+        return new Date(d).toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: '2-digit' });
+      } catch (_) { return d; }
+    }
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+    function showError(msg) {
+      els.errorBox.textContent = msg;
+      els.errorBox.style.display = 'block';
+    }
+
+    // Auto-cargar si hay URL guardada
+    if (els.workerUrl.value) loadHub();
+  </script>
+</body>
+</html>

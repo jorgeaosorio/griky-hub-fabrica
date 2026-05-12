@@ -230,6 +230,8 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
       <span class="logo-sub">Planeación Semanal</span>
     </div>
     <div class="topbar-right">
+      <span id="hubSyncBadge" style="font-size:11px;color:rgba(255,255,255,.5);opacity:.4;transition:opacity .3s;margin-right:6px;" aria-live="polite"></span>
+      <button class="btn-sm" onclick="guardarPlaneacionEnHub();var b=document.getElementById('hubSyncBadge');if(b){b.textContent='✓ Guardado en Hub · '+new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});b.style.opacity='1';}" aria-label="Guardar planeación en el Hub para que el Seguimiento la lea">💾 Guardar al Hub</button>
       <button class="btn-sm" onclick="window.location.href='griky-fabrica-hub.html'" aria-label="Volver al Hub">← Hub</button>
       <button class="btn-sm primary" onclick="exportMD()" aria-label="Exportar planeación en formato Markdown">⬇ Exportar .md</button>
     </div>
@@ -258,7 +260,7 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
   <div class="sh-sep" aria-hidden="true"></div>
   <div class="sh-field">
     <label class="sh-label" for="inputObjetivo">Objetivo de la semana</label>
-    <input class="sh-input" style="width:260px;" id="inputObjetivo" placeholder="Ej: Cerrar Lote 2 ESAM…"/>
+    <input class="sh-input" style="width:260px;" id="inputObjetivo" placeholder="Ej: Cerrar Lote 2 ESAM…" oninput="guardarPlaneacionEnHub()"/>
   </div>
 
   <div class="ritmo-strip">
@@ -937,6 +939,7 @@ function onPMChange(){
   updateRitmoChips();
   showPane('resumen');
   renderResumen();
+  guardarPlaneacionEnHub();
 
   // Llenar select de proyectos en el form
   var sel = document.getElementById('f_proyecto');
@@ -971,6 +974,7 @@ function onFechaChange(){
     updateRitmoChips();
     renderResumen();
     showPane('resumen');
+    guardarPlaneacionEnHub();
   }
 }
 
@@ -1101,6 +1105,7 @@ function saveBlock(){
     renderResumen();
     updateRitmoChips();
     showPane('resumen');
+    guardarPlaneacionEnHub();
   } catch(e) {
     console.error('Error en saveBlock:', e);
     alert('Error al guardar bloque: '+e.message);
@@ -1168,6 +1173,7 @@ function deleteBlock(id){
   updateRitmoChips();
   if(bloques.length===0) showPane('welcome');
   else showPane('resumen');
+  guardarPlaneacionEnHub();
 }
 
 // ── METAS DE CIERRE POR CLIENTE ───────────────────────────────────────────────
@@ -1201,6 +1207,75 @@ function updateMetasTotales(){
   if(elE) elE.textContent = totEnt;
   if(elA) elA.textContent = totApr;
   if(box) box.style.display = (totEnt+totApr>0)?'flex':'none';
+  guardarPlaneacionEnHub();
+}
+
+// ── PUENTE A SEGUIMIENTO (localStorage) ───────────────────────────────────────
+// El módulo de Seguimiento (reporte-semanal-pm-griky.html) lee de
+// localStorage.griky_planeaciones para precargar lo comprometido por el PM.
+// Esta función construye la estructura esperada y la escribe en cada cambio.
+function guardarPlaneacionEnHub(){
+  if(!pmKey || !pmNombre) return;
+  var fechaSel = document.getElementById('selFecha').value || '';
+
+  // Agrupar bloques por proyecto
+  var proyectosMap = {};
+  bloques.forEach(function(b){
+    if(!proyectosMap[b.proyId]){
+      var proyDef = proyectos.find(function(p){return p.id===b.proyId;}) || {};
+      var ficha = proyDef.ficha || {};
+      proyectosMap[b.proyId] = {
+        id: b.proyId,
+        nombre: b.proyNombre,
+        cliente: proyDef.cliente || b.proyNombre,
+        color: b.color || 'verde',
+        cierre: ficha.cierre || '',
+        inicio: ficha.inicio || '',
+        totalRecProyecto: ficha.totalRec || 0,
+        bloques: []
+      };
+    }
+    proyectosMap[b.proyId].bloques.push({
+      curso: b.curso || '',
+      up: b.up || '',
+      nota: b.nota || '',
+      counts: b.counts || {},
+      total: b.total || 0
+    });
+  });
+  var proyectosArr = Object.values(proyectosMap);
+
+  // Estructura para Seguimiento
+  var planObj = {
+    pm: pmNombre,
+    fecha: fechaSel,
+    semana: semanaStr,
+    objetivo: (document.getElementById('inputObjetivo')||{}).value || '',
+    proyectos: proyectosArr,
+    metasCliente: JSON.parse(JSON.stringify(metasCliente)),
+    generado: new Date().toISOString()
+  };
+
+  // Leer existentes; reemplazar si mismo PM+fecha, si no, agregar
+  var planes = [];
+  try { planes = JSON.parse(localStorage.getItem('griky_planeaciones')) || []; } catch(e){}
+  var idx = planes.findIndex(function(p){ return p.pm===pmNombre && p.fecha===fechaSel; });
+  if(idx>=0) planes[idx] = planObj; else planes.push(planObj);
+  localStorage.setItem('griky_planeaciones', JSON.stringify(planes));
+
+  // También exponer al Hub el usuario activo para que Seguimiento autodetecte
+  try {
+    localStorage.setItem('griky_hub_user', JSON.stringify({nombre: pmNombre, pmKey: pmKey}));
+  } catch(e){}
+
+  // Indicador visual (opcional)
+  var badge = document.getElementById('hubSyncBadge');
+  if(badge){
+    badge.textContent = '✓ Guardado en Hub · ' + new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+    badge.style.opacity = '1';
+    clearTimeout(window._hubBadgeTimer);
+    window._hubBadgeTimer = setTimeout(function(){ badge.style.opacity='.4'; }, 2200);
+  }
 }
 function renderMetasCliente(){
   var wrap = document.getElementById('metasClienteWrap');
@@ -1315,6 +1390,8 @@ function showPane(id){
 
 // ── EXPORT ────────────────────────────────────────────────────────────────────
 function exportMD(){
+  // Asegurar que la planeación esté en localStorage antes de exportar (puente al Seguimiento)
+  guardarPlaneacionEnHub();
   var objetivo = document.getElementById('inputObjetivo').value||'—';
   var fecha = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   var fn = 'planeacion-'+semanaStr.replace(/[^a-zA-Z0-9]/g,'-')+'-'+pmNombre.split(' ')[0].toLowerCase()+'.md';
