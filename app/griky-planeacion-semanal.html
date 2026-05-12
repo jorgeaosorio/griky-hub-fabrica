@@ -472,6 +472,14 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
                   <button class="counter-btn" onclick="changeCount('vid_int',1)">+</button>
                 </div>
               </div>
+              <div class="rec-item" id="ri_vid_pre">
+                <div class="rec-item-label">Video Premiere</div>
+                <div class="rec-counter">
+                  <button class="counter-btn" onclick="changeCount('vid_pre',-1)">−</button>
+                  <input type="number" min="0" class="counter-display" id="cd_vid_pre" value="0" onchange="manualCount('vid_pre',this)" onfocus="this.select()">
+                  <button class="counter-btn" onclick="changeCount('vid_pre',1)">+</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -780,21 +788,21 @@ var PM_PROYECTOS = {
 
 var ALL_REC_IDS = [
   'di_cont','di_guia',
-  'vid_web','vid_std','vid_ava','vid_pod','vid_aud','vid_pix','vid_bas','vid_int',
+  'vid_web','vid_std','vid_ava','vid_pod','vid_aud','vid_pix','vid_bas','vid_int','vid_pre',
   'mul_sto','mul_ris','mul_pre','mul_inf','mul_act','mul_vst','mul_gen','mul_dis',
   'gra_inf','gra_pdf','gra_ebo','gra_ban','gra_pre',
   'impl_lms'
 ];
 var REC_AREA = {
   di_cont:'di',di_guia:'di',
-  vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',
+  vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',vid_pre:'video',
   mul_sto:'multimedia',mul_ris:'multimedia',mul_pre:'multimedia',mul_inf:'multimedia',mul_act:'multimedia',mul_vst:'multimedia',mul_gen:'multimedia',mul_dis:'multimedia',
   gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico',
   impl_lms:'impl'
 };
 var REC_LABEL = {
   di_cont:'Contenidos teóricos',di_guia:'Guías recursos digitales',
-  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
+  vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',vid_pre:'Video Premiere',
   mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
   gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar',
   impl_lms:'Disponibilización LMS'
@@ -805,7 +813,7 @@ var AREA_LABEL = {di:'DI',video:'Video',multimedia:'Multimedia',grafico:'Gráfic
 var HH = {
   di_cont:1.5, di_guia:1.5,
   vid_web:2.5, vid_std:1.5, vid_ava:1.5, vid_pod:0.5,
-  vid_aud:2.5, vid_pix:8,   vid_bas:0.83, vid_int:2.5,
+  vid_aud:2.5, vid_pix:8,   vid_bas:0.83, vid_int:2.5, vid_pre:2.5,
   mul_sto:2.5, mul_ris:2.5, mul_pre:1.5, mul_inf:1.5,
   mul_act:0.5, mul_vst:2.5, mul_gen:1.5, mul_dis:1.5,
   gra_inf:0.83, gra_pdf:0.83, gra_ebo:1.5, gra_ban:0.5, gra_pre:0.83,
@@ -896,9 +904,33 @@ var PLAN_PRECARGADO = {
       counts:{vid_pod:8,vid_std:13},total:21}
   ],
   'jorge|2026-05-04': [
-    {id:'pre_jo_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
-      curso:'',up:'',nota:'Producción semana: 24 videos estándar + 12 PDFs',
-      counts:{vid_std:24,gra_pdf:12},total:36}
+    {id:'pre_jo04_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
+      curso:'',up:'',nota:'Vértice: 16 videos Premiere',
+      counts:{vid_pre:16},total:16}
+  ],
+  'jorge|2026-05-11': [
+    {id:'pre_jo11_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
+      curso:'',up:'',nota:'Vértice: 13 videos Premiere',
+      counts:{vid_pre:13},total:13},
+    {id:'pre_jo11_2',proyId:'eia_lideres',proyNombre:'EIA',color:'verde',
+      curso:'',up:'',nota:'EIA: 2 Rise + 1 genially + 8 infografías',
+      counts:{mul_ris:2,mul_gen:1,gra_inf:8},total:11}
+  ],
+  'jorge|2026-05-18': [
+    {id:'pre_jo18_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
+      curso:'',up:'',nota:'Vértice: 65 videos Premiere',
+      counts:{vid_pre:65},total:65},
+    {id:'pre_jo18_2',proyId:'eia_lideres',proyNombre:'EIA',color:'verde',
+      curso:'',up:'',nota:'EIA: 10 Rise + 5 genially + 22 infografías',
+      counts:{mul_ris:10,mul_gen:5,gra_inf:22},total:37}
+  ],
+  'jorge|2026-05-25': [
+    {id:'pre_jo25_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
+      curso:'',up:'',nota:'Vértice: 34 videos Premiere',
+      counts:{vid_pre:34},total:34},
+    {id:'pre_jo25_2',proyId:'eia_lideres',proyNombre:'EIA',color:'verde',
+      curso:'',up:'',nota:'EIA: 33 vid std + 15 podcast + 3 Rise + 12 genially',
+      counts:{vid_std:33,vid_pod:15,mul_ris:3,mul_gen:12},total:63}
   ]
 };
 
@@ -941,7 +973,19 @@ var METAS_PRECARGADAS = {
   },
   'jorge|2026-05-04': {
     'Vértice': {entrega:0, aprobar:0},
-    'EIA':     {entrega:1, aprobar:0}
+    'EIA':     {entrega:0, aprobar:0}
+  },
+  'jorge|2026-05-11': {
+    'Vértice': {entrega:0, aprobar:0},
+    'EIA':     {entrega:0, aprobar:0}
+  },
+  'jorge|2026-05-18': {
+    'Vértice': {entrega:0, aprobar:0},
+    'EIA':     {entrega:0, aprobar:0}
+  },
+  'jorge|2026-05-25': {
+    'Vértice': {entrega:0, aprobar:0},
+    'EIA':     {entrega:0, aprobar:0}
   }
 };
 
