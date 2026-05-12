@@ -28,7 +28,7 @@ Las apps se comunican via `localStorage` del navegador. No requieren servidor, b
 | `app/griky-dashboard.html` | Dashboard visual de todos los proyectos por PM | Director |
 | `app/griky-ficha-proyecto.html` | Ficha de proyecto (una vez por proyecto) | PM |
 | `app/griky-planeacion-semanal.html` | Planeacion semanal de recursos por bloque | PM |
-| `app/reporte-pm-griky-v3.html` | Seguimiento semanal (viernes) | PM |
+| `app/reporte-semanal-pm-griky.html` | Seguimiento semanal (viernes) | PM |
 | `app/planeacion-piloto.html` | Version simplificada de planeacion para pilotos | PM |
 
 ## Modelo de Horas/Hombre

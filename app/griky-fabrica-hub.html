@@ -702,7 +702,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
       <button class="nav-tab" onclick="openModule('griky-dashboard.html');setTab(this)">Dashboard</button>
       <button class="nav-tab" onclick="openModule('griky-ficha-proyecto.html');setTab(this)">Proyectos</button>
       <button class="nav-tab" onclick="openModule('griky-planeacion-semanal.html');setTab(this)">Planeación</button>
-      <button class="nav-tab" onclick="openModule('reporte-pm-griky-v3.html');setTab(this)">Seguimiento</button>
+      <button class="nav-tab" onclick="openModule('reporte-semanal-pm-griky.html');setTab(this)">Seguimiento</button>
       <button class="nav-tab" onclick="openModule('griky-okrs.html');setTab(this)">OKRs</button>
     </nav>
 
@@ -836,7 +836,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
     <div class="anim anim-3">
       <div class="sec-hdr">
         <span class="sec-title">Sprint actual</span>
-        <button class="sec-link" onclick="openModule('reporte-pm-griky-v3.html')">Ver reporte →</button>
+        <button class="sec-link" onclick="openModule('reporte-semanal-pm-griky.html')">Ver reporte →</button>
       </div>
       <div class="sprint-widget">
         <div class="sprint-header">
@@ -890,7 +890,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
           <div class="mod-status live">✅ Disponible</div>
         </div>
 
-        <div class="mod-card" onclick="openModule('reporte-pm-griky-v3.html')">
+        <div class="mod-card" onclick="openModule('reporte-semanal-pm-griky.html')">
           <div class="mod-icon red">📊</div>
           <div class="mod-name">Seguimiento Semanal</div>
           <div class="mod-desc">Asistente conversacional del viernes. Genera el .md con SCRUM integrado.</div>
@@ -987,7 +987,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
         <a class="quick-link" href="griky-planeacion-semanal.html">
           <span class="quick-link-icon">📅</span> Planear semana
         </a>
-        <a class="quick-link" href="reporte-pm-griky-v3.html">
+        <a class="quick-link" href="reporte-semanal-pm-griky.html">
           <span class="quick-link-icon">📝</span> Nuevo reporte
         </a>
         <a class="quick-link" href="griky-ficha-proyecto.html">
@@ -1042,7 +1042,7 @@ h1,h2,h3,h4 { font-family: 'Roboto', sans-serif; }
     <div class="ph-title">Seguimiento Semanal</div>
     <p class="ph-sub">El asistente conversacional del viernes ya está construido y funcional. Ábrelo desde aquí o descárgalo para compartir con tu equipo.</p>
     <div class="ph-badge">Módulo 4 · Disponible</div>
-    <button class="modal-btn" style="width:auto;padding:12px 28px;margin-top:8px;" onclick="openModule('reporte-pm-griky-v3.html')">
+    <button class="modal-btn" style="width:auto;padding:12px 28px;margin-top:8px;" onclick="openModule('reporte-semanal-pm-griky.html')">
       Abrir asistente de reporte →
     </button>
   </div>
@@ -1177,7 +1177,7 @@ function setupDay() {
 function handleAction() {
   const day = new Date().getDay();
   if (day === 1) openModule('griky-planeacion-semanal.html');
-  else if (day === 5) openModule('reporte-pm-griky-v3.html');
+  else if (day === 5) openModule('reporte-semanal-pm-griky.html');
   else openModule('griky-dashboard.html');
 }
 
