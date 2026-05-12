@@ -188,14 +188,17 @@ textarea:disabled{opacity:0.5;cursor:not-allowed;}
 const REC_LABEL = {
   vid_web:'Video webinar',vid_std:'Video estándar',vid_ava:'Video avatar',vid_pod:'Podcast',vid_aud:'Audiolibro',vid_pix:'Video pixar',vid_bas:'Video básico',vid_int:'Video interactivo',
   mul_sto:'Storyline',mul_ris:'Rise',mul_pre:'Presentación interactiva',mul_inf:'Infografía interactiva',mul_act:'Actividad interactiva',mul_vst:'Video storyline',mul_gen:'Video genially',mul_dis:'Diseño en plataforma',
-  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar'
+  gra_inf:'Infografía estándar',gra_pdf:'PDF',gra_ebo:'Ebook',gra_ban:'Banner',gra_pre:'Presentación estándar',
+  impl_lms:'Disponibilización LMS',di_guia:'Guía didáctica'
 };
 const AREA_LABEL = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico'};
 const REC_AREA = {
   vid_web:'video',vid_std:'video',vid_ava:'video',vid_pod:'video',vid_aud:'video',vid_pix:'video',vid_bas:'video',vid_int:'video',
   mul_sto:'multimedia',mul_ris:'multimedia',mul_pre:'multimedia',mul_inf:'multimedia',mul_act:'multimedia',mul_vst:'multimedia',mul_gen:'multimedia',mul_dis:'multimedia',
-  gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico'
+  gra_inf:'grafico',gra_pdf:'grafico',gra_ebo:'grafico',gra_ban:'grafico',gra_pre:'grafico',
+  impl_lms:'impl',di_guia:'di'
 };
+const AREA_LABEL_EXT = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico',impl:'Implementación',di:'Diseño instruccional'};
 
 // ── STATE ────────────────────────────────────────────────────────────────────
 const S = {
@@ -361,17 +364,25 @@ async function stepIdentificacion(txt){
     S.semana = plan.semana;
     S.queue = buildQueue(plan);
 
+    // Calculate totalComprometidos if not present
+    if(!plan.totalComprometidos){
+      plan.totalComprometidos = 0;
+      plan.proyectos.forEach(p => {
+        p.bloques.forEach(b => { plan.totalComprometidos += (b.total||0); });
+      });
+    }
+
     // Show summary of what was found
     let resumen = '';
     plan.proyectos.forEach(p => {
-      const nRec = p.bloques.reduce((a,b)=>a+b.total,0);
+      const nRec = p.bloques.reduce((a,b)=>a+(b.total||0),0);
       resumen += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
         '<div style="width:10px;height:10px;border-radius:3px;background:'+esc(p.color||'var(--navy)')+'"></div>' +
         '<strong>'+esc(p.nombre)+'</strong> — '+nRec+' recursos comprometidos</div>';
     });
 
     S.step=1; S.sub=0; S.qIdx=0; updateNav();
-    await claude('Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen + '<br>Vamos a revisar el cumplimiento de cada compromiso.', 700);
+    await claude('Hola, <strong>'+esc(S.pm)+'</strong> 👋 Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen + '<br>Vamos a revisar el cumplimiento de cada compromiso.', 700);
     await askNextCumplimiento();
     return;
   }

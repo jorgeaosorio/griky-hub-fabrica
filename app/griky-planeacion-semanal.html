@@ -1309,6 +1309,12 @@ function guardarPlaneacionEnHub(){
   });
   var proyectosArr = Object.values(proyectosMap);
 
+  // Calcular total comprometidos
+  var totalComprometidos = 0;
+  proyectosArr.forEach(function(p){
+    p.bloques.forEach(function(b){ totalComprometidos += (b.total||0); });
+  });
+
   // Estructura para Seguimiento
   var planObj = {
     pm: pmNombre,
@@ -1316,6 +1322,7 @@ function guardarPlaneacionEnHub(){
     semana: semanaStr,
     objetivo: (document.getElementById('inputObjetivo')||{}).value || '',
     proyectos: proyectosArr,
+    totalComprometidos: totalComprometidos,
     metasCliente: JSON.parse(JSON.stringify(metasCliente)),
     generado: new Date().toISOString()
   };
