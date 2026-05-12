@@ -965,12 +965,23 @@ resetCounts();
   var diff = today.getDay()===0 ? -6 : 1-today.getDay();
   var lunes = new Date(today); lunes.setDate(today.getDate()+diff);
   document.getElementById('selFecha').value = lunes.toISOString().split('T')[0];
+
+  // Restaurar último PM seleccionado
+  try {
+    var lastPM = localStorage.getItem('griky_last_pm');
+    if(lastPM && PM_PROYECTOS[lastPM]){
+      document.getElementById('selPM').value = lastPM;
+      onPMChange();
+    }
+  } catch(e){}
+
   onFechaChange();
 })();
 
 // ── PM ────────────────────────────────────────────────────────────────────────
 function onPMChange(){
   pmKey = document.getElementById('selPM').value;
+  try { localStorage.setItem('griky_last_pm', pmKey); } catch(e){}
   if(!pmKey || !PM_PROYECTOS[pmKey]){
     proyectos = [];
     pmNombre = '';
