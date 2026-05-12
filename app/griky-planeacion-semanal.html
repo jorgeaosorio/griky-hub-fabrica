@@ -723,7 +723,8 @@ var PM_PROYECTOS = {
           totalRec:15,ritmo:1,recVideo:5,recMulti:5,recGraf:5}},
       {id:'buen_cafe', nombre:'Buen Café cursos sueltos', cliente:'Buen Café',
         ficha:{inicio:'2025-10-07',cierre:'2025-12-12',nCursos:3,tipoUP:'Sprint',
-          totalRec:12,ritmo:2,recVideo:3,recMulti:4,recGraf:5}}
+          totalRec:12,ritmo:2,recVideo:3,recMulti:4,recGraf:5}},
+      {id:'ue', nombre:'Universidad Europea', cliente:'UE'}
     ]
   },
   vilma: {
@@ -815,21 +816,37 @@ var HORAS_SEMANA = 34.5; // 46h × 75% eficiencia
 // ── PLANEACIÓN PRECARGADA ─────────────────────────────────────────────────────
 // Clave: "pmKey|YYYY-MM-DD" (fecha = lunes de la semana)
 var PLAN_PRECARGADO = {
-  'margarita|2026-04-20': [
-    {id:'pre_1',proyId:'uddi',proyNombre:'UDDI',color:'verde',curso:'',up:'',nota:'Recursos Sueltos de 14 Cursos UDDI',
-      counts:{di_guia:61,vid_std:15,vid_ava:60,vid_int:45,gra_inf:48,gra_ebo:80},total:309},
-    {id:'pre_2',proyId:'ibero_col',proyNombre:'Ibero Colombia',color:'verde',curso:'',up:'',nota:'7 cursos Prioridad 1',
-      counts:{impl_lms:8},total:8},
-    {id:'pre_3',proyId:'ibero_col',proyNombre:'Ibero Colombia',color:'verde',curso:'',up:'',nota:'17 Cursos prioridad 2',
-      counts:{impl_lms:17},total:17},
-    {id:'pre_4',proyId:'buen_cafe',proyNombre:'Buen Café cursos sueltos',color:'verde',curso:'',up:'',nota:'6 cursos Pendientes de cierre final cliente',
-      counts:{impl_lms:6},total:6},
-    {id:'pre_5',proyId:'apus_ingles',proyNombre:'Apus Inglés',color:'verde',curso:'',up:'',nota:'B2',
-      counts:{impl_lms:1},total:1},
-    {id:'pre_6',proyId:'apus_ingles',proyNombre:'Apus Inglés',color:'verde',curso:'',up:'',nota:'C2',
-      counts:{impl_lms:2},total:2},
-    {id:'pre_7',proyId:'apus_ingles',proyNombre:'Apus Inglés',color:'verde',curso:'',up:'',nota:'C3',
-      counts:{vid_pod:32,mul_pre:32,mul_inf:32,mul_dis:4,impl_lms:5},total:105}
+  'margarita|2026-05-04': [
+    {id:'pre_m04_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
+      curso:'',up:'',nota:'APUS semana: 20 avatar + 120 present. + 85 audiolibros + 180 diseño plataforma + 48 PDFs',
+      counts:{vid_ava:20,mul_pre:120,vid_aud:85,mul_dis:180,gra_pdf:48},total:453},
+    {id:'pre_m04_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
+      curso:'',up:'',nota:'UE semana: 93 avatar + 2 std + 25 vid interact. + 35 present. + 85 ebooks + 15 infogr. + 7 PDFs',
+      counts:{vid_ava:93,vid_std:2,vid_int:25,mul_pre:35,gra_ebo:85,gra_inf:15,gra_pdf:7},total:262}
+  ],
+  'margarita|2026-05-11': [
+    {id:'pre_m11_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
+      curso:'',up:'',nota:'APUS semana: 16 avatar + 8 podcast + 105 present. + 60 audiolibros + 135 diseño plat. + 32 PDFs',
+      counts:{vid_ava:16,vid_pod:8,mul_pre:105,vid_aud:60,mul_dis:135,gra_pdf:32},total:356},
+    {id:'pre_m11_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
+      curso:'',up:'',nota:'UE semana: 74 avatar + 6 std + 16 vid interact. + 28 present. + 75 ebooks + 21 infogr. + 12 PDFs',
+      counts:{vid_ava:74,vid_std:6,vid_int:16,mul_pre:28,gra_ebo:75,gra_inf:21,gra_pdf:12},total:232}
+  ],
+  'margarita|2026-05-18': [
+    {id:'pre_m18_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
+      curso:'',up:'',nota:'APUS semana: 16 avatar + 2 genially + 102 present. + 63 audiolibros + 100 diseño plat. + 32 PDFs',
+      counts:{vid_ava:16,mul_gen:2,mul_pre:102,vid_aud:63,mul_dis:100,gra_pdf:32},total:315},
+    {id:'pre_m18_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
+      curso:'',up:'',nota:'UE semana: 76 avatar + 4 std + 16 vid interact. + 21 present. + 85 ebooks + 21 infogr. + 13 PDFs',
+      counts:{vid_ava:76,vid_std:4,vid_int:16,mul_pre:21,gra_ebo:85,gra_inf:21,gra_pdf:13},total:236}
+  ],
+  'margarita|2026-05-25': [
+    {id:'pre_m25_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
+      curso:'',up:'',nota:'APUS semana: 2 avatar + 20 genially + 100 present. + 103 audiolibros + 180 diseño plat. + 40 PDFs',
+      counts:{vid_ava:2,mul_gen:20,mul_pre:100,vid_aud:103,mul_dis:180,gra_pdf:40},total:445},
+    {id:'pre_m25_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
+      curso:'',up:'',nota:'UE semana: 76 avatar + 5 std + 15 vid interact. + 35 present. + 110 ebooks + 27 infogr. + 14 PDFs',
+      counts:{vid_ava:76,vid_std:5,vid_int:15,mul_pre:35,gra_ebo:110,gra_inf:27,gra_pdf:14},total:282}
   ],
   'sophia|2026-05-04': [
     {id:'pre_sp_1',proyId:'esam',proyNombre:'ESAM',color:'verde',
@@ -888,6 +905,22 @@ var PLAN_PRECARGADO = {
 // ── METAS DE CIERRE POR CLIENTE PRECARGADAS ───────────────────────────────────
 // Clave: "pmKey|YYYY-MM-DD" — { 'Cliente X': {entrega: N, aprobar: N} }
 var METAS_PRECARGADAS = {
+  'margarita|2026-05-04': {
+    'Apus':         {entrega:0, aprobar:0},
+    'UE':           {entrega:0, aprobar:0}
+  },
+  'margarita|2026-05-11': {
+    'Apus':         {entrega:0, aprobar:0},
+    'UE':           {entrega:0, aprobar:0}
+  },
+  'margarita|2026-05-18': {
+    'Apus':         {entrega:0, aprobar:0},
+    'UE':           {entrega:0, aprobar:0}
+  },
+  'margarita|2026-05-25': {
+    'Apus':         {entrega:0, aprobar:0},
+    'UE':           {entrega:0, aprobar:0}
+  },
   'sophia|2026-05-04': {
     'USS':          {entrega:0, aprobar:0},
     'Ibero México': {entrega:0, aprobar:0},
