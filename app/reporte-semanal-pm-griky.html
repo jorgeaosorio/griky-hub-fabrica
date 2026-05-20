@@ -270,25 +270,93 @@ function claude(html, delay=650){
   return new Promise(r=>{ showTyping(); setTimeout(()=>{ removeTyping(); addMsg('claude',html); r(); }, delay); });
 }
 
-// ── LOAD DATA FROM LOCALSTORAGE ──────────────────────────────────────────────
-function loadPlaneacion(pm){
+// ── LOAD DATA — JSON CENTRAL (con fallback a localStorage) ──────────────────
+// Mapping nombre completo → pmKey usado en data/planeaciones/*.json
+const PM_NAME_TO_KEY = {
+  'Margarita Rosales':'margarita', 'Sophia Pacheco':'sophia',
+  'Marcela Osorio':'marcela', 'Juan Ochoa':'andres',
+  'Jorge Osorio':'jorge', 'Jean Villamizar':'jean'
+};
+
+// Convierte bloques planos (shape JSON) → shape esperado por buildQueue:
+//   { proyectos: [{id, nombre, color, bloques:[{counts, total, ...}], ...}], metasCliente, ... }
+function _planFromJson(pmKey, pmName, weekEntry, pmData){
+  const proyMap = {};
+  (pmData.bloques||[]).forEach(b => {
+    if(!proyMap[b.proyId]){
+      proyMap[b.proyId] = {
+        id: b.proyId, nombre: b.proyNombre, cliente: b.proyNombre,
+        color: b.color || 'verde',
+        cierre:'', inicio:'', totalRecProyecto:0,
+        bloques: []
+      };
+    }
+    proyMap[b.proyId].bloques.push({
+      curso: b.curso||'', up: b.up||'', nota: b.nota||'',
+      counts: b.counts||{}, total: b.total||0
+    });
+  });
+  const proyectosArr = Object.values(proyMap);
+  let totalComprometidos = 0;
+  proyectosArr.forEach(p => p.bloques.forEach(b => totalComprometidos += (b.total||0)));
+  const d = new Date(weekEntry.lunes + 'T12:00:00');
+  const v = new Date(weekEntry.viernes + 'T12:00:00');
+  const fmt = dt => dt.toLocaleDateString('es-CO',{day:'numeric',month:'short'});
+  return {
+    pm: pmName, fecha: weekEntry.lunes,
+    semana: fmt(d)+' – '+fmt(v),
+    objetivo: pmData.objetivo||'',
+    proyectos: proyectosArr,
+    totalComprometidos,
+    metasCliente: pmData.metas||{},
+    generado: new Date().toISOString()
+  };
+}
+
+async function loadPlaneacion(pm){
+  // 1) Intentar JSON central (la fuente nueva, compartida entre navegadores)
+  const pmKey = PM_NAME_TO_KEY[pm];
+  if(pmKey){
+    try {
+      const idx = await fetch('../data/planeaciones/index.json',{cache:'no-cache'}).then(r=>r.json());
+      // Buscar la semana más reciente que contenga a este PM
+      const sortedByLunes = [...idx.semanas].sort((a,b)=> new Date(b.lunes)-new Date(a.lunes));
+      for(const s of sortedByLunes){
+        const data = await fetch('../data/planeaciones/'+s.file,{cache:'no-cache'}).then(r=>r.json());
+        if(data.pms && data.pms[pmKey] && data.pms[pmKey].bloques && data.pms[pmKey].bloques.length){
+          return _planFromJson(pmKey, pm, s, data.pms[pmKey]);
+        }
+      }
+    } catch(e){ console.warn('[seguimiento] JSON fetch falló, intento localStorage:', e); }
+  }
+
+  // 2) Fallback: localStorage (compat con flujo viejo "Guardar al Hub")
   let planes=[];
   try { planes=JSON.parse(localStorage.getItem('griky_planeaciones'))||[]; } catch(e){}
-  // Find latest planeación for this PM
   const matching = planes.filter(p => p.pm === pm);
   if(matching.length===0) return null;
-  // Sort by date descending, return latest
   matching.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
   return matching[0];
 }
 
 function detectPM(){
-  // Try to get PM name from Hub localStorage
+  // 1) URL param ?pm=sophia o ?pm=Sophia%20Pacheco
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get('pm');
+    if(p){
+      // Buscar match por nombre completo o por pmKey
+      const byKey = Object.entries(PM_NAME_TO_KEY).find(([nombre,key]) => key === p.toLowerCase());
+      if(byKey) return byKey[0];
+      // Si llegó nombre completo, devolver capitalizado tal cual
+      if(PM_NAME_TO_KEY[p]) return p;
+    }
+  } catch(e){}
+  // 2) localStorage (compat)
   try {
     const hub = JSON.parse(localStorage.getItem('griky_hub_user'));
     if(hub && hub.nombre) return hub.nombre;
   } catch(e){}
-  // Try from last planeacion
   try {
     const planes = JSON.parse(localStorage.getItem('griky_planeaciones'))||[];
     if(planes.length>0) return planes[planes.length-1].pm;
@@ -296,33 +364,38 @@ function detectPM(){
   return null;
 }
 
-// Build the question queue from planeación data
+// Build the question queue from planeación data.
+//
+// Granularidad: una entrada por (proyecto, curso, recId). No agregamos por
+// proyecto — cada bloque de la planeación produce N preguntas (una por tipo
+// de recurso con cantidad>0). Esto le permite al PM responder específicamente:
+// "Para el curso X de cliente Y, ¿entregaste los 10 Rise comprometidos?".
+//
+// Si un bloque no trae `curso` (string vacío), la pregunta cae al modo genérico
+// "Para [Proyecto]" sin nombrar curso — manteniendo compat con planeaciones
+// antiguas que no detallaban curso.
 function buildQueue(plan){
   const queue=[];
   plan.proyectos.forEach(proy => {
-    // Aggregate all resource types across bloques for this project
-    const agregado = {};
-    proy.bloques.forEach(b => {
-      Object.entries(b.counts).forEach(([recId, cant]) => {
-        if(cant>0){
-          if(!agregado[recId]) agregado[recId]=0;
-          agregado[recId]+=cant;
-        }
-      });
-    });
-    // Create one question per resource type per project
-    Object.entries(agregado).forEach(([recId, cantidad]) => {
-      queue.push({
-        proyecto: proy.nombre,
-        color: proy.color||'var(--navy)',
-        recId,
-        recLabel: REC_LABEL[recId]||recId,
-        areaLabel: AREA_LABEL[REC_AREA[recId]]||'',
-        cantidad,
-        // Ficha data for % calculation
-        totalRecProyecto: proy.totalRecProyecto||0,
-        cierre: proy.cierre||'',
-        inicio: proy.inicio||''
+    (proy.bloques||[]).forEach((b, bIdx) => {
+      const counts = b.counts || {};
+      Object.entries(counts).forEach(([recId, cantidad]) => {
+        if(cantidad <= 0) return;
+        queue.push({
+          proyecto: proy.nombre,
+          color: proy.color || 'var(--navy)',
+          curso: b.curso || '',
+          up: b.up || '',
+          bloqueIdx: bIdx,
+          recId,
+          recLabel: REC_LABEL[recId] || recId,
+          areaLabel: AREA_LABEL[REC_AREA[recId]] || '',
+          cantidad,
+          // Ficha data for % calculation
+          totalRecProyecto: proy.totalRecProyecto || 0,
+          cierre: proy.cierre || '',
+          inicio: proy.inicio || ''
+        });
       });
     });
   });
@@ -354,7 +427,7 @@ async function stepIdentificacion(txt){
   if(S.sub===0){
     // Received PM name
     S.pm = txt.trim();
-    const plan = loadPlaneacion(S.pm);
+    const plan = await loadPlaneacion(S.pm);
     if(!plan){
       await claude('No encontré una Planeación Semanal guardada para <strong>'+esc(S.pm)+'</strong>. Asegúrate de haber completado y descargado tu Planeación Semanal primero.<br><br>Intenta con otro nombre o vuelve a la <a href="griky-planeacion-semanal.html" style="color:var(--red);font-weight:700;">Planeación Semanal</a>.');
       enable(true);
@@ -397,10 +470,16 @@ async function askNextCumplimiento(){
   const q = S.queue[S.qIdx];
   const progreso = '('+(S.qIdx+1)+' de '+S.queue.length+')';
 
+  // Encabezado contextual: Cliente · Curso (si existe)
+  const contexto = q.curso
+    ? '<strong>'+esc(q.proyecto)+'</strong> · <em>'+esc(q.curso)+'</em>'
+    : '<strong>'+esc(q.proyecto)+'</strong>';
+
   // Build the question with option buttons
   const qId = 'q_'+S.qIdx;
   const html = '<span class="pill-step">CUMPLIMIENTO '+progreso+'</span><br><br>' +
-    'Te comprometiste a entregar <strong>'+q.cantidad+' '+esc(q.recLabel)+'</strong> para <strong>'+esc(q.proyecto)+'</strong>.<br><br>' +
+    'Para '+contexto+':<br>' +
+    'Te comprometiste a entregar <strong>'+q.cantidad+' '+esc(q.recLabel)+'</strong>.<br><br>' +
     '<div class="opt-row">' +
       '<button class="opt-btn green" onclick="pickCumplimiento(\'si\','+S.qIdx+')">✅ Sí, todos</button>' +
       '<button class="opt-btn yellow" onclick="pickCumplimiento(\'parcial\','+S.qIdx+')">⚠️ Parcial</button>' +
@@ -420,7 +499,7 @@ async function pickCumplimiento(tipo, idx){
   if(tipo==='si'){
     addMsg('user', '✅ Sí, todos ('+q.cantidad+')');
     S.entregas.push({
-      proyecto: q.proyecto, recId: q.recId, recLabel: q.recLabel,
+      proyecto: q.proyecto, curso: q.curso||'', recId: q.recId, recLabel: q.recLabel,
       comprometidos: q.cantidad, entregados: q.cantidad, estado:'cumplido'
     });
     S.qIdx++;
@@ -430,7 +509,7 @@ async function pickCumplimiento(tipo, idx){
   else if(tipo==='no'){
     addMsg('user', '❌ No entregué');
     S.entregas.push({
-      proyecto: q.proyecto, recId: q.recId, recLabel: q.recLabel,
+      proyecto: q.proyecto, curso: q.curso||'', recId: q.recId, recLabel: q.recLabel,
       comprometidos: q.cantidad, entregados: 0, estado:'no entregado'
     });
     S.qIdx++;
@@ -441,7 +520,8 @@ async function pickCumplimiento(tipo, idx){
   else if(tipo==='parcial'){
     addMsg('user', '⚠️ Parcial');
     S.sub=20; // waiting for partial count
-    await claude('¿Cuántos de los <strong>'+q.cantidad+' '+esc(q.recLabel)+'</strong> entregaste?<br><em style="font-size:12px;color:var(--gray);">Escribe el número.</em>', 300);
+    const ctx = q.curso ? ' (<em>'+esc(q.curso)+'</em>)' : '';
+    await claude('¿Cuántos de los <strong>'+q.cantidad+' '+esc(q.recLabel)+'</strong>'+ctx+' entregaste?<br><em style="font-size:12px;color:var(--gray);">Escribe el número.</em>', 300);
     enable(true);
   }
 }
@@ -468,7 +548,7 @@ async function stepCumplimiento(txt){
       return;
     }
     S.entregas.push({
-      proyecto: qCurrent.proyecto, recId: qCurrent.recId, recLabel: qCurrent.recLabel,
+      proyecto: qCurrent.proyecto, curso: qCurrent.curso||'', recId: qCurrent.recId, recLabel: qCurrent.recLabel,
       comprometidos: qCurrent.cantidad, entregados: n, estado:'parcial'
     });
     S.qIdx++;
@@ -776,11 +856,12 @@ function buildMD(){
   const fn='seguimiento-semana-'+S.semana+'-'+S.pm.toLowerCase().replace(/\s+/g,'_')+'.md';
   const plan=S.planeacion;
 
-  // --- Tabla cumplimiento por recurso ---
-  let tablaCumpl='| Proyecto | Tipo recurso | Comprometidos | Entregados | Estado |\n|---|---|---|---|---|\n';
+  // --- Tabla cumplimiento por recurso (granularidad: proyecto · curso · tipo) ---
+  let tablaCumpl='| Proyecto | Curso | Tipo recurso | Comprometidos | Entregados | Estado |\n|---|---|---|---|---|---|\n';
   S.entregas.forEach(e => {
     const icon = e.estado==='cumplido'?'✅':e.estado==='parcial'?'⚠️':'❌';
-    tablaCumpl += '| '+e.proyecto+' | '+e.recLabel+' | '+e.comprometidos+' | '+e.entregados+' | '+icon+' '+e.estado+(e.razon?' — '+e.razon:'') + ' |\n';
+    const curso = e.curso || '—';
+    tablaCumpl += '| '+e.proyecto+' | '+curso+' | '+e.recLabel+' | '+e.comprometidos+' | '+e.entregados+' | '+icon+' '+e.estado+(e.razon?' — '+e.razon:'') + ' |\n';
   });
 
   // --- Tabla avance por proyecto ---
@@ -983,7 +1064,7 @@ async function init(){
 
   if(detectedPM){
     // Try to auto-load
-    const plan = loadPlaneacion(detectedPM);
+    const plan = await loadPlaneacion(detectedPM);
     if(plan){
       S.pm = detectedPM;
       S.planeacion = plan;
