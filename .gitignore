@@ -6,6 +6,9 @@ Thumbs.db
 data/*.json
 data/*.md
 !data/.gitkeep
+# Excepción: config.json es la configuración del frontend (URL del Worker, etc),
+# debe versionarse aunque esté en data/ raíz.
+!data/config.json
 
 # Reports generated
 reportes/*.md

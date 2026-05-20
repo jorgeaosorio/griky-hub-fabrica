@@ -1,0 +1,4 @@
+{
+  "_comentario": "Configuración del frontend. Si seguimientoSyncUrl está vacío, el botón 'Guardar progreso' descarga el archivo en vez de hacer POST al Worker. Edita después de deployar el Worker (ver worker/README.md).",
+  "seguimientoSyncUrl": "https://griky-seguimiento-sync.jorgeaosorio.workers.dev"
+}
