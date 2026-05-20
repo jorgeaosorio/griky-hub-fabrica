@@ -62,18 +62,23 @@ h1,h2,h3{font-family:'Roboto',sans-serif;}
 .pm-name{font-size:16px;font-weight:700;}
 .pm-total-badge{margin-left:auto;background:var(--navy);color:var(--white);padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;}
 
-/* VERTICAL BARS */
+/* VERTICAL BARS — planeado (claro) + ejecutado (sólido) apilados */
 .vert-section{padding:12px 20px 16px;}
 .vert-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .vert-label{width:80px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
 .vert-bar-bg{flex:1;height:24px;background:var(--light);border-radius:6px;overflow:hidden;position:relative;}
-.vert-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;color:var(--white);min-width:2px;transition:width .4s ease;}
-.vert-bar.video{background:var(--red);}
-.vert-bar.multi{background:var(--yellow);}
-.vert-bar.graf{background:var(--green);}
-.vert-bar.di{background:var(--gray);}
-.vert-bar.impl{background:var(--navy);}
-.vert-count{font-size:12px;font-weight:700;min-width:30px;text-align:right;}
+/* Capa de planeado: ancho = (planeado / max) × 100. Color del área con opacidad baja */
+.vert-bar-plan{position:absolute;left:0;top:0;bottom:0;border-radius:6px;opacity:.28;transition:width .4s ease;}
+/* Capa de ejecutado: ancho = (ejecutado / max) × 100. Color sólido del área. Sobre la de planeado. */
+.vert-bar-exec{position:absolute;left:0;top:0;bottom:0;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;color:var(--white);min-width:0;transition:width .4s ease;}
+.vert-bar-plan.video,.vert-bar-exec.video{background:var(--red);}
+.vert-bar-plan.multi,.vert-bar-exec.multi{background:var(--yellow);}
+.vert-bar-plan.graf,.vert-bar-exec.graf{background:var(--green);}
+.vert-bar-plan.di,.vert-bar-exec.di{background:var(--gray);}
+.vert-bar-plan.impl,.vert-bar-exec.impl{background:var(--navy);}
+.vert-count{font-size:12px;font-weight:700;min-width:60px;text-align:right;color:var(--navy);}
+.vert-count .exec{color:var(--green);}
+.vert-count .sep{color:var(--gray);font-weight:400;margin:0 2px;}
 
 /* TYPE PILLS */
 .type-pills{padding:0 20px 14px;display:flex;flex-wrap:wrap;gap:5px;}
@@ -189,6 +194,11 @@ var AREA_CSS = {video:'video',multimedia:'multi',grafico:'graf',di:'di',impl:'im
 // campos como id/curso/up/nota) porque renderWeek() los ignora.
 var PLAN_PRECARGADO = {};
 
+// SEGUIMIENTO_EJECUTADO[pmKey|lunes] = { entregados: {recId: cantidad} }
+// Agrega lo ejecutado por (PM, semana, recId) sumando todas las entregas.
+// Se llena desde data/seguimiento/{semana}.json y/o localStorage del navegador.
+var SEGUIMIENTO_EJECUTADO = {};
+
 async function cargarPlaneaciones(){
   try {
     var idx = await fetch('../data/planeaciones/index.json', {cache:'no-cache'}).then(function(r){return r.json();});
@@ -201,12 +211,78 @@ async function cargarPlaneaciones(){
           PLAN_PRECARGADO[pmKey + '|' + s.lunes] = pmData.bloques;
         }
       });
+      // Cargar seguimiento de la misma semana en paralelo (si existe)
+      await cargarSeguimientoSemana(s);
     }
+    // Mezclar también localStorage (PMs que aún no commitearon su .json)
+    mezclarSeguimientoLocalStorage();
     return true;
   } catch(e){
     console.error('[vista-director] Error cargando data/planeaciones/*.json:', e);
     return false;
   }
+}
+
+// Lee data/seguimiento/{semana}.json y agrega entregados por (pmKey, recId)
+async function cargarSeguimientoSemana(semInfo){
+  try {
+    var url = '../data/seguimiento/' + semInfo.id + '.json';
+    var resp = await fetch(url, {cache:'no-cache'});
+    if(!resp.ok) return;
+    var data = await resp.json();
+    if(!data || !data.pms) return;
+    Object.keys(data.pms).forEach(function(pmKey){
+      var entregas = (data.pms[pmKey] && data.pms[pmKey].entregas) || [];
+      var key = pmKey + '|' + semInfo.lunes;
+      if(!SEGUIMIENTO_EJECUTADO[key]) SEGUIMIENTO_EJECUTADO[key] = { entregados: {} };
+      entregas.forEach(function(e){
+        var rid = e.recId, n = e.entregados||0;
+        if(!SEGUIMIENTO_EJECUTADO[key].entregados[rid]) SEGUIMIENTO_EJECUTADO[key].entregados[rid] = 0;
+        SEGUIMIENTO_EJECUTADO[key].entregados[rid] += n;
+      });
+    });
+  } catch(e){ /* no existe el archivo todavía = sin seguimiento aún */ }
+}
+
+// Si el navegador local tiene seguimiento (PMs que aún no committearon su .json),
+// lo mezclamos como fallback. Útil cuando estás viendo tu propio progreso antes de pushear.
+function mezclarSeguimientoLocalStorage(){
+  try {
+    Object.keys(localStorage).filter(function(k){return k.indexOf('griky_seguimiento_')===0;}).forEach(function(k){
+      // formato: griky_seguimiento_{semanaId}_{pmKey}
+      var rest = k.replace('griky_seguimiento_','');
+      var lastUnderscore = rest.lastIndexOf('_');
+      if(lastUnderscore<0) return;
+      var semanaId = rest.substring(0, lastUnderscore);
+      var pmKey = rest.substring(lastUnderscore+1);
+      var data;
+      try { data = JSON.parse(localStorage.getItem(k)); } catch(e){ return; }
+      if(!data || !data.entregas) return;
+      // Buscar lunes de esa semanaId en el index ya cargado
+      var lunes = null;
+      Object.keys(PLAN_PRECARGADO).some(function(planKey){
+        var parts = planKey.split('|');
+        if(parts[0]===pmKey){
+          // Confirmar que la semanaId corresponde
+          var d = new Date(parts[1]+'T12:00:00');
+          var iso = (function(dd){const t=new Date(dd.valueOf());const dn=(dd.getDay()+6)%7;t.setDate(t.getDate()-dn+3);const ft=new Date(t.getFullYear(),0,4);return t.getFullYear()+'-W'+String(1+Math.round(((t-ft)/86400000 -3+(ft.getDay()+6)%7)/7)).padStart(2,'0');})(d);
+          if(iso===semanaId){ lunes = parts[1]; return true; }
+        }
+        return false;
+      });
+      if(!lunes) return;
+      var key = pmKey + '|' + lunes;
+      if(!SEGUIMIENTO_EJECUTADO[key]) SEGUIMIENTO_EJECUTADO[key] = { entregados: {} };
+      var localUpd = new Date(data.ultimaActualizacion||0);
+      // localStorage solo sobrescribe si es más reciente que lo del JSON central
+      // (estrategia simple: tomamos el mayor de los dos por recId)
+      data.entregas.forEach(function(e){
+        var rid = e.recId, n = e.entregados||0;
+        if(!SEGUIMIENTO_EJECUTADO[key].entregados[rid]) SEGUIMIENTO_EJECUTADO[key].entregados[rid] = 0;
+        if(n > SEGUIMIENTO_EJECUTADO[key].entregados[rid]) SEGUIMIENTO_EJECUTADO[key].entregados[rid] = n;
+      });
+    });
+  } catch(e){ console.warn('[vista-director] no se pudo leer localStorage seguimiento:', e); }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -268,7 +344,8 @@ function renderWeek(){
     var bloques = PLAN_PRECARGADO[key];
     if(!bloques) return;
 
-    var d = {total:0, areas:{}, types:{}, clients:{}};
+    var d = {total:0, areas:{}, types:{}, clients:{},
+             execTotal:0, execAreas:{}, execTypes:{}};
     bloques.forEach(function(b){
       d.total += (b.total||0);
       if(b.proyNombre) d.clients[b.proyNombre] = (d.clients[b.proyNombre]||0) + (b.total||0);
@@ -279,6 +356,21 @@ function renderWeek(){
         d.areas[area] = (d.areas[area]||0) + c[t];
       });
     });
+
+    // Ejecutado: leer SEGUIMIENTO_EJECUTADO si existe para este (pm, semana)
+    var seg = SEGUIMIENTO_EJECUTADO[key];
+    if(seg && seg.entregados){
+      Object.keys(seg.entregados).forEach(function(t){
+        var n = seg.entregados[t] || 0;
+        // Cap al planeado: no permitir ejecutado > comprometido por tipo
+        var planeado = d.types[t] || 0;
+        var efectivo = Math.min(n, planeado);
+        d.execTypes[t] = efectivo;
+        d.execTotal += efectivo;
+        var area = REC_AREA[t] || 'otro';
+        d.execAreas[area] = (d.execAreas[area]||0) + efectivo;
+      });
+    }
     pmData[pm] = d;
   });
 
@@ -332,32 +424,48 @@ function renderPMCards(pmData){
     html += '<div class="pm-header">';
     html += '<div class="pm-avatar">'+(PM_INICIALES[pm]||'?')+'</div>';
     html += '<div><div class="pm-name">'+(PM_NOMBRES[pm]||pm)+'</div></div>';
-    html += '<div class="pm-total-badge">'+d.total+' rec</div>';
+    // Badge: si hay ejecutado, mostrar "N/M" y % avance; si no, solo total
+    if(d.execTotal > 0){
+      var pctTotal = Math.round((d.execTotal/d.total)*100);
+      html += '<div class="pm-total-badge" title="Ejecutado / Planeado">'+d.execTotal+' / '+d.total+' · '+pctTotal+'%</div>';
+    } else {
+      html += '<div class="pm-total-badge">'+d.total+' rec</div>';
+    }
     html += '</div>';
 
-    // Vertical bars
+    // Vertical bars: capa de planeado (opacidad baja) + capa de ejecutado (sólido)
+    function renderBar(area, mostrarSiZero){
+      var planeado = d.areas[area] || 0;
+      var ejecutado = (d.execAreas && d.execAreas[area]) || 0;
+      if(planeado === 0 && !mostrarSiZero) return '';
+      var pctPlan = maxArea > 0 ? Math.max(planeado>0?2:0, (planeado/maxArea)*100) : 0;
+      var pctExec = maxArea > 0 ? (ejecutado/maxArea)*100 : 0;
+      var label = ejecutado > 0 && pctExec > 12 ? ejecutado : '';
+      var pctCompl = planeado > 0 ? Math.round((ejecutado/planeado)*100) : 0;
+      var row = '<div class="vert-row">';
+      row += '<div class="vert-label" style="color:var(--'+AREA_CSS[area]+'-txt);">'+AREA_LABEL[area]+'</div>';
+      row += '<div class="vert-bar-bg">';
+      row +=   '<div class="vert-bar-plan '+AREA_CSS[area]+'" style="width:'+pctPlan+'%;"></div>';
+      row +=   '<div class="vert-bar-exec '+AREA_CSS[area]+'" style="width:'+pctExec+'%;">'+label+'</div>';
+      row += '</div>';
+      // Etiqueta lateral: "ejecutado / planeado · NN%"
+      var countHtml;
+      if(ejecutado > 0){
+        countHtml = '<span class="exec">'+ejecutado+'</span><span class="sep">/</span>'+planeado+' <span style="font-size:10px;color:var(--gray);">· '+pctCompl+'%</span>';
+      } else {
+        countHtml = '<span style="color:var(--gray);">0</span><span class="sep">/</span>'+planeado;
+      }
+      row += '<div class="vert-count">'+countHtml+'</div>';
+      row += '</div>';
+      return row;
+    }
     html += '<div class="vert-section">';
     ['video','multimedia','grafico'].forEach(function(area){
-      var val = d.areas[area] || 0;
-      if(val === 0 && maxArea === 0) return;
-      var pct = maxArea > 0 ? Math.max(2, (val/maxArea)*100) : 0;
-      if(val === 0) pct = 0;
-      html += '<div class="vert-row">';
-      html += '<div class="vert-label" style="color:var(--'+AREA_CSS[area]+'-txt);">'+AREA_LABEL[area]+'</div>';
-      html += '<div class="vert-bar-bg"><div class="vert-bar '+AREA_CSS[area]+'" style="width:'+pct+'%;">'+(val>0 && pct>15 ? val : '')+'</div></div>';
-      html += '<div class="vert-count">'+val+'</div>';
-      html += '</div>';
+      html += renderBar(area, maxArea === 0);
     });
-    // DI + Impl if present
+    // DI + Impl solo si tienen algo planeado
     ['di','impl'].forEach(function(area){
-      var val = d.areas[area] || 0;
-      if(val === 0) return;
-      var pct = maxArea > 0 ? Math.max(2, (val/maxArea)*100) : 0;
-      html += '<div class="vert-row">';
-      html += '<div class="vert-label" style="color:var(--'+AREA_CSS[area]+'-txt);">'+AREA_LABEL[area]+'</div>';
-      html += '<div class="vert-bar-bg"><div class="vert-bar '+AREA_CSS[area]+'" style="width:'+pct+'%;">'+(val>0 && pct>15 ? val : '')+'</div></div>';
-      html += '<div class="vert-count">'+val+'</div>';
-      html += '</div>';
+      if((d.areas[area]||0) > 0) html += renderBar(area, false);
     });
     html += '</div>';
 

@@ -149,6 +149,7 @@ textarea:disabled{opacity:0.5;cursor:not-allowed;}
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
         <span class="step-count" id="stepCount">Paso 0 de 5</span>
       </div>
+      <button id="btnDescargarSeguimiento" onclick="descargarSeguimientoJSON()" aria-label="Descargar progreso como JSON para sincronizar al repo" style="padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font-family:'Roboto',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;display:none;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">💾 Guardar progreso (.json)</button>
       <button onclick="window.location.href='griky-fabrica-hub.html'" aria-label="Volver al Hub" style="padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-family:'Roboto',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.6)'">← Hub</button>
     </div>
   </div>
@@ -203,11 +204,11 @@ const AREA_LABEL_EXT = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico'
 // ── STATE ────────────────────────────────────────────────────────────────────
 const S = {
   step:0, sub:0, enabled:false,
-  pm:'', semana:'',
+  pm:'', pmKey:'', semana:'', semanaId:'',  // semanaId = "2026-W21" (ISO week)
   planeacion:null,         // The loaded planeación object
-  // Cumplimiento tracking: array of {proyecto, curso, up, recId, comprometidos, entregados}
+  // Cumplimiento tracking: array of {proyecto, curso, bloqueIdx, recId, comprometidos, entregados, estado, ...}
   entregas:[],
-  // Flattened questions queue: [{proyecto, bloque, recId, cantidad}]
+  // Flattened questions queue: [{proyecto, curso, bloqueIdx, recId, cantidad, ...}]
   queue:[], qIdx:0,
   // Per-project results
   proyResultados:{},
@@ -219,9 +220,96 @@ const S = {
   // Cierre
   cierre:{},
   // Cursos al cliente esta semana (loop por proyecto)
-  // porProyecto: [{ proyecto, entregados, aprobados }, ...]
   cursosCliente:{ porProyecto:[], idx:0 }
 };
+
+// ── SEGUIMIENTO: PERSISTENCIA Y CARGA INCREMENTAL ────────────────────────────
+// Clave única de cada entrega dentro de una semana: (bloqueIdx, recId)
+function _keyEntrega(e){ return e.bloqueIdx + '|' + e.recId; }
+
+// Upsert: actualiza una entrega existente o la agrega si no existe.
+function upsertEntrega(nueva){
+  nueva.actualizadoEn = new Date().toISOString();
+  const k = _keyEntrega(nueva);
+  const idx = S.entregas.findIndex(e => _keyEntrega(e) === k);
+  if(idx >= 0){ S.entregas[idx] = Object.assign({}, S.entregas[idx], nueva); }
+  else { S.entregas.push(nueva); }
+  persistirSeguimientoLocal();
+  if(typeof actualizarBtnDescarga === 'function') actualizarBtnDescarga();
+}
+
+// localStorage clave: griky_seguimiento_{semanaId}_{pmKey}
+function _seguimientoKey(){
+  return 'griky_seguimiento_' + (S.semanaId || 'sin-semana') + '_' + (S.pmKey || 'sin-pm');
+}
+
+function persistirSeguimientoLocal(){
+  if(!S.pmKey || !S.semanaId) return;
+  try {
+    localStorage.setItem(_seguimientoKey(), JSON.stringify({
+      ultimaActualizacion: new Date().toISOString(),
+      entregas: S.entregas
+    }));
+  } catch(e){ console.warn('[seguimiento] no se pudo persistir local:', e); }
+}
+
+// Carga entregas previas de esta semana, mezclando JSON central + localStorage.
+// El JSON central tiene preferencia si su ultimaActualizacion es más reciente.
+async function cargarSeguimientoPrevio(){
+  if(!S.pmKey || !S.semanaId) return [];
+  let desdeJson = null, desdeLocal = null;
+
+  // 1) JSON central
+  try {
+    const data = await fetch('../data/seguimiento/'+S.semanaId+'.json', {cache:'no-cache'}).then(r=>r.ok?r.json():null);
+    if(data && data.pms && data.pms[S.pmKey]){
+      desdeJson = data.pms[S.pmKey];
+    }
+  } catch(e){ /* archivo no existe = no hay seguimiento todavía */ }
+
+  // 2) localStorage
+  try {
+    const raw = localStorage.getItem(_seguimientoKey());
+    if(raw) desdeLocal = JSON.parse(raw);
+  } catch(e){}
+
+  // Elegir el más reciente
+  let elegido = null;
+  if(desdeJson && desdeLocal){
+    elegido = (new Date(desdeJson.ultimaActualizacion||0) >= new Date(desdeLocal.ultimaActualizacion||0)) ? desdeJson : desdeLocal;
+  } else {
+    elegido = desdeJson || desdeLocal;
+  }
+  return elegido && elegido.entregas ? elegido.entregas : [];
+}
+
+// Genera el shape data/seguimiento/{semana}.json con la entrega actual.
+// Útil para el botón "Descargar JSON".
+function generarSeguimientoJSON(){
+  const lunes = (S.planeacion && S.planeacion.fecha) || '';
+  return {
+    semana: S.semanaId,
+    lunes,
+    pms: {
+      [S.pmKey]: {
+        nombre: S.pm,
+        ultimaActualizacion: new Date().toISOString(),
+        entregas: S.entregas
+      }
+    }
+  };
+}
+
+// Calcula ISO week de una fecha YYYY-MM-DD
+function _isoWeek(dateStr){
+  const d = new Date(dateStr + 'T12:00:00');
+  const target = new Date(d.valueOf());
+  const dayNr = (d.getDay()+6)%7;
+  target.setDate(target.getDate()-dayNr+3);
+  const firstThursday = new Date(target.getFullYear(),0,4);
+  const diff = (target - firstThursday)/86400000;
+  return target.getFullYear() + '-W' + String(1 + Math.round((diff - 3 + (firstThursday.getDay()+6)%7)/7)).padStart(2,'0');
+}
 
 const $ = id => document.getElementById(id);
 const msgs = () => $('messages');
@@ -364,6 +452,17 @@ function detectPM(){
   return null;
 }
 
+// Configura el estado de seguimiento (pmKey, semanaId, entregas previas) tras
+// cargar la planeación. Devuelve número de entregas precargadas para mostrar
+// al usuario "Ya tienes N respuestas guardadas".
+async function setupSeguimientoState(pmName, plan){
+  S.pmKey = PM_NAME_TO_KEY[pmName] || '';
+  S.semanaId = plan && plan.fecha ? _isoWeek(plan.fecha) : '';
+  const previas = await cargarSeguimientoPrevio();
+  S.entregas = previas || [];
+  return S.entregas.length;
+}
+
 // Build the question queue from planeación data.
 //
 // Granularidad: una entrada por (proyecto, curso, recId). No agregamos por
@@ -437,6 +536,10 @@ async function stepIdentificacion(txt){
     S.semana = plan.semana;
     S.queue = buildQueue(plan);
 
+    // Cargar entregas previas (seguimiento parcial entre semana)
+    const previas = await setupSeguimientoState(S.pm, plan);
+    actualizarBtnDescarga();
+
     // Calculate totalComprometidos if not present
     if(!plan.totalComprometidos){
       plan.totalComprometidos = 0;
@@ -455,7 +558,13 @@ async function stepIdentificacion(txt){
     });
 
     S.step=1; S.sub=0; S.qIdx=0; updateNav();
-    await claude('Hola, <strong>'+esc(S.pm)+'</strong> 👋 Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen + '<br>Vamos a revisar el cumplimiento de cada compromiso.', 700);
+    let saludo = 'Hola, <strong>'+esc(S.pm)+'</strong> 👋 Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen;
+    if(previas > 0){
+      saludo += '<br><span style="color:var(--green);font-weight:700;">📌 Ya tienes '+previas+' respuestas guardadas de esta semana</span> — voy a saltar esas y preguntarte solo por las pendientes. <em style="font-size:12px;color:var(--gray);">(Si quieres reiniciar, escribe "reiniciar".)</em>';
+    } else {
+      saludo += '<br>Vamos a revisar el cumplimiento de cada compromiso.';
+    }
+    await claude(saludo, 700);
     await askNextCumplimiento();
     return;
   }
@@ -463,6 +572,15 @@ async function stepIdentificacion(txt){
 
 // ── STEP 1: CUMPLIMIENTO (resource by resource) ─────────────────────────────
 async function askNextCumplimiento(){
+  // Saltar preguntas que ya tienen entrega previa registrada (seguimiento parcial)
+  while(S.qIdx < S.queue.length){
+    const q = S.queue[S.qIdx];
+    const k = q.bloqueIdx + '|' + q.recId;
+    const existente = S.entregas.find(e => _keyEntrega(e) === k);
+    if(!existente) break;
+    S.qIdx++;
+  }
+
   if(S.qIdx >= S.queue.length){
     await finishCumplimiento();
     return;
@@ -498,8 +616,9 @@ async function pickCumplimiento(tipo, idx){
 
   if(tipo==='si'){
     addMsg('user', '✅ Sí, todos ('+q.cantidad+')');
-    S.entregas.push({
-      proyecto: q.proyecto, curso: q.curso||'', recId: q.recId, recLabel: q.recLabel,
+    upsertEntrega({
+      proyecto: q.proyecto, proyId: q.proyId||'', curso: q.curso||'',
+      bloqueIdx: q.bloqueIdx, recId: q.recId, recLabel: q.recLabel,
       comprometidos: q.cantidad, entregados: q.cantidad, estado:'cumplido'
     });
     S.qIdx++;
@@ -508,8 +627,9 @@ async function pickCumplimiento(tipo, idx){
   }
   else if(tipo==='no'){
     addMsg('user', '❌ No entregué');
-    S.entregas.push({
-      proyecto: q.proyecto, curso: q.curso||'', recId: q.recId, recLabel: q.recLabel,
+    upsertEntrega({
+      proyecto: q.proyecto, proyId: q.proyId||'', curso: q.curso||'',
+      bloqueIdx: q.bloqueIdx, recId: q.recId, recLabel: q.recLabel,
       comprometidos: q.cantidad, entregados: 0, estado:'no entregado'
     });
     S.qIdx++;
@@ -547,8 +667,9 @@ async function stepCumplimiento(txt){
       enable(true);
       return;
     }
-    S.entregas.push({
-      proyecto: qCurrent.proyecto, curso: qCurrent.curso||'', recId: qCurrent.recId, recLabel: qCurrent.recLabel,
+    upsertEntrega({
+      proyecto: qCurrent.proyecto, proyId: qCurrent.proyId||'', curso: qCurrent.curso||'',
+      bloqueIdx: qCurrent.bloqueIdx, recId: qCurrent.recId, recLabel: qCurrent.recLabel,
       comprometidos: qCurrent.cantidad, entregados: n, estado:'parcial'
     });
     S.qIdx++;
@@ -1013,6 +1134,34 @@ function doDownload(){
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a'); a.href=url; a.download=window._fn; a.click();
   URL.revokeObjectURL(url);
+}
+
+// Descarga el JSON estructurado de seguimiento para esta semana del PM.
+// Output esperado: data/seguimiento/{semana}.json — el usuario lo committea al repo.
+function descargarSeguimientoJSON(){
+  if(!S.pmKey || !S.semanaId){
+    alert('Aún no hay planeación cargada. Identifícate primero.');
+    return;
+  }
+  if(S.entregas.length === 0){
+    alert('No hay entregas registradas todavía — responde al menos una pregunta.');
+    return;
+  }
+  const data = generarSeguimientoJSON();
+  const blob = new Blob([JSON.stringify(data, null, 2)+'\n'], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = S.semanaId + '_' + S.pmKey + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Muestra/oculta el botón "Guardar progreso" según si hay entregas registradas.
+function actualizarBtnDescarga(){
+  const btn = document.getElementById('btnDescargarSeguimiento');
+  if(!btn) return;
+  btn.style.display = (S.pmKey && S.entregas.length > 0) ? 'inline-block' : 'none';
 }
 
 // buildJSONExport kept for Hub sync button (reads from localStorage)
