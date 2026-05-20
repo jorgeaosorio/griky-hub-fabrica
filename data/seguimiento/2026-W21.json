@@ -4,43 +4,18 @@
   "pms": {
     "sophia": {
       "nombre": "Sophia Pacheco",
-      "ultimaActualizacion": "2026-05-20T02:41:22.283Z",
+      "ultimaActualizacion": "2026-05-19T10:00:00Z",
       "entregas": [
         {
-          "proyecto": "ESAM",
-          "proyId": "",
-          "curso": "Economía Gerencial",
           "bloqueIdx": 0,
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "curso": "Test Worker",
           "recId": "vid_std",
-          "recLabel": "Video estándar",
           "comprometidos": 5,
           "entregados": 5,
           "estado": "cumplido",
-          "actualizadoEn": "2026-05-20T02:41:11.450Z"
-        },
-        {
-          "proyecto": "ESAM",
-          "proyId": "",
-          "curso": "Economía Gerencial",
-          "bloqueIdx": 0,
-          "recId": "vid_ava",
-          "recLabel": "Video avatar",
-          "comprometidos": 5,
-          "entregados": 5,
-          "estado": "cumplido",
-          "actualizadoEn": "2026-05-20T02:41:16.483Z"
-        },
-        {
-          "proyecto": "ESAM",
-          "proyId": "",
-          "curso": "Economía Gerencial",
-          "bloqueIdx": 0,
-          "recId": "mul_ris",
-          "recLabel": "Rise",
-          "comprometidos": 10,
-          "entregados": 10,
-          "estado": "cumplido",
-          "actualizadoEn": "2026-05-20T02:41:19.383Z"
+          "actualizadoEn": "2026-05-19T10:00:00Z"
         }
       ]
     }
