@@ -822,9 +822,37 @@ var HH = {
 };
 var HORAS_SEMANA = 34.5; // 46h × 75% eficiencia
 
-// ── PLANEACIÓN PRECARGADA ─────────────────────────────────────────────────────
+// ── PLANEACIÓN PRECARGADA (legacy - se llena desde JSON en runtime) ───────────
 // Clave: "pmKey|YYYY-MM-DD" (fecha = lunes de la semana)
-var PLAN_PRECARGADO = {
+// Los datos vienen ahora de data/planeaciones/{semana}.json. Esta tabla se
+// preserva por compatibilidad con el resto del flujo (PLAN_PRECARGADO[key]).
+// Inicia vacía y se llena en `cargarPlaneaciones()` durante init().
+var PLAN_PRECARGADO = {};
+var METAS_PRECARGADAS = {};
+
+// Carga manifest + cada semana y popula PLAN_PRECARGADO y METAS_PRECARGADAS.
+async function cargarPlaneaciones(){
+  try {
+    var idx = await fetch('../data/planeaciones/index.json', {cache:'no-cache'}).then(function(r){return r.json();});
+    for (var i=0; i<idx.semanas.length; i++) {
+      var s = idx.semanas[i];
+      var data = await fetch('../data/planeaciones/'+s.file, {cache:'no-cache'}).then(function(r){return r.json();});
+      Object.keys(data.pms).forEach(function(pmKey){
+        var pmData = data.pms[pmKey];
+        var key = pmKey + '|' + s.lunes;
+        if (pmData.bloques && pmData.bloques.length) PLAN_PRECARGADO[key] = pmData.bloques;
+        if (pmData.metas && Object.keys(pmData.metas).length) METAS_PRECARGADAS[key] = pmData.metas;
+      });
+    }
+    return true;
+  } catch(e){
+    console.error('[planeacion] Error cargando data/planeaciones/*.json:', e);
+    return false;
+  }
+}
+
+/* === BLOQUE ELIMINADO: PLAN_PRECARGADO hardcoded ===
+var _PLAN_PRECARGADO_OLD_REMOVED = {
   'margarita|2026-05-18': [
     {id:'pre_m18_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
       curso:'',up:'',nota:'APUS semana: 16 avatar + 2 genially + 102 present. + 63 audiolibros + 100 diseño plat. + 32 PDFs',
@@ -994,6 +1022,7 @@ var METAS_PRECARGADAS = {
     'EIA':     {entrega:0, aprobar:0}
   }
 };
+=== FIN BLOQUE ELIMINADO === */
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 var bloques = [];
@@ -1010,7 +1039,7 @@ function resetCounts(){ counts = {}; ALL_REC_IDS.forEach(function(id){ counts[id
 resetCounts();
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-(function(){
+(async function(){
   var today = new Date();
   var diff = today.getDay()===0 ? -6 : 1-today.getDay();
   var lunes = new Date(today); lunes.setDate(today.getDate()+diff);
@@ -1019,6 +1048,11 @@ resetCounts();
   var pad = function(n){ return (n<10?'0':'')+n; };
   document.getElementById('selFecha').value =
     lunes.getFullYear()+'-'+pad(lunes.getMonth()+1)+'-'+pad(lunes.getDate());
+
+  // Esperar a que se carguen las planeaciones desde data/planeaciones/*.json
+  // antes de intentar restaurar el último PM (que dispara onPMChange y depende
+  // de PLAN_PRECARGADO ya estar poblado).
+  await cargarPlaneaciones();
 
   // Restaurar último PM seleccionado
   try {

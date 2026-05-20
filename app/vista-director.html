@@ -183,36 +183,31 @@ var REC_LABEL = {
 var AREA_LABEL = {video:'Video',multimedia:'Multimedia',grafico:'Gráfico',di:'DI',impl:'Implementación'};
 var AREA_CSS = {video:'video',multimedia:'multi',grafico:'graf',di:'di',impl:'impl'};
 
-var PLAN_PRECARGADO = {
-  'margarita|2026-05-18': [
-    {proyNombre:'APUS',counts:{vid_ava:16,mul_gen:2,mul_pre:102,vid_aud:63,mul_dis:100,gra_pdf:32},total:315},
-    {proyNombre:'Universidad Europea',counts:{vid_ava:76,vid_std:4,vid_int:16,mul_pre:21,gra_ebo:85,gra_inf:21,gra_pdf:13},total:236}
-  ],
-  'margarita|2026-05-25': [
-    {proyNombre:'APUS',counts:{vid_ava:2,mul_gen:20,mul_pre:100,vid_aud:103,mul_dis:180,gra_pdf:40},total:445},
-    {proyNombre:'Universidad Europea',counts:{vid_ava:76,vid_std:5,vid_int:15,mul_pre:35,gra_ebo:110,gra_inf:27,gra_pdf:14},total:282}
-  ],
-  'sophia|2026-05-18': [
-    {proyNombre:'ESAM',counts:{vid_std:35,vid_ava:35,mul_ris:70,gra_inf:35,gra_pdf:28,gra_ebo:70,impl_lms:7},total:280},
-    {proyNombre:'Politécnica',counts:{vid_std:7,mul_ris:84,mul_pre:83,gra_ban:7},total:181},
-    {proyNombre:'Indoamérica',counts:{vid_std:4,mul_pre:4,mul_inf:1,gra_inf:3,gra_ebo:4},total:16}
-  ],
-  'marcela|2026-05-18': [
-    {proyNombre:'ESIC',counts:{vid_std:2,mul_ris:11,mul_act:49,gra_inf:5,gra_ebo:7},total:74}
-  ],
-  'andres|2026-05-18': [
-    {proyNombre:'Externado',counts:{vid_pre:6},total:6},
-    {proyNombre:'USAP',counts:{vid_std:8},total:8}
-  ],
-  'jorge|2026-05-18': [
-    {proyNombre:'Vértice',counts:{vid_pre:65},total:65},
-    {proyNombre:'EIA',counts:{mul_ris:10,mul_gen:5,gra_inf:22},total:37}
-  ],
-  'jorge|2026-05-25': [
-    {proyNombre:'Vértice',counts:{vid_pre:34},total:34},
-    {proyNombre:'EIA',counts:{vid_std:33,vid_pod:15,mul_ris:3,mul_gen:12},total:63}
-  ]
-};
+// Vacío al inicio. Se llena vía fetch() desde data/planeaciones/*.json en init().
+// El shape que consume renderWeek() solo requiere: {proyNombre, counts, total}.
+// Aceptamos también bloques detallados de planeación-semanal (que tienen más
+// campos como id/curso/up/nota) porque renderWeek() los ignora.
+var PLAN_PRECARGADO = {};
+
+async function cargarPlaneaciones(){
+  try {
+    var idx = await fetch('../data/planeaciones/index.json', {cache:'no-cache'}).then(function(r){return r.json();});
+    for (var i=0; i<idx.semanas.length; i++) {
+      var s = idx.semanas[i];
+      var data = await fetch('../data/planeaciones/'+s.file, {cache:'no-cache'}).then(function(r){return r.json();});
+      Object.keys(data.pms).forEach(function(pmKey){
+        var pmData = data.pms[pmKey];
+        if (pmData.bloques && pmData.bloques.length) {
+          PLAN_PRECARGADO[pmKey + '|' + s.lunes] = pmData.bloques;
+        }
+      });
+    }
+    return true;
+  } catch(e){
+    console.error('[vista-director] Error cargando data/planeaciones/*.json:', e);
+    return false;
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // LOGIC
@@ -220,7 +215,10 @@ var PLAN_PRECARGADO = {
 var allWeeks = [];
 var currentWeekIdx = 0;
 
-function init(){
+async function init(){
+  // Esperar a que se carguen las planeaciones desde JSON antes de descubrir semanas
+  await cargarPlaneaciones();
+
   // Discover all unique weeks
   var wkSet = {};
   Object.keys(PLAN_PRECARGADO).forEach(function(k){
