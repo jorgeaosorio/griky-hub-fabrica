@@ -16,7 +16,8 @@
 body { font-family: 'Roboto', sans-serif; background: var(--light); color: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
 
 /* HEADER */
-header { background: var(--navy); position: sticky; top: 0; z-index: 100; overflow: hidden; flex-shrink: 0; }
+header { background: var(--navy); position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+.hdr-accent { /* keep accent line visible */ }
 .hdr-accent { position: absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--red) 0%, #ff6b8a 100%); }
 .hdr-circle { position: absolute; border-radius: 50%; background: rgba(255,45,85,0.08); pointer-events: none; }
 .hdr-inner { position: relative; z-index:1; display:flex; align-items:center; padding: 14px 28px; gap: 20px; }
@@ -1157,11 +1158,27 @@ function descargarSeguimientoJSON(){
   URL.revokeObjectURL(url);
 }
 
-// Muestra/oculta el botón "Guardar progreso" según si hay entregas registradas.
+// Muestra/oculta el botón "Guardar progreso". Aparece tan pronto como hay un PM
+// identificado (no requiere entregas — la advertencia "responde al menos una
+// pregunta" la hace descargarSeguimientoJSON()). Esto evita confusión: el botón
+// está siempre disponible cuando aplica, aunque al inicio solo descargue un
+// JSON vacío.
 function actualizarBtnDescarga(){
   const btn = document.getElementById('btnDescargarSeguimiento');
   if(!btn) return;
-  btn.style.display = (S.pmKey && S.entregas.length > 0) ? 'inline-block' : 'none';
+  if(!S.pmKey){
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = 'inline-block';
+  // Atenuar el botón visualmente si no hay entregas todavía
+  if(S.entregas.length === 0){
+    btn.style.opacity = '0.55';
+    btn.title = 'Responde al menos una pregunta antes de descargar';
+  } else {
+    btn.style.opacity = '1';
+    btn.title = S.entregas.length + ' entregas registradas · Click para descargar JSON';
+  }
 }
 
 // buildJSONExport kept for Hub sync button (reads from localStorage)
