@@ -4,18 +4,67 @@
   "pms": {
     "sophia": {
       "nombre": "Sophia Pacheco",
-      "ultimaActualizacion": "2026-05-19T10:00:00Z",
+      "ultimaActualizacion": "2026-05-20T03:32:03.156Z",
       "entregas": [
         {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
           "bloqueIdx": 0,
-          "proyId": "esam",
-          "proyNombre": "ESAM",
-          "curso": "Test Worker",
           "recId": "vid_std",
+          "recLabel": "Video estándar",
           "comprometidos": 5,
           "entregados": 5,
           "estado": "cumplido",
-          "actualizadoEn": "2026-05-19T10:00:00Z"
+          "actualizadoEn": "2026-05-20T02:41:11.450Z"
+        },
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "vid_ava",
+          "recLabel": "Video avatar",
+          "comprometidos": 5,
+          "entregados": 5,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T02:41:16.483Z"
+        },
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "mul_ris",
+          "recLabel": "Rise",
+          "comprometidos": 10,
+          "entregados": 10,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T02:41:19.383Z"
+        },
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "gra_inf",
+          "recLabel": "Infografía estándar",
+          "comprometidos": 5,
+          "entregados": 5,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T03:31:54.656Z"
+        },
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "gra_pdf",
+          "recLabel": "PDF",
+          "comprometidos": 4,
+          "entregados": 4,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T03:31:58.758Z"
         }
       ]
     }
