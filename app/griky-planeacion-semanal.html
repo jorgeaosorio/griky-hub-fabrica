@@ -978,8 +978,29 @@ var PLAN_PRECARGADO = {
   ],
   'marcela|2026-05-18': [
     {id:'pre_vi18_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
-      curso:'',up:'',nota:'ESIC: 3 Rise',
-      counts:{mul_ris:3},total:3}
+      curso:'Planificación de plataformas digitales',up:'',
+      nota:'1 vid std + 8 Rise + 16 act interact + 5 infogr + 7 ebook',
+      counts:{vid_std:1,mul_ris:8,mul_act:16,gra_inf:5,gra_ebo:7},total:37},
+    {id:'pre_vi18_2',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'Fundamentos de estadística',up:'',
+      nota:'1 vid std + 14 act interact',
+      counts:{vid_std:1,mul_act:14},total:15},
+    {id:'pre_vi18_3',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'Dirección y liderazgo del equipo comercial',up:'',
+      nota:'1 Rise + 1 act interact',
+      counts:{mul_ris:1,mul_act:1},total:2},
+    {id:'pre_vi18_4',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'Gestión Operativa de Ventas y Tecnología: CRM, Funnel y Pipeline',up:'',
+      nota:'1 Rise + 1 act interact',
+      counts:{mul_ris:1,mul_act:1},total:2},
+    {id:'pre_vi18_5',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'Planificación comercial',up:'',
+      nota:'1 Rise + 1 act interact',
+      counts:{mul_ris:1,mul_act:1},total:2},
+    {id:'pre_vi18_6',proyId:'esic',proyNombre:'ESIC',color:'verde',
+      curso:'Investigación Comercial',up:'',
+      nota:'16 act interact',
+      counts:{mul_act:16},total:16}
   ],
   'andres|2026-05-04': [
     {id:'pre_ju04_1',proyId:'usap',proyNombre:'USAP',color:'verde',
@@ -1147,7 +1168,11 @@ resetCounts();
   var today = new Date();
   var diff = today.getDay()===0 ? -6 : 1-today.getDay();
   var lunes = new Date(today); lunes.setDate(today.getDate()+diff);
-  document.getElementById('selFecha').value = lunes.toISOString().split('T')[0];
+  // Formato YYYY-MM-DD en hora LOCAL (evita shift de timezone que pasaba
+  // de tarde/noche en zonas UTC-5: toISOString() devolvía el día siguiente)
+  var pad = function(n){ return (n<10?'0':'')+n; };
+  document.getElementById('selFecha').value =
+    lunes.getFullYear()+'-'+pad(lunes.getMonth()+1)+'-'+pad(lunes.getDate());
 
   // Restaurar último PM seleccionado
   try {
