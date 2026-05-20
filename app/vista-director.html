@@ -433,22 +433,29 @@ function renderPMCards(pmData){
     }
     html += '</div>';
 
-    // Vertical bars: capa de planeado (opacidad baja) + capa de ejecutado (sólido)
+    // Vertical bars: barra clara = ancho completo (planeado del área).
+    // Barra sólida = % de cumplimiento del área (ejecutado/planeado), nunca rebasa la clara.
+    // Esto da máxima visibilidad al avance en cada área independientemente de su magnitud.
     function renderBar(area, mostrarSiZero){
       var planeado = d.areas[area] || 0;
       var ejecutado = (d.execAreas && d.execAreas[area]) || 0;
       if(planeado === 0 && !mostrarSiZero) return '';
-      var pctPlan = maxArea > 0 ? Math.max(planeado>0?2:0, (planeado/maxArea)*100) : 0;
-      var pctExec = maxArea > 0 ? (ejecutado/maxArea)*100 : 0;
-      var label = ejecutado > 0 && pctExec > 12 ? ejecutado : '';
-      var pctCompl = planeado > 0 ? Math.round((ejecutado/planeado)*100) : 0;
+      // Capa clara: full width (el contexto de magnitud está en el texto lateral)
+      var pctPlan = planeado > 0 ? 100 : 0;
+      // Capa sólida: % cumplimiento del área. Capeada a 100%.
+      var pctCompl = planeado > 0 ? Math.min(100, Math.round((ejecutado/planeado)*100)) : 0;
+      var pctExec = pctCompl;
+      // Mostrar número dentro de la barra solo si la sólida es lo suficientemente ancha
+      var label = ejecutado > 0 && pctExec > 8 ? ejecutado : '';
       var row = '<div class="vert-row">';
       row += '<div class="vert-label" style="color:var(--'+AREA_CSS[area]+'-txt);">'+AREA_LABEL[area]+'</div>';
       row += '<div class="vert-bar-bg">';
       row +=   '<div class="vert-bar-plan '+AREA_CSS[area]+'" style="width:'+pctPlan+'%;"></div>';
-      row +=   '<div class="vert-bar-exec '+AREA_CSS[area]+'" style="width:'+pctExec+'%;">'+label+'</div>';
+      if(ejecutado > 0){
+        row += '<div class="vert-bar-exec '+AREA_CSS[area]+'" style="width:'+pctExec+'%;">'+label+'</div>';
+      }
       row += '</div>';
-      // Etiqueta lateral: "ejecutado / planeado · NN%"
+      // Etiqueta lateral: ejecutado / planeado · NN%
       var countHtml;
       if(ejecutado > 0){
         countHtml = '<span class="exec">'+ejecutado+'</span><span class="sep">/</span>'+planeado+' <span style="font-size:10px;color:var(--gray);">· '+pctCompl+'%</span>';
