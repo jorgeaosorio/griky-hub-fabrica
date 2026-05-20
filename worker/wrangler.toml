@@ -1,0 +1,18 @@
+name = "griky-seguimiento-sync"
+main = "seguimiento-sync.js"
+compatibility_date = "2024-01-01"
+
+# Variables públicas (no secretos). Editar si cambias de owner/repo.
+[vars]
+REPO_OWNER = "jorgeaosorio"
+REPO_NAME = "griky-hub-fabrica"
+
+# Restringir CORS a tu GitHub Pages (opcional pero recomendado).
+# Sin esto, cualquier sitio puede llamar al Worker.
+# Ejemplo: ALLOWED_ORIGINS = "https://jorgeaosorio.github.io"
+# Si lo dejas en blanco o como "*", acepta cualquier origen.
+# ALLOWED_ORIGINS = "https://jorgeaosorio.github.io"
+
+# El secret GITHUB_TOKEN se configura aparte con:
+#   wrangler secret put GITHUB_TOKEN
+# (No se guarda en wrangler.toml — eso lo expondría al repo)

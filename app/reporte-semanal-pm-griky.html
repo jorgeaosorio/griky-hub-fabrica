@@ -1137,9 +1137,19 @@ function doDownload(){
   URL.revokeObjectURL(url);
 }
 
-// Descarga el JSON estructurado de seguimiento para esta semana del PM.
-// Output esperado: data/seguimiento/{semana}.json — el usuario lo committea al repo.
-function descargarSeguimientoJSON(){
+// URL del Worker de sincronización (lee data/config.json al cargar la página).
+// Si está vacío, el botón cae al flujo manual de descarga.
+let SEGUIMIENTO_SYNC_URL = '';
+(async function _cargarConfig(){
+  try {
+    const cfg = await fetch('../data/config.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : null);
+    if(cfg && cfg.seguimientoSyncUrl) SEGUIMIENTO_SYNC_URL = cfg.seguimientoSyncUrl.trim();
+  } catch(e){ /* sin config = modo descarga */ }
+})();
+
+// Botón "Guardar progreso": si hay Worker configurado, hace POST y devuelve OK.
+// Si no, cae al flujo viejo de descargar el archivo.
+async function descargarSeguimientoJSON(){
   if(!S.pmKey || !S.semanaId){
     alert('Aún no hay planeación cargada. Identifícate primero.');
     return;
@@ -1148,7 +1158,51 @@ function descargarSeguimientoJSON(){
     alert('No hay entregas registradas todavía — responde al menos una pregunta.');
     return;
   }
+
   const data = generarSeguimientoJSON();
+  const btn = document.getElementById('btnDescargarSeguimiento');
+  const textoOriginal = btn ? btn.textContent : '';
+
+  // Si hay Worker configurado, intentar POST automático
+  if(SEGUIMIENTO_SYNC_URL){
+    if(btn){ btn.textContent = '⏳ Guardando…'; btn.disabled = true; }
+    try {
+      const resp = await fetch(SEGUIMIENTO_SYNC_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await resp.json().catch(() => ({}));
+      if(resp.ok && result.ok){
+        if(btn){
+          btn.textContent = '✓ Guardado en repo';
+          btn.style.background = 'rgba(0, 196, 140, 0.25)';
+          btn.style.borderColor = 'rgba(0, 196, 140, 0.5)';
+          setTimeout(() => {
+            btn.textContent = textoOriginal;
+            btn.style.background = 'rgba(255,255,255,.12)';
+            btn.style.borderColor = 'rgba(255,255,255,.25)';
+            btn.disabled = false;
+          }, 4000);
+        }
+        console.log('[seguimiento-sync] OK:', result);
+        return;
+      }
+      // Error del Worker
+      console.error('[seguimiento-sync] Worker respondió error:', result);
+      alert('No se pudo guardar al repo automáticamente: ' + (result.error || resp.status) + '\n\nDescargo el archivo para que lo guardes manualmente.');
+    } catch(e){
+      console.error('[seguimiento-sync] Error de red:', e);
+      alert('Sin conexión al servicio de sincronización.\n\nDescargo el archivo para que lo guardes manualmente.');
+    } finally {
+      if(btn && btn.textContent === '⏳ Guardando…'){
+        btn.textContent = textoOriginal;
+        btn.disabled = false;
+      }
+    }
+  }
+
+  // Fallback: descarga del archivo (modo manual)
   const blob = new Blob([JSON.stringify(data, null, 2)+'\n'], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
