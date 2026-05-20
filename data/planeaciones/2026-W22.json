@@ -1,0 +1,105 @@
+{
+  "semana": "2026-W22",
+  "lunes": "2026-05-25",
+  "viernes": "2026-05-29",
+  "pms": {
+    "margarita": {
+      "nombre": "Margarita Rosales",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_m25_1",
+          "proyId": "apus_ingles",
+          "proyNombre": "APUS",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "APUS semana: 2 avatar + 20 genially + 100 present. + 103 audiolibros + 180 diseño plat. + 40 PDFs",
+          "counts": {
+            "vid_ava": 2,
+            "mul_gen": 20,
+            "mul_pre": 100,
+            "vid_aud": 103,
+            "mul_dis": 180,
+            "gra_pdf": 40
+          },
+          "total": 445
+        },
+        {
+          "id": "pre_m25_2",
+          "proyId": "ue",
+          "proyNombre": "Universidad Europea",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "UE semana: 76 avatar + 5 std + 15 vid interact. + 35 present. + 110 ebooks + 27 infogr. + 14 PDFs",
+          "counts": {
+            "vid_ava": 76,
+            "vid_std": 5,
+            "vid_int": 15,
+            "mul_pre": 35,
+            "gra_ebo": 110,
+            "gra_inf": 27,
+            "gra_pdf": 14
+          },
+          "total": 282
+        }
+      ],
+      "metas": {
+        "Apus": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "UE": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    },
+    "jorge": {
+      "nombre": "Jorge Osorio",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_jo25_1",
+          "proyId": "vertice",
+          "proyNombre": "Vértice",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "Vértice: 34 videos Premiere",
+          "counts": {
+            "vid_pre": 34
+          },
+          "total": 34
+        },
+        {
+          "id": "pre_jo25_2",
+          "proyId": "eia_lideres",
+          "proyNombre": "EIA",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "EIA: 33 vid std + 15 podcast + 3 Rise + 12 genially",
+          "counts": {
+            "vid_std": 33,
+            "vid_pod": 15,
+            "mul_ris": 3,
+            "mul_gen": 12
+          },
+          "total": 63
+        }
+      ],
+      "metas": {
+        "Vértice": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "EIA": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    }
+  }
+}

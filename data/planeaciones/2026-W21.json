@@ -1,0 +1,554 @@
+{
+  "semana": "2026-W21",
+  "lunes": "2026-05-18",
+  "viernes": "2026-05-22",
+  "pms": {
+    "margarita": {
+      "nombre": "Margarita Rosales",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_m18_1",
+          "proyId": "apus_ingles",
+          "proyNombre": "APUS",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "APUS semana: 16 avatar + 2 genially + 102 present. + 63 audiolibros + 100 diseño plat. + 32 PDFs",
+          "counts": {
+            "vid_ava": 16,
+            "mul_gen": 2,
+            "mul_pre": 102,
+            "vid_aud": 63,
+            "mul_dis": 100,
+            "gra_pdf": 32
+          },
+          "total": 315
+        },
+        {
+          "id": "pre_m18_2",
+          "proyId": "ue",
+          "proyNombre": "Universidad Europea",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "UE semana: 76 avatar + 4 std + 16 vid interact. + 21 present. + 85 ebooks + 21 infogr. + 13 PDFs",
+          "counts": {
+            "vid_ava": 76,
+            "vid_std": 4,
+            "vid_int": 16,
+            "mul_pre": 21,
+            "gra_ebo": 85,
+            "gra_inf": 21,
+            "gra_pdf": 13
+          },
+          "total": 236
+        }
+      ],
+      "metas": {
+        "Apus": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "UE": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    },
+    "sophia": {
+      "nombre": "Sophia Pacheco",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_so18_1",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Economía Gerencial",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_2",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Productos Bancarios de activo",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_3",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Análisis y diseño de inversión en mercados financieros",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_4",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Gestión integrada de los sistemas de prevención y calidad en la empresa",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_5",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Medios de cobro y pago nacionales e internacionales.",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_6",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Investigación de mercados",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_7",
+          "proyId": "esam",
+          "proyNombre": "ESAM",
+          "color": "verde",
+          "curso": "Marco legislativo del entorno digital",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 5,
+            "vid_ava": 5,
+            "mul_ris": 10,
+            "gra_inf": 5,
+            "gra_pdf": 4,
+            "gra_ebo": 10,
+            "impl_lms": 1
+          },
+          "total": 40
+        },
+        {
+          "id": "pre_so18_8",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Manufacturing processes",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 12,
+            "gra_ban": 1
+          },
+          "total": 26
+        },
+        {
+          "id": "pre_so18_9",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Groundwater Pollution Control",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 12,
+            "gra_ban": 1
+          },
+          "total": 26
+        },
+        {
+          "id": "pre_so18_10",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Pollution Prevention Engineering",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 12,
+            "gra_ban": 1
+          },
+          "total": 26
+        },
+        {
+          "id": "pre_so18_11",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Quality management System",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 12,
+            "gra_ban": 1
+          },
+          "total": 26
+        },
+        {
+          "id": "pre_so18_12",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Computational Fluid Dynamics",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 12,
+            "gra_ban": 1
+          },
+          "total": 26
+        },
+        {
+          "id": "pre_so18_13",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Introduction to Design For Manufacturing",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 11,
+            "gra_ban": 1
+          },
+          "total": 25
+        },
+        {
+          "id": "pre_so18_14",
+          "proyId": "politecnica",
+          "proyNombre": "Politécnica",
+          "color": "verde",
+          "curso": "Project Management",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 12,
+            "mul_pre": 12,
+            "gra_ban": 1
+          },
+          "total": 26
+        },
+        {
+          "id": "pre_so18_15",
+          "proyId": "indoamerica",
+          "proyNombre": "Indoamérica",
+          "color": "verde",
+          "curso": "Psicología Educativa",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 4,
+            "mul_pre": 4,
+            "mul_inf": 1,
+            "gra_inf": 3,
+            "gra_ebo": 4
+          },
+          "total": 16
+        }
+      ],
+      "metas": {
+        "USS": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "Ibero México": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "U América": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "ESAM": {
+          "entrega": 5,
+          "aprobar": 0
+        },
+        "Cinemark": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "ICami": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "Politécnica": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "Indoamérica": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "UDLA": {
+          "entrega": 0,
+          "aprobar": 14
+        },
+        "UMB": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    },
+    "marcela": {
+      "nombre": "Marcela Osorio",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_ma18_1",
+          "proyId": "esic",
+          "proyNombre": "ESIC",
+          "color": "verde",
+          "curso": "Planificación de plataformas digitales",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_ris": 8,
+            "mul_act": 16,
+            "gra_inf": 5,
+            "gra_ebo": 7
+          },
+          "total": 37
+        },
+        {
+          "id": "pre_ma18_2",
+          "proyId": "esic",
+          "proyNombre": "ESIC",
+          "color": "verde",
+          "curso": "Fundamentos de estadística",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "vid_std": 1,
+            "mul_act": 14
+          },
+          "total": 15
+        },
+        {
+          "id": "pre_ma18_3",
+          "proyId": "esic",
+          "proyNombre": "ESIC",
+          "color": "verde",
+          "curso": "Direccion y liderazgo del equipo comercial",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "mul_ris": 1,
+            "mul_act": 1
+          },
+          "total": 2
+        },
+        {
+          "id": "pre_ma18_4",
+          "proyId": "esic",
+          "proyNombre": "ESIC",
+          "color": "verde",
+          "curso": "Gestión Operativa de Ventas y Tecnología: CRM, Funnel y Pipeline",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "mul_ris": 1,
+            "mul_act": 1
+          },
+          "total": 2
+        },
+        {
+          "id": "pre_ma18_5",
+          "proyId": "esic",
+          "proyNombre": "ESIC",
+          "color": "verde",
+          "curso": "Planificación comercial",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "mul_ris": 1,
+            "mul_act": 1
+          },
+          "total": 2
+        },
+        {
+          "id": "pre_ma18_6",
+          "proyId": "esic",
+          "proyNombre": "ESIC",
+          "color": "verde",
+          "curso": "Investigación Comercial",
+          "up": "",
+          "nota": "",
+          "counts": {
+            "mul_act": 16
+          },
+          "total": 16
+        }
+      ],
+      "metas": {
+        "ESIC": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    },
+    "andres": {
+      "nombre": "Juan Ochoa",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_ju18_1",
+          "proyId": "externado",
+          "proyNombre": "Externado",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "Externado: 6 videos Premiere",
+          "counts": {
+            "vid_pre": 6
+          },
+          "total": 6
+        },
+        {
+          "id": "pre_ju18_2",
+          "proyId": "usap",
+          "proyNombre": "USAP",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "USAP: 8 videos estándar",
+          "counts": {
+            "vid_std": 8
+          },
+          "total": 8
+        }
+      ],
+      "metas": {
+        "Externado": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "USAP": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    },
+    "jorge": {
+      "nombre": "Jorge Osorio",
+      "objetivo": "",
+      "bloques": [
+        {
+          "id": "pre_jo18_1",
+          "proyId": "vertice",
+          "proyNombre": "Vértice",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "Vértice: 65 videos Premiere",
+          "counts": {
+            "vid_pre": 65
+          },
+          "total": 65
+        },
+        {
+          "id": "pre_jo18_2",
+          "proyId": "eia_lideres",
+          "proyNombre": "EIA",
+          "color": "verde",
+          "curso": "",
+          "up": "",
+          "nota": "EIA: 10 Rise + 5 genially + 22 infografías",
+          "counts": {
+            "mul_ris": 10,
+            "mul_gen": 5,
+            "gra_inf": 22
+          },
+          "total": 37
+        }
+      ],
+      "metas": {
+        "Vértice": {
+          "entrega": 0,
+          "aprobar": 0
+        },
+        "EIA": {
+          "entrega": 0,
+          "aprobar": 0
+        }
+      }
+    }
+  }
+}
