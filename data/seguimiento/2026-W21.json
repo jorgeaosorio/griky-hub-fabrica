@@ -1,5 +1,48 @@
 {
   "semana": "2026-W21",
   "lunes": "2026-05-18",
-  "pms": {}
+  "pms": {
+    "sophia": {
+      "nombre": "Sophia Pacheco",
+      "ultimaActualizacion": "2026-05-20T02:41:22.283Z",
+      "entregas": [
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "vid_std",
+          "recLabel": "Video estándar",
+          "comprometidos": 5,
+          "entregados": 5,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T02:41:11.450Z"
+        },
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "vid_ava",
+          "recLabel": "Video avatar",
+          "comprometidos": 5,
+          "entregados": 5,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T02:41:16.483Z"
+        },
+        {
+          "proyecto": "ESAM",
+          "proyId": "",
+          "curso": "Economía Gerencial",
+          "bloqueIdx": 0,
+          "recId": "mul_ris",
+          "recLabel": "Rise",
+          "comprometidos": 10,
+          "entregados": 10,
+          "estado": "cumplido",
+          "actualizadoEn": "2026-05-20T02:41:19.383Z"
+        }
+      ]
+    }
+  }
 }
