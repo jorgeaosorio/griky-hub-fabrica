@@ -825,22 +825,6 @@ var HORAS_SEMANA = 34.5; // 46h × 75% eficiencia
 // ── PLANEACIÓN PRECARGADA ─────────────────────────────────────────────────────
 // Clave: "pmKey|YYYY-MM-DD" (fecha = lunes de la semana)
 var PLAN_PRECARGADO = {
-  'margarita|2026-05-04': [
-    {id:'pre_m04_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
-      curso:'',up:'',nota:'APUS semana: 20 avatar + 120 present. + 85 audiolibros + 180 diseño plataforma + 48 PDFs',
-      counts:{vid_ava:20,mul_pre:120,vid_aud:85,mul_dis:180,gra_pdf:48},total:453},
-    {id:'pre_m04_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
-      curso:'',up:'',nota:'UE semana: 93 avatar + 2 std + 25 vid interact. + 35 present. + 85 ebooks + 15 infogr. + 7 PDFs',
-      counts:{vid_ava:93,vid_std:2,vid_int:25,mul_pre:35,gra_ebo:85,gra_inf:15,gra_pdf:7},total:262}
-  ],
-  'margarita|2026-05-11': [
-    {id:'pre_m11_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
-      curso:'',up:'',nota:'APUS semana: 16 avatar + 8 podcast + 105 present. + 60 audiolibros + 135 diseño plat. + 32 PDFs',
-      counts:{vid_ava:16,vid_pod:8,mul_pre:105,vid_aud:60,mul_dis:135,gra_pdf:32},total:356},
-    {id:'pre_m11_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
-      curso:'',up:'',nota:'UE semana: 74 avatar + 6 std + 16 vid interact. + 28 present. + 75 ebooks + 21 infogr. + 12 PDFs',
-      counts:{vid_ava:74,vid_std:6,vid_int:16,mul_pre:28,gra_ebo:75,gra_inf:21,gra_pdf:12},total:232}
-  ],
   'margarita|2026-05-18': [
     {id:'pre_m18_1',proyId:'apus_ingles',proyNombre:'APUS',color:'verde',
       curso:'',up:'',nota:'APUS semana: 16 avatar + 2 genially + 102 present. + 63 audiolibros + 100 diseño plat. + 32 PDFs',
@@ -856,53 +840,6 @@ var PLAN_PRECARGADO = {
     {id:'pre_m25_2',proyId:'ue',proyNombre:'Universidad Europea',color:'verde',
       curso:'',up:'',nota:'UE semana: 76 avatar + 5 std + 15 vid interact. + 35 present. + 110 ebooks + 27 infogr. + 14 PDFs',
       counts:{vid_ava:76,vid_std:5,vid_int:15,mul_pre:35,gra_ebo:110,gra_inf:27,gra_pdf:14},total:282}
-  ],
-  'sophia|2026-05-04': [
-    {id:'pre_sp_1',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'Gestión integrada de los sistemas de prevención y calidad',up:'',
-      nota:'Lun-Mar: 10 videos estándar',
-      counts:{vid_std:10},total:10},
-    {id:'pre_sp_2',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'Análisis y diseños de inversión en mercados financieros',up:'',
-      nota:'Lun: 5 video std · Mar: 5 video avatar',
-      counts:{vid_std:5,vid_ava:5},total:10},
-    {id:'pre_sp_3',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'Productos bancarios de activo',up:'',
-      nota:'Mié 4 std · Jue 1 std + 3 avatar · Vie 2 avatar',
-      counts:{vid_std:5,vid_ava:5},total:10},
-    {id:'pre_sp_4',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'Medios de cobro y pago nacionales e internacionales',up:'',
-      nota:'Mié 4 std · Jue 1 std + 3 avatar · Vie 2 avatar',
-      counts:{vid_std:5,vid_ava:5},total:10},
-    {id:'pre_sp_5',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'',up:'',nota:'Multimedia y gráfico ESAM (varios cursos)',
-      counts:{mul_ris:48,mul_inf:19,gra_inf:10},total:77},
-    {id:'pre_sp_6',proyId:'udla',proyNombre:'UDLA',color:'verde',
-      curso:'',up:'',nota:'Multimedia y gráfico UDLA (varios cursos)',
-      counts:{mul_sto:10,mul_act:29,mul_pre:7,gra_inf:14},total:60}
-  ],
-  'sophia|2026-05-11': [
-    {id:'pre_sp11_1',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'',up:'',nota:'Video ESAM: 29 avatar + 29 estándar',
-      counts:{vid_ava:29,vid_std:29},total:58},
-    {id:'pre_sp11_2',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'',up:'',nota:'Multimedia ESAM: 28 Rise + 12 infografías interactivas',
-      counts:{mul_ris:28,mul_inf:12},total:40},
-    {id:'pre_sp11_3',proyId:'esam',proyNombre:'ESAM',color:'verde',
-      curso:'',up:'',nota:'Gráfico ESAM: 3 infografías + 49 ebooks + 20 PDFs',
-      counts:{gra_inf:3,gra_ebo:49,gra_pdf:20},total:72},
-    {id:'pre_sp11_4',proyId:'indoamerica',proyNombre:'Indoamérica',color:'verde',
-      curso:'',up:'',nota:'Indoamérica: 8 vid std + 6 ebooks + 6 infografías',
-      counts:{vid_std:8,gra_ebo:6,gra_inf:6},total:20},
-    {id:'pre_sp11_5',proyId:'politecnica',proyNombre:'Politécnica',color:'verde',
-      curso:'',up:'',nota:'Politécnica: 1 vid std + 16 Rise',
-      counts:{vid_std:1,mul_ris:16},total:17},
-    {id:'pre_sp11_6',proyId:'udla',proyNombre:'UDLA',color:'verde',
-      curso:'',up:'',nota:'UDLA: 8 Storyline + 1 presentación + 2 banners',
-      counts:{mul_sto:8,mul_pre:1,gra_ban:2},total:11},
-    {id:'pre_sp11_7',proyId:'umb',proyNombre:'UMB',color:'verde',
-      curso:'',up:'',nota:'UMB: 8 vid podcast + 13 vid estándar',
-      counts:{vid_pod:8,vid_std:13},total:21}
   ],
   'sophia|2026-05-18': [
     {id:'pre_sp18_1',proyId:'esam',proyNombre:'ESAM',color:'verde',
@@ -966,16 +903,6 @@ var PLAN_PRECARGADO = {
       nota:'4 vid std + 4 pres interact + 1 infogr interact + 3 infogr std + 4 ebook',
       counts:{vid_std:4,mul_pre:4,mul_inf:1,gra_inf:3,gra_ebo:4},total:16}
   ],
-  'marcela|2026-05-04': [
-    {id:'pre_vi04_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
-      curso:'',up:'',nota:'ESIC: 7 vid std + 7 podcast + 4 pres interactiva + 10 Rise + 4 activ interactiva + 7 PDF',
-      counts:{vid_std:7,vid_pod:7,mul_pre:4,mul_ris:10,mul_act:4,gra_pdf:7},total:39}
-  ],
-  'marcela|2026-05-11': [
-    {id:'pre_vi11_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
-      curso:'',up:'',nota:'ESIC: 3 pres interactiva + 8 Rise + 3 activ interactiva',
-      counts:{mul_pre:3,mul_ris:8,mul_act:3},total:14}
-  ],
   'marcela|2026-05-18': [
     {id:'pre_vi18_1',proyId:'esic',proyNombre:'ESIC',color:'verde',
       curso:'Planificación de plataformas digitales',up:'',
@@ -1002,25 +929,6 @@ var PLAN_PRECARGADO = {
       nota:'16 act interact',
       counts:{mul_act:16},total:16}
   ],
-  'andres|2026-05-04': [
-    {id:'pre_ju04_1',proyId:'usap',proyNombre:'USAP',color:'verde',
-      curso:'',up:'',nota:'USAP: 10 Rise + 10 actividades + 1 ebook',
-      counts:{mul_ris:10,mul_act:10,gra_ebo:1},total:21},
-    {id:'pre_ju04_2',proyId:'externado',proyNombre:'Externado',color:'verde',
-      curso:'',up:'',nota:'Externado: 9 videos Premiere',
-      counts:{vid_pre:9},total:9},
-    {id:'pre_ju04_3',proyId:'cesun',proyNombre:'Cesún',color:'verde',
-      curso:'',up:'',nota:'Cesún: 2 videos avatar',
-      counts:{vid_ava:2},total:2}
-  ],
-  'andres|2026-05-11': [
-    {id:'pre_ju11_1',proyId:'externado',proyNombre:'Externado',color:'verde',
-      curso:'',up:'',nota:'Externado: 8 videos Premiere',
-      counts:{vid_pre:8},total:8},
-    {id:'pre_ju11_2',proyId:'usap',proyNombre:'USAP',color:'verde',
-      curso:'',up:'',nota:'USAP: 2 Rise + 4 actividades',
-      counts:{mul_ris:2,mul_act:4},total:6}
-  ],
   'andres|2026-05-18': [
     {id:'pre_ju18_1',proyId:'externado',proyNombre:'Externado',color:'verde',
       curso:'',up:'',nota:'Externado: 6 videos Premiere',
@@ -1028,19 +936,6 @@ var PLAN_PRECARGADO = {
     {id:'pre_ju18_2',proyId:'usap',proyNombre:'USAP',color:'verde',
       curso:'',up:'',nota:'USAP: 8 videos estándar',
       counts:{vid_std:8},total:8}
-  ],
-  'jorge|2026-05-04': [
-    {id:'pre_jo04_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
-      curso:'',up:'',nota:'Vértice: 16 videos Premiere',
-      counts:{vid_pre:16},total:16}
-  ],
-  'jorge|2026-05-11': [
-    {id:'pre_jo11_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
-      curso:'',up:'',nota:'Vértice: 13 videos Premiere',
-      counts:{vid_pre:13},total:13},
-    {id:'pre_jo11_2',proyId:'eia_lideres',proyNombre:'EIA',color:'verde',
-      curso:'',up:'',nota:'EIA: 2 Rise + 1 genially + 8 infografías',
-      counts:{mul_ris:2,mul_gen:1,gra_inf:8},total:11}
   ],
   'jorge|2026-05-18': [
     {id:'pre_jo18_1',proyId:'vertice',proyNombre:'Vértice',color:'verde',
@@ -1063,14 +958,6 @@ var PLAN_PRECARGADO = {
 // ── METAS DE CIERRE POR CLIENTE PRECARGADAS ───────────────────────────────────
 // Clave: "pmKey|YYYY-MM-DD" — { 'Cliente X': {entrega: N, aprobar: N} }
 var METAS_PRECARGADAS = {
-  'margarita|2026-05-04': {
-    'Apus':         {entrega:0, aprobar:0},
-    'UE':           {entrega:0, aprobar:0}
-  },
-  'margarita|2026-05-11': {
-    'Apus':         {entrega:0, aprobar:0},
-    'UE':           {entrega:0, aprobar:0}
-  },
   'margarita|2026-05-18': {
     'Apus':         {entrega:0, aprobar:0},
     'UE':           {entrega:0, aprobar:0}
@@ -1078,24 +965,6 @@ var METAS_PRECARGADAS = {
   'margarita|2026-05-25': {
     'Apus':         {entrega:0, aprobar:0},
     'UE':           {entrega:0, aprobar:0}
-  },
-  'sophia|2026-05-04': {
-    'USS':          {entrega:0, aprobar:0},
-    'Ibero México': {entrega:0, aprobar:0},
-    'U América':    {entrega:0, aprobar:0},
-    'ESAM':         {entrega:0, aprobar:0},
-    'Cinemark':     {entrega:0, aprobar:0},
-    'ICami':        {entrega:0, aprobar:0},
-    'Politécnica':  {entrega:0, aprobar:0},
-    'Indoamérica':  {entrega:0, aprobar:8},
-    'UDLA':         {entrega:0, aprobar:0}
-  },
-  'sophia|2026-05-11': {
-    'ESAM':         {entrega:0, aprobar:0},
-    'Indoamérica':  {entrega:0, aprobar:0},
-    'Politécnica':  {entrega:0, aprobar:0},
-    'UDLA':         {entrega:0, aprobar:0},
-    'UMB':          {entrega:0, aprobar:0}
   },
   'sophia|2026-05-18': {
     'USS':          {entrega:0, aprobar:0},
@@ -1109,35 +978,12 @@ var METAS_PRECARGADAS = {
     'UDLA':         {entrega:0, aprobar:14},
     'UMB':          {entrega:0, aprobar:0}
   },
-  'marcela|2026-05-04': {
-    'ESIC':  {entrega:0, aprobar:0}
-  },
-  'marcela|2026-05-11': {
-    'ESIC':  {entrega:0, aprobar:0}
-  },
   'marcela|2026-05-18': {
     'ESIC':  {entrega:0, aprobar:0}
-  },
-  'andres|2026-05-04': {
-    'USAP':       {entrega:0, aprobar:0},
-    'Externado':  {entrega:0, aprobar:0},
-    'Cesún':      {entrega:0, aprobar:0}
-  },
-  'andres|2026-05-11': {
-    'Externado':  {entrega:0, aprobar:0},
-    'USAP':       {entrega:0, aprobar:0}
   },
   'andres|2026-05-18': {
     'Externado':  {entrega:0, aprobar:0},
     'USAP':       {entrega:0, aprobar:0}
-  },
-  'jorge|2026-05-04': {
-    'Vértice': {entrega:0, aprobar:0},
-    'EIA':     {entrega:0, aprobar:0}
-  },
-  'jorge|2026-05-11': {
-    'Vértice': {entrega:0, aprobar:0},
-    'EIA':     {entrega:0, aprobar:0}
   },
   'jorge|2026-05-18': {
     'Vértice': {entrega:0, aprobar:0},
