@@ -16,7 +16,7 @@
 body { font-family: 'Roboto', sans-serif; background: var(--light); color: var(--navy); min-height: 100vh; display: flex; flex-direction: column; }
 
 /* HEADER */
-header { background: var(--navy); position: relative; overflow: hidden; flex-shrink: 0; }
+header { background: var(--navy); position: sticky; top: 0; z-index: 100; overflow: hidden; flex-shrink: 0; }
 .hdr-accent { position: absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--red) 0%, #ff6b8a 100%); }
 .hdr-circle { position: absolute; border-radius: 50%; background: rgba(255,45,85,0.08); pointer-events: none; }
 .hdr-inner { position: relative; z-index:1; display:flex; align-items:center; padding: 14px 28px; gap: 20px; }
@@ -1220,6 +1220,10 @@ async function init(){
       S.semana = plan.semana;
       S.queue = buildQueue(plan);
 
+      // Cargar entregas previas + activar botón "Guardar progreso"
+      const previas = await setupSeguimientoState(detectedPM, plan);
+      actualizarBtnDescarga();
+
       let resumen = '';
       plan.proyectos.forEach(p => {
         const nRec = p.bloques.reduce((a,b)=>a+b.total,0);
@@ -1229,7 +1233,13 @@ async function init(){
       });
 
       S.step=1; S.sub=0; S.qIdx=0; updateNav();
-      await claude('Hola, <strong>'+esc(detectedPM.split(' ')[0])+'</strong> 👋 Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen + '<br>Vamos a revisar el cumplimiento de cada compromiso.', 700);
+      let saludo = 'Hola, <strong>'+esc(detectedPM.split(' ')[0])+'</strong> 👋 Encontré tu planeación de la semana <strong>'+esc(S.semana)+'</strong> con <strong>'+plan.totalComprometidos+' recursos comprometidos</strong>:<br><br>' + resumen;
+      if(previas > 0){
+        saludo += '<br><span style="color:var(--green);font-weight:700;">📌 Ya tienes '+previas+' respuestas guardadas de esta semana</span> — voy a saltar esas y preguntarte solo por las pendientes.';
+      } else {
+        saludo += '<br>Vamos a revisar el cumplimiento de cada compromiso.';
+      }
+      await claude(saludo, 700);
       await askNextCumplimiento();
       return;
     }
